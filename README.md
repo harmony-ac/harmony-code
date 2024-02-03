@@ -10,7 +10,6 @@ You need to have Node.js installed. Then you can install Harmony Code in your pr
 npm install harmonyc
 ```
 
-(This saves the dependency in your package.json.)
 And then run it for all `.harmony` files in your `src` folder:
 
 ```bash
@@ -35,13 +34,7 @@ Products API:
       - delete product => product deleted
 ```
 
-The lines of a file are nodes of a tree. The tree is specified with the indentation of the lines, which is n times 2 spaces and a `+` or `-` with one more space. `-` means 
-the node comes after the preceding nodes, and `+` means a fork.
-
-Every line is either a label (ending with `:`) or a step. A step consists of an action
-and one or more responses denoted by `=>`.
-
-Compiling this with `harmonyc` will generate a `.feature` file that looks like this:
+Compiling this with `harmonyc` will generate this `.feature` file:
 
 ```gherkin
 Feature: change_password
@@ -57,6 +50,31 @@ Feature: change_password
         When delete product
         Then product deleted
 ```
+
+### Indentation
+
+The lines of a file are nodes of a tree. The tree is specified with the indentation of the lines, which is n times 2 spaces and a `+` or `-` with one more space. The `+` or `-` sign is considered to be part of the indentation.
+
+### Sequences and forks
+
+`-` means a sequence: the node follows the previous sibling node and its descendants.
+
+`+` means a fork: the node directly follows its parent node. All siblings with `+` are separate branches, they will generate separate scenarios.
+
+### Labels
+
+Label are nodes that end with `:`. You can use them to structure your test design.
+They are not included in the test case, but the test case name is generated from the labels.
+
+### Comments
+
+Lines starting with `#` or `//` are comments and are ignored.
+
+### Steps
+
+All other lines are steps. A step consists of an action, and one or more responses denoted by `=>`.
+Actions will become `When` steps, and responses will become `Then` steps.
+
 
 ## Running the tests
 
