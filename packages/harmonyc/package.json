@@ -1,0 +1,14 @@
+{
+  "name": "harmonyc",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.2",
+    "typescript-parsec": "0.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "typescript": "^5.3.3"
+  }
+}

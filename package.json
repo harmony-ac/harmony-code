@@ -1,0 +1,16 @@
+{
+  "name": "@harmony-ac/code",
+  "version": "0.0.0",
+  "author": "Bernát Kalló",
+  "license": "MIT",
+  "description": "Test design compiler",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harmony-ac/code.git"
+  },
+  "bugs": {
+    "url": "https://github.com/harmony-ac/code/issues"
+  },
+  "homepage": "https://github.com/harmony-ac/code#readme",
+  "workspaces": [ "packages/*" ]
+}

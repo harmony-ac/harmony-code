@@ -1,0 +1,181 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`response > log in:
+- enter username and password => success 1`] = `
+Section {
+  "children": [
+    Section {
+      "children": [
+        Step {
+          "action": Action {
+            "kind": "action",
+            "text": "enter username and password",
+          },
+          "children": [],
+          "isEnd": false,
+          "isFork": false,
+          "parent": [Circular],
+          "responses": [
+            Response {
+              "kind": "response",
+              "text": "success",
+            },
+          ],
+          "state": undefined,
+        },
+      ],
+      "isEnd": false,
+      "isFork": true,
+      "label": Label {
+        "text": "log in",
+      },
+      "parent": [Circular],
+    },
+  ],
+  "isEnd": false,
+  "isFork": false,
+  "label": Label {
+    "text": "",
+  },
+  "parent": undefined,
+}
+`;
+
+exports[`response log in:
+- enter username and password => success 1`] = `
+Section {
+  "children": [
+    Section {
+      "children": [
+        Step {
+          "action": Action {
+            "kind": "action",
+            "text": "enter username and password",
+          },
+          "children": [],
+          "isEnd": false,
+          "isFork": false,
+          "parent": [Circular],
+          "responses": [
+            Response {
+              "kind": "response",
+              "text": "success",
+            },
+          ],
+          "state": undefined,
+        },
+      ],
+      "isEnd": false,
+      "isFork": true,
+      "label": Label {
+        "text": "log in",
+      },
+      "parent": [Circular],
+    },
+  ],
+  "isEnd": false,
+  "isFork": false,
+  "label": Label {
+    "text": "",
+  },
+  "parent": undefined,
+}
+`;
+
+exports[`section > log in:
+- enter username
+- enter password 1`] = `
+Section {
+  "children": [
+    Section {
+      "children": [
+        Step {
+          "action": Action {
+            "kind": "action",
+            "text": "enter username",
+          },
+          "children": [],
+          "isEnd": false,
+          "isFork": false,
+          "parent": [Circular],
+          "responses": [],
+          "state": undefined,
+        },
+        Step {
+          "action": Action {
+            "kind": "action",
+            "text": "enter password",
+          },
+          "children": [],
+          "isEnd": false,
+          "isFork": false,
+          "parent": [Circular],
+          "responses": [],
+          "state": undefined,
+        },
+      ],
+      "isEnd": false,
+      "isFork": true,
+      "label": Label {
+        "text": "log in",
+      },
+      "parent": [Circular],
+    },
+  ],
+  "isEnd": false,
+  "isFork": false,
+  "label": Label {
+    "text": "",
+  },
+  "parent": undefined,
+}
+`;
+
+exports[`section log in:
+- enter username
+- enter password 1`] = `
+Section {
+  "children": [
+    Section {
+      "children": [
+        Step {
+          "action": Action {
+            "kind": "action",
+            "text": "enter username",
+          },
+          "children": [],
+          "isEnd": false,
+          "isFork": false,
+          "parent": [Circular],
+          "responses": [],
+          "state": undefined,
+        },
+        Step {
+          "action": Action {
+            "kind": "action",
+            "text": "enter password",
+          },
+          "children": [],
+          "isEnd": false,
+          "isFork": false,
+          "parent": [Circular],
+          "responses": [],
+          "state": undefined,
+        },
+      ],
+      "isEnd": false,
+      "isFork": true,
+      "label": Label {
+        "text": "log in",
+      },
+      "parent": [Circular],
+    },
+  ],
+  "isEnd": false,
+  "isFork": false,
+  "label": Label {
+    "text": "",
+  },
+  "parent": undefined,
+}
+`;
