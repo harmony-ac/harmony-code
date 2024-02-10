@@ -3,6 +3,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "bin": {
+    "harmonyc": "./dist/cli.js"
+  },
   "dependencies": {
     "fast-glob": "^3.3.2",
     "typescript-parsec": "0.3.4"
