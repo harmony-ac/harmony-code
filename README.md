@@ -75,6 +75,8 @@ Lines starting with `#` or `//` are comments and are ignored.
 All other lines are steps. A step consists of an action, and one or more responses denoted by `=>`.
 Actions will become `When` steps, and responses will become `Then` steps.
 
+The generated steps contain the feature name after a ` -- `. Cucumber's steps are in one global namespace, but including the feature name makes it easy to scope step defintions by feature.
+
 
 ## Running the tests
 
