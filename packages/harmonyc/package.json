@@ -1,7 +1,8 @@
 {
   "name": "harmonyc",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "rm dist/*.js && npm run build && cp -f ../../README.md dist/ && cd dist && npm publish"
   },
   "bin": {
     "harmonyc": "./dist/cli.js"
