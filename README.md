@@ -37,18 +37,18 @@ Products API:
 Compiling this with `harmonyc` will generate this `.feature` file:
 
 ```gherkin
-Feature: change_password
+Feature: products
 
     Scenario: T1 - Products API - Create - Anonymous
-        When create product
-        Then error: unauthorized
+        When create product -- products
+        Then error: unauthorized -- products
     
     Scenario: T2 - Products API - Create - Admin - Delete
-        When authenticate admin
-        When create product
-        Then product created
-        When delete product
-        Then product deleted
+        When authenticate admin -- products
+        When create product -- products
+        Then product created -- products
+        When delete product -- products
+        Then product deleted -- products
 ```
 
 ### Indentation
@@ -78,7 +78,7 @@ Actions will become `When` steps, and responses will become `Then` steps.
 
 ## Running the tests
 
-`harmonyc` only compiles `.harmony` files to `.feature` files. To run the tests, you need to set up Cucumber or Specflow, depending on your environment.
+Currenlty `harmonyc` only compiles `.harmony` files to `.feature` files. To run the tests, you need to set up Cucumber or Specflow, depending on your environment.
 
 ## License
 

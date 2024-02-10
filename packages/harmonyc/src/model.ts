@@ -15,6 +15,11 @@ export abstract class Branch {
     this.isFork = isFork
     return this
   }
+  setFeatureName(featureName: string) {
+    for (const child of this.children)
+      child.setFeatureName(featureName)
+    return this
+  }
   addChild<C extends Branch>(child: C, index = this.children.length) {
     this.children.splice(index, 0, child)
     child.parent = this
@@ -57,10 +62,11 @@ export class Step extends Branch {
     responses: string[] = [],
     children?: Branch[],
     isFork = false,
+    featureName = '',
   ) {
     super(children)
-    this.action = new Action(action)
-    this.responses = responses.map((response) => new Response(response))
+    this.action = new Action(action, featureName)
+    this.responses = responses.map((response) => new Response(response, featureName))
     this.isFork = isFork
   }
   get phrases(): Phrase[] {
@@ -68,6 +74,12 @@ export class Step extends Branch {
   }
   toGherkin() {
     return this.phrases.flatMap((phrase) => phrase.toGherkin())
+  }
+  setFeatureName(featureName: string) {
+    this.action.setFeatureName(featureName)
+    for (const response of this.responses)
+      response.setFeatureName(featureName)
+    return super.setFeatureName(featureName)
   }
 }
 export class State {
@@ -96,12 +108,17 @@ export class Section extends Branch {
 
 export abstract class Phrase {
   text: string
+  featureName: string
   abstract get kind(): string
-  constructor(text = '') {
+  constructor(text = '', featureName = '') {
     this.text = text
+    this.featureName = featureName
+  }
+  setFeatureName(featureName: string) {
+    this.featureName = featureName
   }
   toGherkin() {
-    return [`${this.kind === 'action' ? 'When' : 'Then'} ${this.text}`]
+    return [`${this.kind === 'action' ? 'When' : 'Then'} ${this.text} -- ${this.featureName}`]
   }
 }
 

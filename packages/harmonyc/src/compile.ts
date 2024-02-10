@@ -4,7 +4,7 @@ import { makeTests } from './model'
 import { parse } from './parser'
 
 export function compileFeature(name: string, src: string) {
-  const root = parse(src)
+  const root = parse(src).setFeatureName(name)
   const tests = makeTests(root)
   const lines = [
     `Feature: ${name}`,
