@@ -1,7 +1,7 @@
 {
   "name": "harmonyc",
   "description": "Harmony Code - Test design compiler from high-level model to Gherkin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Bernát Kalló",
   "bin": {
     "harmonyc": "./cli.js"
@@ -20,9 +20,22 @@
   },
   "license": "MIT",
   "keywords": [
-    "unit test", "unit testing", "cucumber", "bdd", "behavior-driven",
-    "test design", "test design automation", "gherkin", "cucumber",
-    "specflow", "harmony.ac", "test framework", "model-based test",
-    "model-based testing", "test model", "test modeling", "test modelling"
+    "unit test",
+    "unit testing",
+    "cucumber",
+    "bdd",
+    "behavior-driven",
+    "test design",
+    "test design automation",
+    "gherkin",
+    "cucumber",
+    "specflow",
+    "harmony.ac",
+    "test framework",
+    "model-based test",
+    "model-based testing",
+    "test model",
+    "test modeling",
+    "test modelling"
   ]
 }
