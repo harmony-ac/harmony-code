@@ -91,12 +91,38 @@ Markdown code is mapped to the Harmony test model along the following rules.
 ## Numbered lists
 
 - there is only a numbered item => one step, not forked
+
   ```markdown
   1. log in
   ```
 
 - there are more numbered items => sequential steps
+
   ```markdown
+  1. log in
+  2. log out
+  ```
+
+- there are nested bulleted and numbered lists => nested sequences and forks
+
+  ```markdown
+  - log in
+    1. create order
+       - pay
+       - clear cart
+    2. log out
+  ```
+
+- there are numbered and nested lists on same level => bulleted items are forks, numbered items not
+
+  ```markdown
+  - log in
+
+  1. create order
+  2. pay
+
+  - log out
+
   1. log in
   2. log out
   ```

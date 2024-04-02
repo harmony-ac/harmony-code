@@ -91,6 +91,37 @@ then(
     new Step('log out', [], [], false),
   ])
 )
+then(
+  'nested sequences and forks',
+  new Section('', [
+    new Step(
+      'log in',
+      [],
+      [
+        new Step(
+          'create order',
+          [],
+          [new Step('pay', [], [], true), new Step('clear cart', [], [], true)],
+          false
+        ),
+        new Step('log out', [], [], false),
+      ],
+      true
+    ),
+  ])
+)
+
+then(
+  'bulleted items are forks, numbered items not',
+  new Section('', [
+    new Step('log in', [], [], true),
+    new Step('create order', [], [], false),
+    new Step('pay', [], [], false),
+    new Step('log out', [], [], true),
+    new Step('log in', [], [], false),
+    new Step('log out', [], [], false),
+  ])
+)
 
 when(
   'deep nested bullet points',
