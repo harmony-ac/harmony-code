@@ -64,16 +64,6 @@ then(
     new Step('log out', [], [], true),
   ])
 )
-when(
-  'nested bullet points',
-  `
-- log in
-  - create order
-  - log out
-- sign up
-  - log out
-`
-)
 then(
   'nested forked steps',
   new Section('', [
@@ -87,6 +77,18 @@ then(
       true
     ),
     new Step('sign up', [], [new Step('log out', [], [], true)], true),
+  ])
+)
+
+then(
+  'one step, not forked',
+  new Section('', [new Step('log in', [], [], false)])
+)
+then(
+  'sequential steps',
+  new Section('', [
+    new Step('log in', [], [], false),
+    new Step('log out', [], [], false),
   ])
 )
 

@@ -88,6 +88,19 @@ Markdown code is mapped to the Harmony test model along the following rules.
   ```
 - deep nested bullet points => deep nested forked steps
 
+## Numbered lists
+
+- there is only a numbered item => one step, not forked
+  ```markdown
+  1. log in
+  ```
+
+- there are more numbered items => sequential steps
+  ```markdown
+  1. log in
+  2. log out
+  ```
+
 ## Responses
 
 - there is only response => step with one response
