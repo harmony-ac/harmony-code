@@ -5,7 +5,8 @@ import { compileFeature } from './compile'
 
 export async function compileFiles(pattern: string | string[]) {
   const fns = await glob(pattern)
-  if (!fns.length) throw new Error(`No files found for pattern: ${String(pattern)}`)
+  if (!fns.length)
+    throw new Error(`No files found for pattern: ${String(pattern)}`)
   await Promise.all(fns.map((fn) => compileFile(fn)))
 }
 

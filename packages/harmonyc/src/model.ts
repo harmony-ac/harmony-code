@@ -16,8 +16,7 @@ export abstract class Branch {
     return this
   }
   setFeatureName(featureName: string) {
-    for (const child of this.children)
-      child.setFeatureName(featureName)
+    for (const child of this.children) child.setFeatureName(featureName)
     return this
   }
   addChild<C extends Branch>(child: C, index = this.children.length) {
@@ -62,11 +61,13 @@ export class Step extends Branch {
     responses: string[] = [],
     children?: Branch[],
     isFork = false,
-    featureName = '',
+    featureName = ''
   ) {
     super(children)
     this.action = new Action(action, featureName)
-    this.responses = responses.map((response) => new Response(response, featureName))
+    this.responses = responses.map(
+      (response) => new Response(response, featureName)
+    )
     this.isFork = isFork
   }
   get phrases(): Phrase[] {
@@ -77,8 +78,7 @@ export class Step extends Branch {
   }
   setFeatureName(featureName: string) {
     this.action.setFeatureName(featureName)
-    for (const response of this.responses)
-      response.setFeatureName(featureName)
+    for (const response of this.responses) response.setFeatureName(featureName)
     return super.setFeatureName(featureName)
   }
 }
@@ -118,7 +118,11 @@ export abstract class Phrase {
     this.featureName = featureName
   }
   toGherkin() {
-    return [`${this.kind === 'action' ? 'When' : 'Then'} ${this.text} -- ${this.featureName}`]
+    return [
+      `${this.kind === 'action' ? 'When' : 'Then'} ${this.text} -- ${
+        this.featureName
+      }`,
+    ]
   }
 }
 
@@ -165,10 +169,7 @@ export function makeTests(root: Branch) {
 
 export class Test {
   testNumber?: string
-  constructor(
-    public root: Branch,
-    public branches: Branch[],
-  ) {}
+  constructor(public root: Branch, public branches: Branch[]) {}
 
   get steps(): Step[] {
     return this.branches.filter((b): b is Step => b instanceof Step)
