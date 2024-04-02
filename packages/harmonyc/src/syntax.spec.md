@@ -16,6 +16,9 @@ Markdown code is mapped to the Harmony test model along the following rules.
 - nested headings => nested forked sections
 - deep nested headings => deep nested forked sections
 
-## Bullet lists
+## Bulleted lists
 
 - only a bullet point => one step
+- more bullet points => forked steps
+- nested bullet points => nested forked steps
+- deep nested bullet points => deep nested forked steps

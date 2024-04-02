@@ -1,6 +1,6 @@
 import { When, Then } from '@cucumber/cucumber'
 import { parseMarkdown } from './syntax'
-import { Branch, Section } from './model'
+import { Branch, Section, Step } from './model'
 import { expect } from 'expect'
 
 interface W {
@@ -103,4 +103,77 @@ when(
   `
 - log in
 `
+)
+then('one step', new Section('', [new Step('log in', [], [], true)]))
+
+when(
+  'more bullet points',
+  `
+- log in
+- log out
+`
+)
+then(
+  'forked steps',
+  new Section('', [
+    new Step('log in', [], [], true),
+    new Step('log out', [], [], true),
+  ])
+)
+when(
+  'nested bullet points',
+  `
+- log in
+  - create order
+  - log out
+- sign up
+  - log out
+`
+)
+then(
+  'nested forked steps',
+  new Section('', [
+    new Step(
+      'log in',
+      [],
+      [
+        new Step('create order', [], [], true),
+        new Step('log out', [], [], true),
+      ],
+      true
+    ),
+    new Step('sign up', [], [new Step('log out', [], [], true)], true),
+  ])
+)
+
+when(
+  'deep nested bullet points',
+  `
+- log in
+  - create order
+    - add product
+    - remove product
+  - log out
+`)
+then(
+  'deep nested forked steps',
+  new Section('', [
+    new Step(
+      'log in',
+      [],
+      [
+        new Step(
+          'create order',
+          [],
+          [
+            new Step('add product', [], [], true),
+            new Step('remove product', [], [], true),
+          ],
+          true
+        ),
+        new Step('log out', [], [], true),
+      ],
+      true
+    ),
+  ])
 )
