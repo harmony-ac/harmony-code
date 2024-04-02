@@ -19,25 +19,10 @@ function then(phrase: string, expected: unknown) {
 }
 
 when('empty', '')
-when(
-  'empty lines',
-  `
-
-`
-)
-when('only a paragraph', `One can log in.`)
 then('empty test design', new Section())
 
-when('only a h1', `# Login form`)
 then('one section', new Section('', [new Section('Login form', [], true)]))
 
-when(
-  'more h1s',
-  `
-# Login
-# Logout
-`
-)
 then(
   'forked sections',
   new Section('', [
@@ -45,38 +30,11 @@ then(
     new Section('Logout', [], true),
   ])
 )
-
-when(
-  'only h2s',
-  `
-## Login
-## Logout
-`
-)
-when(
-  'nested headings',
-  `
-# Login form
-## Log in
-`
-)
 then(
   'nested forked sections',
   new Section('', [
     new Section('Login form', [new Section('Log in', [], true)], true),
   ])
-)
-
-when(
-  'deep nested headings',
-  `
-# Login form
-## Log in
-### Empty checks
-### Email validation
-## Log out
-### Re-login
-`
 )
 then(
   'deep nested forked sections',
@@ -98,21 +56,7 @@ then(
     ),
   ])
 )
-when(
-  'only a bullet point',
-  `
-- log in
-`
-)
 then('one step', new Section('', [new Step('log in', [], [], true)]))
-
-when(
-  'more bullet points',
-  `
-- log in
-- log out
-`
-)
 then(
   'forked steps',
   new Section('', [
@@ -225,4 +169,13 @@ when(
 - ### Login
 - ### Logout
 `
+)
+
+When('there is/are {} || syntax', function (_what, docstring) {
+  if (typeof docstring === 'function') throw new Error('missing docstring')
+  this.input = docstring
+})
+then(
+  'action with docstring',
+  new Section('', [new Step('action', [], [], true, '', 'Docstring')])
 )

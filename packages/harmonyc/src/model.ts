@@ -61,10 +61,11 @@ export class Step extends Branch {
     responses: string[] = [],
     children?: Branch[],
     isFork = false,
-    featureName = ''
+    featureName = '',
+    actionDocstring?: string | undefined
   ) {
     super(children)
-    this.action = new Action(action, featureName)
+    this.action = new Action(action, featureName, actionDocstring)
     this.responses = responses.map(
       (response) => new Response(response, featureName)
     )
@@ -109,10 +110,12 @@ export class Section extends Branch {
 export abstract class Phrase {
   text: string
   featureName: string
+  docstring?: string
   abstract get kind(): string
-  constructor(text = '', featureName = '') {
+  constructor(text = '', featureName = '', docstring?: string) {
     this.text = text
     this.featureName = featureName
+    this.docstring = docstring
   }
   setFeatureName(featureName: string) {
     this.featureName = featureName
@@ -122,6 +125,9 @@ export abstract class Phrase {
       `${this.kind === 'action' ? 'When' : 'Then'} ${this.text} || ${
         this.featureName
       }`,
+      ...(this.docstring !== undefined
+        ? indent(['"""', ...this.docstring.split('\n'), '"""'])
+        : []),
     ]
   }
 }

@@ -30,6 +30,7 @@ export function parseMarkdown(text: string): Branch {
 function topLevel(node: Node) {
   if (node.type === 'paragraph') return []
   if (node.type == 'list') return list(node)
+  return []
 }
 
 function list(node: List) {
@@ -46,6 +47,10 @@ function listItem(node: ListItem, isFork: boolean) {
   } else {
     const [action, ...responses] = text.split(/(?:^| )=>(?: |$)/)
     branch = new Step(action, responses.filter(Boolean), [], isFork)
+    const second = node.children[1]
+    if (second?.type === 'code') {
+      ;(branch as Step).action.docstring = second.value
+    }
   }
   for (const child of node.children) {
     if (child.type === 'list') {
@@ -55,7 +60,7 @@ function listItem(node: ListItem, isFork: boolean) {
   return branch
 }
 
-function textContent(node: Node) {
+function textContent(node: Node): string {
   if (node.type === 'text') {
     return node.value.split(/\s+/).filter(Boolean).join(' ')
   }
