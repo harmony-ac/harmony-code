@@ -35,7 +35,7 @@ A Harmony Code file is a Markdown file with a syntax that looks like this:
     1. authenticate admin
     2. create product => product created
     3. **Delete:**
-    - delete product => product deleted
+       - delete product => product deleted
 ```
 
 Compiling this with `harmonyc` will generate this `.feature` file:
@@ -54,18 +54,18 @@ Feature: products
         When delete product || products
         Then product deleted || products
 ```
+### Actions and responses
+
+List items (either in ordered or bulleted lists) consist of an **action** and zero or more **response**s, separated by a `=>`. The actions become `When`s and the responses become `Then`s.
+
+The generated steps contain the feature name after a `||`. Cucumber's steps are in one global namespace, but including the feature name makes it easy to scope step defintions by feature.
+
 
 ### Sequences and forks
 
 An ordered list means a **sequence**: the list items are included int the tests in order.
 
-A bullet list (`-` or `*` or `+`) means a **fork**: the node directly follows its parent node. All list items are separate branches, they will generate separate scenarios.
-
-### Actions and responses
-
-List items (either in ordered or bullet lists) consist of an **action** and zero or more **response**s, separated by a `=>`. The actions become `When`s and the responses become `Then`s.
-
-The generated steps contain the feature name after a `||`. Cucumber's steps are in one global namespace, but including the feature name makes it easy to scope step defintions by feature.
+A bulleted list (`-` or `*` or `+`) means a **fork**: the node directly follows its parent node. All list items are separate branches, they will generate separate scenarios.
 
 ### Labels
 
