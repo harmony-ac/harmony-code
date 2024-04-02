@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { indent } from './util/indent'
 import { makeTests } from './model'
-import { parse } from './parser'
+import { parseMarkdown } from './syntax'
 
 export function compileFeature(name: string, src: string) {
-  const root = parse(src).setFeatureName(name)
+  const root = parseMarkdown(src).setFeatureName(name)
   const tests = makeTests(root)
   const lines = [
     `Feature: ${name}`,

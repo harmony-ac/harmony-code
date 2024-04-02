@@ -8,11 +8,12 @@ export async function compileFiles(pattern: string | string[]) {
   if (!fns.length)
     throw new Error(`No files found for pattern: ${String(pattern)}`)
   await Promise.all(fns.map((fn) => compileFile(fn)))
+  console.log(`Compiled ${fns.length} file${fns.length === 1 ? '' : 's'}`)
 }
 
 export async function compileFile(fn: string) {
   const src = readFileSync(fn, 'utf8').toString()
-  const name = basename(fn).replace(/\.[a-z]+$/i, '')
-  const outFn = fn.replace(/\.[a-z]+$/i, '.feature')
+  const name = basename(fn).replace(/(?:\.[a-z]+)+$/i, '')
+  const outFn = fn.replace(/(?:\.[a-z]+)+$/i, '.feature')
   writeFileSync(outFn, compileFeature(name, src))
 }

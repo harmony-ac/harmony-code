@@ -1,6 +1,6 @@
 import { When, Then } from '@cucumber/cucumber'
 import { parseMarkdown } from './syntax'
-import { Branch, Section, Step } from './model'
+import { Section, Step } from './model'
 import { expect } from 'expect'
 
 interface W {
@@ -154,7 +154,8 @@ when(
     - add product
     - remove product
   - log out
-`)
+`
+)
 then(
   'deep nested forked steps',
   new Section('', [

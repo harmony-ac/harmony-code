@@ -2,7 +2,11 @@
   "name": "harmonyc",
   "scripts": {
     "build": "tsc",
-    "test": "tsx watch ../../node_modules/@cucumber/cucumber/bin/cucumber.js -r src/**/*.steps.ts src/**/*.feature",
+    "build:watch": "tsc --watch",
+    "harmonyc": "tsx ./src/cli src/**/*.spec.md",
+    "harmonyc:watch": "tsx watch ./src/cli src/**/*.spec.md",
+    "test": "tsx ../../node_modules/@cucumber/cucumber/bin/cucumber.js -r src/**/*.steps.ts src/**/*.feature",
+    "test:watch": "tsx watch ../../node_modules/@cucumber/cucumber/bin/cucumber.js -r src/**/*.steps.ts src/**/*.feature",
     "publish": "rm dist/*.js && npm run build && cp -f README.md dist/ && cd dist && npm publish"
   },
   "bin": {

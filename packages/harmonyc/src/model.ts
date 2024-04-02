@@ -119,7 +119,7 @@ export abstract class Phrase {
   }
   toGherkin() {
     return [
-      `${this.kind === 'action' ? 'When' : 'Then'} ${this.text} -- ${
+      `${this.kind === 'action' ? 'When' : 'Then'} ${this.text} || ${
         this.featureName
       }`,
     ]
