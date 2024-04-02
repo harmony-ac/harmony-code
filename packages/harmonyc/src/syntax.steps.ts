@@ -200,3 +200,29 @@ then(
   'step with action and response',
   new Section('', [new Step('log out', ['logged out'], [], true)])
 )
+when(
+  'more responses',
+  `
+- log out => logged out => on home page
+`
+)
+then(
+  'step with more responses',
+  new Section('', [
+    new Step('log out', ['logged out', 'on home page'], [], true),
+  ])
+)
+when(
+  'heading in list item',
+  `
+- ### Login form
+`
+)
+
+when(
+  'headings in bulleted items',
+  `
+- ### Login
+- ### Logout
+`
+)

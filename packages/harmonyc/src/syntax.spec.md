@@ -27,3 +27,9 @@ Markdown code is mapped to the Harmony test model along the following rules.
 
 - only response => step with one response
 - action and response => step with action and response
+- more responses => step with more responses
+
+## Headings within lists
+
+- heading in list item => one section
+- headings in bulleted items => forked sections

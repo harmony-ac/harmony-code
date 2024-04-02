@@ -38,15 +38,21 @@ function list(node: List) {
 }
 
 function listItem(node: ListItem, isFork: boolean) {
-  const text = textContent(node)
-  const [action, ...responses] = text.split(/(?:^| )=>(?: |$)/)
-  const step = new Step(action, responses.filter(Boolean), [], true)
+  const first = node.children[0]
+  const text = textContent(first)
+  let branch: Branch
+  if (first.type === 'heading') {
+    branch = new Section(text, [], isFork)
+  } else {
+    const [action, ...responses] = text.split(/(?:^| )=>(?: |$)/)
+    branch = new Step(action, responses.filter(Boolean), [], isFork)
+  }
   for (const child of node.children) {
     if (child.type === 'list') {
-      for (const branch of list(child)) step.addChild(branch)
+      for (const b of list(child)) branch.addChild(b)
     }
   }
-  return step
+  return branch
 }
 
 function textContent(node: Node) {
