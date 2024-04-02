@@ -1,6 +1,6 @@
 # Syntax
 
-Markdown code is imported to the Harmony test object model along the following rules.
+Markdown code is mapped to the Harmony test model along the following rules.
 
 ## Empty file
 
@@ -11,7 +11,10 @@ Markdown code is imported to the Harmony test object model along the following r
 ## Section headings
 
 - only a h1 => one section
-- some headings => only sections
+- more h1s => forked sections
+- only h2s => forked sections
+- nested headings => nested forked sections
+- deep nested headings => deep nested forked sections
 
 ## Bullet lists
 

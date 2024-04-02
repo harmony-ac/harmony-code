@@ -19,22 +19,84 @@ function then(phrase: string, expected: unknown) {
 }
 
 when('empty', '')
-then('empty test design', new Section())
 when(
   'empty lines',
   `
 
 `
 )
-when('only a h1', `# Login form`)
 when('only a paragraph', `One can log in.`)
+then('empty test design', new Section())
+
+when('only a h1', `# Login form`)
+then('one section', new Section('', [new Section('Login form', [], true)]))
+
 when(
-  'some headings',
+  'more h1s',
+  `
+# Login
+# Logout
+`
+)
+then(
+  'forked sections',
+  new Section('', [
+    new Section('Login', [], true),
+    new Section('Logout', [], true),
+  ])
+)
+
+when(
+  'only h2s',
+  `
+## Login
+## Logout
+`
+)
+when(
+  'nested headings',
   `
 # Login form
 ## Log in
-## Log out
 `
+)
+then(
+  'nested forked sections',
+  new Section('', [
+    new Section('Login form', [new Section('Log in', [], true)], true),
+  ])
+)
+
+when(
+  'deep nested headings',
+  `
+# Login form
+## Log in
+### Empty checks
+### Email validation
+## Log out
+### Re-login
+`
+)
+then(
+  'deep nested forked sections',
+  new Section('', [
+    new Section(
+      'Login form',
+      [
+        new Section(
+          'Log in',
+          [
+            new Section('Empty checks', [], true),
+            new Section('Email validation', [], true),
+          ],
+          true
+        ),
+        new Section('Log out', [new Section('Re-login', [], true)], true),
+      ],
+      true
+    ),
+  ])
 )
 when(
   'only a bullet point',
