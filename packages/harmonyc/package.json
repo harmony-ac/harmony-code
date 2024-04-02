@@ -2,7 +2,8 @@
   "name": "harmonyc",
   "scripts": {
     "build": "tsc",
-    "publish": "rm dist/*.js && npm run build && cp -f ../../README.md dist/ && cd dist && npm publish"
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS -r ts-node/register --no-warnings\" cucumber-js -r src/**/*.steps.ts src/**/*.feature",
+    "publish": "rm dist/*.js && npm run build && cp -f README.md dist/ && cd dist && npm publish"
   },
   "bin": {
     "harmonyc": "./dist/cli.js"
@@ -12,7 +13,10 @@
     "typescript-parsec": "0.3.4"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^10.3.2",
     "@types/node": "^20.11.16",
+    "expect": "^29.7.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }
