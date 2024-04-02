@@ -22,3 +22,8 @@ Markdown code is mapped to the Harmony test model along the following rules.
 - more bullet points => forked steps
 - nested bullet points => nested forked steps
 - deep nested bullet points => deep nested forked steps
+
+## Responses
+
+- only response => step with one response
+- action and response => step with action and response

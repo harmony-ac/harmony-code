@@ -38,7 +38,9 @@ function list(node: List) {
 }
 
 function listItem(node: ListItem, isFork: boolean) {
-  const step = new Step(textContent(node), [], [], true)
+  const text = textContent(node)
+  const [action, ...responses] = text.split(/(?:^| )=>(?: |$)/)
+  const step = new Step(action, responses.filter(Boolean), [], true)
   for (const child of node.children) {
     if (child.type === 'list') {
       for (const branch of list(child)) step.addChild(branch)
@@ -49,9 +51,9 @@ function listItem(node: ListItem, isFork: boolean) {
 
 function textContent(node: Node) {
   if (node.type === 'text') {
-    return node.value
+    return node.value.split(/\s+/).filter(Boolean).join(' ')
   }
   if (node.type === 'list') return ''
   if (!('children' in node)) return ''
-  return node.children.map(textContent).join('')
+  return node.children.map(textContent).filter(Boolean).join(' ')
 }

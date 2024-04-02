@@ -177,3 +177,25 @@ then(
     ),
   ])
 )
+
+when(
+  'only response',
+  `
+- => logged out
+`
+)
+then(
+  'step with one response',
+  new Section('', [new Step('', ['logged out'], [], true)])
+)
+
+when(
+  'action and response',
+  `
+- log out => logged out
+`
+)
+then(
+  'step with action and response',
+  new Section('', [new Step('log out', ['logged out'], [], true)])
+)
