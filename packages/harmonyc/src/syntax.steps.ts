@@ -210,5 +210,14 @@ When('there is/are {} || syntax', function (_what, docstring) {
 })
 then(
   'action with docstring',
-  new Section('', [new Step('action', [], [], true, '', 'Docstring')])
+  new Section('', [
+    new Step(
+      'the user writes an email',
+      [],
+      [],
+      true,
+      '',
+      expect.stringContaining('Hello John,\n\nPlease') as any
+    ),
+  ])
 )

@@ -157,9 +157,16 @@ Markdown code is mapped to the Harmony test model along the following rules.
 ## Docstrings
 
 - there is a docstring => action with docstring
+
   ````markdown
-  - action
+  - the user writes an email
+
     ```
-    Docstring
+    Hello John,
+
+    Please find the attached invoice.
+
+    Best regards,
+    Jane
     ```
   ````
