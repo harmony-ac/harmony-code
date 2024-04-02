@@ -8,7 +8,7 @@ export async function compileFiles(pattern: string | string[]) {
   if (!fns.length)
     throw new Error(`No files found for pattern: ${String(pattern)}`)
   await Promise.all(fns.map((fn) => compileFile(fn)))
-  console.log(`Compiled ${fns.length} file${fns.length === 1 ? '' : 's'}`)
+  console.log(`Compiled ${fns.length} file${fns.length === 1 ? '' : 's'}.`)
 }
 
 export async function compileFile(fn: string) {
