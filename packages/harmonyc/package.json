@@ -2,7 +2,7 @@
   "name": "harmonyc",
   "scripts": {
     "build": "tsc",
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS -r ts-node/register --no-warnings\" cucumber-js -r src/**/*.steps.ts src/**/*.feature",
+    "test": "tsx watch ../../node_modules/@cucumber/cucumber/bin/cucumber.js -r src/**/*.steps.ts src/**/*.feature",
     "publish": "rm dist/*.js && npm run build && cp -f README.md dist/ && cd dist && npm publish"
   },
   "bin": {
@@ -14,9 +14,10 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "^10.3.2",
+    "@types/mdast": "^4.0.3",
     "@types/node": "^20.11.16",
     "expect": "^29.7.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
 }
