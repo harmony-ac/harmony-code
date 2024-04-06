@@ -1,10 +1,3 @@
----
-defs:
-  Have Node.js installed: Given nodejs installed
-  Install Harmony Code {}: Given installed harmonyc
-framework: bats
----
-
 # Harmony Code
 
 A test design tool that helps you separate the _what_ to test from the _how_ to automate. You write test cases in a simple Markdown format, and then automate them with your favorite test framework.
@@ -90,3 +83,21 @@ Paragraphs outside of lists are for humans only, they are ignored in the automat
 ## License
 
 MIT
+
+### Automation
+
+The steps in this file are automated with the following YAML:
+
+```yaml harmony
+automation:
+  bats:
+    steps:
+      Have Node.js installed: command -v node
+      Install Harmony Code {}: $_
+      To run it {}: $_
+      This will generate {}: |
+        [ $(find . -name '*.spec.md' | wc -l) -gt 0 ]
+  vitest:
+    steps:
+      A Harmony Code file {}: this.input = $_
+```
