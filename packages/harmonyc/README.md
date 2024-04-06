@@ -1,6 +1,13 @@
+---
+defs:
+  Have Node.js installed: Given nodejs installed
+  Install Harmony Code {}: Given installed harmonyc
+framework: bats
+---
+
 # Harmony Code
 
-A test design tool that generates test cases from Markdown files. It outputs test cases as Cucumber code.
+A test design tool that helps you separate the _what_ to test from the _how_ to automate. You write test cases in a simple Markdown format, and then automate them with your favorite test framework.
 
 (This readme itself is a Harmony Code file.)
 
@@ -54,12 +61,12 @@ Feature: products
         When delete product || products
         Then product deleted || products
 ```
+
 ### Actions and responses
 
 List items (either in ordered or bulleted lists) consist of an **action** and zero or more **response**s, separated by a `=>`. The actions become `When`s and the responses become `Then`s.
 
 The generated steps contain the feature name after a `||`. Cucumber's steps are in one global namespace, but including the feature name makes it easy to scope step defintions by feature.
-
 
 ### Sequences and forks
 
