@@ -3,9 +3,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "harmonyc": "tsx ./src/cli src/**/*.spec.md",
-    "harmonyc:watch": "tsx watch ./src/cli src/**/*.spec.md",
-    "test": "tsx ../../node_modules/@cucumber/cucumber/bin/cucumber.js -r src/**/*.steps.ts src/**/*.feature",
+    "harmonyc": "tsx ./src/cli",
+    "test": "npm run harmonyc -- --run src/**/*.md && node --test",
     "test:watch": "tsx watch ../../node_modules/@cucumber/cucumber/bin/cucumber.js -r src/**/*.steps.ts src/**/*.feature",
     "publish": "rm dist/*.js && npm run build && cp -f README.md dist/ && cd dist && npm publish"
   },

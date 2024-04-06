@@ -120,11 +120,12 @@ export abstract class Phrase {
   setFeatureName(featureName: string) {
     this.featureName = featureName
   }
+  get keyword() {
+    return this.kind === 'action' ? 'When' : 'Then'
+  }
   toGherkin() {
     return [
-      `${this.kind === 'action' ? 'When' : 'Then'} ${this.text} || ${
-        this.featureName
-      }`,
+      `${this.keyword} ${this.text} || ${this.featureName}`,
       ...(this.docstring !== undefined
         ? indent(['"""', ...this.docstring.split('\n'), '"""'])
         : []),
@@ -191,11 +192,15 @@ export class Test {
       .map((s) => s.label.text)
   }
 
+  get name() {
+    return `${this.testNumber!}${
+      this.labels.length > 0 ? ' - ' : ''
+    }${this.labels.join(' - ')}`
+  }
+
   toGherkin() {
     return [
-      `Scenario: ${this.testNumber!}${
-        this.labels.length > 0 ? ' - ' : ''
-      }${this.labels.join(' - ')}`,
+      `Scenario: ${this.name}`,
       ...indent(this.steps.flatMap((b) => b.toGherkin())),
       '',
     ]

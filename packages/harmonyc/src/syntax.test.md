@@ -129,7 +129,9 @@ Markdown code is mapped to the Harmony test model along the following rules.
 
 ## Responses
 
-- there is only response => step with one response
+Responses are specified with `=>` after the action.
+
+- there is only a response => step with one response and empty action
   ```markdown
   - => logged out
   ```
@@ -170,3 +172,19 @@ Markdown code is mapped to the Harmony test model along the following rules.
     Jane
     ```
   ````
+
+<details><summary>Automation</summary>
+
+```yaml harmony
+automation:
+  node:
+    steps:
+      empty: const input = ""
+      preamble: |
+        import expect from 'expect'
+        import { parse } from './syntax'
+      there is/are {}: const input = $_
+      => {}: expect(parse(input)).toMatchSnapshot($1)
+```
+
+</details>
