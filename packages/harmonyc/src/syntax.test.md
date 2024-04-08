@@ -173,18 +173,30 @@ Responses are specified with `=>` after the action.
     ```
   ````
 
-<details><summary>Automation</summary>
+## Automation
 
-```yaml harmony
-automation:
-  node:
-    steps:
-      empty: const input = ""
-      preamble: |
-        import expect from 'expect'
-        import { parse } from './syntax'
-      there is/are {}: const input = $_
-      => {}: expect(parse(input)).toMatchSnapshot($1)
+### Syntax
+
+```typescript harmony node:test
+import expect from 'expect'
+import { parse } from './syntax'
+import { describe, test } from 'node:test'
+
+///@before
+let input: string
+
+/// there is/are {}
+input = $DOCSTRING
+/// => {}
+expect(parse(input)).toMatchSnapshot($ARG1)
 ```
 
-</details>
+### Bash
+
+```bash harmony bats
+## there is/are {}
+local input="$DOCSTRING"
+## => {}
+run harmonyc "$input"
+assert_output "$ARG1"
+```
