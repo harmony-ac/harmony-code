@@ -13,6 +13,7 @@
   "dependencies": {
     "@cucumber/cucumber-expressions": "^17.1.0",
     "fast-glob": "^3.3.2",
+    "source-map-js": "^1.2.0",
     "typescript-parsec": "0.3.4"
   },
   "devDependencies": {

@@ -16,5 +16,5 @@ export async function compileFile(fn: string) {
   const src = readFileSync(fn, 'utf8').toString()
   const name = basename(fn).replace(/\.[a-z]+$/i, '')
   const outFn = `${fn.replace(/\.[a-z]+$/i, '')}.mjs`
-  writeFileSync(outFn, compileFeature(name, src))
+  writeFileSync(outFn, compileFeature(fn, src))
 }

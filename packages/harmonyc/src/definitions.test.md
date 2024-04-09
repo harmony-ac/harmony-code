@@ -41,9 +41,8 @@ Definitions start with line comment with one extra comment-start character, cont
      assert(user.isLoggedIn)
      ```
 
-     ```yaml
-     The user is logged in: assert(user.isLoggedIn)
-     The user is an admin: assert(user.isAdmin)
+     ```json
+     { "The user is logged in": "assert(user.isLoggedIn)" }
      ```
 
    - there are two definitions => definitions
@@ -55,9 +54,11 @@ Definitions start with line comment with one extra comment-start character, cont
      assert(user.isAdmin)
      ```
 
-     ```yaml
-     The user is logged in: assert(user.isLoggedIn)
-     The user is an admin: assert(user.isAdmin)
+     ```json
+     {
+       "The user is logged in": "assert(user.isLoggedIn)",
+       "The user is an admin": "assert(user.isAdmin)"
+     }
      ```
 
 ### Prelude
@@ -89,8 +90,8 @@ expect(feature.prelude).to.eql($_)
 expect(feature.definitions).to.be.empty
 /// => definition(s)
 expect(
-  [...feature.definitions.entries()]
-    .map(([k, v]) => `${k.expression}: ${v}`)
-    .join('\n')
-).to.eql($_)
+  Object.fromEntries(
+    [...feature.definitions.entries()].map(([k, v]) => [k.expression, v])
+  )
+).to.eql(JSON.parse($_))
 ```
