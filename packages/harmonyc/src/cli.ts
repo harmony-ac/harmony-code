@@ -1,10 +1,20 @@
 #!/usr/bin/env node
 import { compileFiles } from './compiler'
+import { parseArgs } from 'node:util'
+import { watchFiles } from './watch'
 
-if (process.argv.length < 3 || process.argv.includes('--help')) {
+const args = parseArgs({
+  options: {
+    help: { type: 'boolean' },
+    watch: { type: 'boolean' },
+  },
+  allowPositionals: true,
+})
+
+if (args.positionals.length === 0 || args.values.help) {
   console.error('Usage: harmonyc <input files glob pattern>')
   process.exit(1)
 }
 
-const args = process.argv.slice(2)
-void compileFiles(args)
+if (args.values.watch) watchFiles(args.positionals)
+void compileFiles(args.positionals)

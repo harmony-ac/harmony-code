@@ -2,17 +2,12 @@ import { Code, List, ListItem, RootContent as Node } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { Branch, Feature, Section, Step } from './model'
-import {
-  CucumberExpression,
-  ParameterTypeRegistry,
-} from '@cucumber/cucumber-expressions'
+import { definitions } from './definitions'
 
 export interface ParsedFeature {
   name: string
   root: Section
 }
-
-const registry = new ParameterTypeRegistry()
 
 export function parse({
   fileName,
@@ -65,25 +60,8 @@ function code(node: Code, feature: Feature) {
   if (!node.meta?.match(/harmony/)) return []
   const code = node.value
   const marker = '///'
-  const re = new RegExp(`^\s*${q(marker)}(.*?)$`, 'gm')
-  let match = re.exec(node.value)
-  const start = match?.index ?? code.length
-  feature.prelude += code.slice(0, start)
-  while (match) {
-    const bodyStart = match.index + match[0].length
-    const head = match[1].trim()
-    match = re.exec(code)
-    const end = match?.index ?? code.length
-    const body = code.slice(bodyStart, end).trim()
-    if (body) {
-      feature.definitions.set(new CucumberExpression(head, registry), body)
-    }
-  }
+  definitions({ marker, code, feature })
   return []
-}
-
-function q(pattern: string) {
-  return pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 function listItem(node: ListItem, isFork: boolean) {
@@ -94,10 +72,20 @@ function listItem(node: ListItem, isFork: boolean) {
     branch = new Section(text, [], isFork)
   } else {
     const [action, ...responses] = text.split(/(?:^| )=>(?: |$)/)
-    branch = new Step(action, responses.filter(Boolean), [], isFork)
-    const second = node.children[1]
-    if (second?.type === 'code') {
-      ;(branch as Step).action.docstring = second.value
+    const step = (branch = new Step(
+      action,
+      responses.filter(Boolean),
+      [],
+      isFork
+    ))
+    let i = 0
+    for (const child of node.children.slice(1)) {
+      if (child.type === 'list') break
+      if (child.type === 'code') {
+        if (step.phrases[i]) step.phrases[i].docstring = child.value
+        else break
+        ++i
+      }
     }
   }
   for (const child of node.children) {
@@ -108,7 +96,8 @@ function listItem(node: ListItem, isFork: boolean) {
   return branch
 }
 
-function textContent(node: Node): string {
+function textContent(node: Node | undefined): string {
+  if (!node) return ''
   if (node.type === 'text') {
     return node.value.split(/\s+/).filter(Boolean).join(' ')
   }
