@@ -3,15 +3,30 @@ import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { Branch, Section, Step } from './model'
 
-export function parseMarkdown(text: string): Branch {
-  const tree = unified().use(remarkParse).parse(text)
+export interface ParsedFeature {
+  name: string
+  root: Section
+}
+
+export function parseMarkdown({
+  fileName,
+  src,
+}: {
+  fileName: string
+  src: string
+}): ParsedFeature {
+  const tree = unified().use(remarkParse).parse(src)
   const rootNodes = tree.children
   const root = new Section('', [])
   const headings = [root]
+  let name: string | undefined
 
   for (let i = 0; i < rootNodes.length; i++) {
     const node = rootNodes[i]
     if (node.type === 'heading') {
+      if (node.depth === 1 && name === undefined) {
+        name = textContent(node)
+      }
       const level = node.depth
       const section = new Section(textContent(node), [], true)
       const last = headings.slice(0, level).reverse().find(Boolean)!
@@ -24,7 +39,10 @@ export function parseMarkdown(text: string): Branch {
     }
   }
 
-  return root
+  return {
+    name: name ?? fileName,
+    root,
+  }
 }
 
 function topLevel(node: Node) {

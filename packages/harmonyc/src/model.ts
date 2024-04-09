@@ -1,5 +1,15 @@
 import { Routers } from './Router'
-import { indent } from './util/indent'
+
+export interface CodeGenerator {
+  feature(name: string, tests: Test[]): void
+  test(test: Test): void
+  phrase(phrase: Phrase): void
+}
+
+export class Feature {
+  definitions = new Map<string, string>()
+  constructor(public name: string) {}
+}
 
 export abstract class Branch {
   parent?: Branch
@@ -15,8 +25,8 @@ export abstract class Branch {
     this.isFork = isFork
     return this
   }
-  setFeatureName(featureName: string) {
-    for (const child of this.children) child.setFeatureName(featureName)
+  setFeature(feature: Feature) {
+    for (const child of this.children) child.setFeature(feature)
     return this
   }
   addChild<C extends Branch>(child: C, index = this.children.length) {
@@ -60,27 +70,25 @@ export class Step extends Branch {
     action = '',
     responses: string[] = [],
     children?: Branch[],
-    isFork = false,
-    featureName = '',
-    actionDocstring?: string | undefined
+    isFork = false
   ) {
     super(children)
-    this.action = new Action(action, featureName, actionDocstring)
-    this.responses = responses.map(
-      (response) => new Response(response, featureName)
-    )
+    this.action = new Action(action)
+    this.responses = responses.map((response) => new Response(response))
     this.isFork = isFork
   }
   get phrases(): Phrase[] {
     return [this.action, ...this.responses]
   }
-  toGherkin() {
-    return this.phrases.flatMap((phrase) => phrase.toGherkin())
+  toCode(cg: CodeGenerator) {
+    for (const phrase of this.phrases) {
+      phrase.toCode(cg)
+    }
   }
-  setFeatureName(featureName: string) {
-    this.action.setFeatureName(featureName)
-    for (const response of this.responses) response.setFeatureName(featureName)
-    return super.setFeatureName(featureName)
+  setFeature(feature: Feature) {
+    this.action.setFeature(feature)
+    for (const response of this.responses) response.setFeature(feature)
+    return super.setFeature(feature)
   }
 }
 export class State {
@@ -109,27 +117,23 @@ export class Section extends Branch {
 
 export abstract class Phrase {
   text: string
-  featureName: string
+  feature!: Feature
   docstring?: string
   abstract get kind(): string
-  constructor(text = '', featureName = '', docstring?: string) {
+  constructor(text = '') {
     this.text = text
-    this.featureName = featureName
-    this.docstring = docstring
   }
-  setFeatureName(featureName: string) {
-    this.featureName = featureName
+  setFeature(feature: Feature) {
+    this.feature = feature
   }
   get keyword() {
     return this.kind === 'action' ? 'When' : 'Then'
   }
-  toGherkin() {
-    return [
-      `${this.keyword} ${this.text} || ${this.featureName}`,
-      ...(this.docstring !== undefined
-        ? indent(['"""', ...this.docstring.split('\n'), '"""'])
-        : []),
-    ]
+  toCode(cg: CodeGenerator) {
+    return cg.phrase(this)
+  }
+  get definition() {
+    return this.feature.definitions.get(this.text)
   }
 }
 
@@ -198,11 +202,7 @@ export class Test {
     }${this.labels.join(' - ')}`
   }
 
-  toGherkin() {
-    return [
-      `Scenario: ${this.name}`,
-      ...indent(this.steps.flatMap((b) => b.toGherkin())),
-      '',
-    ]
+  toCode(cg: CodeGenerator) {
+    cg.test(this)
   }
 }

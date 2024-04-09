@@ -1,16 +1,21 @@
-#!/usr/bin/env node
-import { indent } from './util/indent'
-import { makeTests } from './model'
+import { Gherkin } from './frameworks/Gherkin'
+import { NodeTest } from './frameworks/NodeTest'
+import { CodeGenerator, Feature, makeTests } from './model'
+import { OutFile } from './outFile'
 import { parseMarkdown } from './syntax'
 
-export function compileFeature(name: string, src: string) {
-  const root = parseMarkdown(src).setFeatureName(name)
+export interface CompiledFeature {
+  name: string
+  code: Record<string, string>
+}
+
+export function compileFeature(fileName: string, src: string) {
+  const { root, name } = parseMarkdown({ fileName, src })
+  const feature = new Feature(name)
+  root.setFeature(feature)
   const tests = makeTests(root)
-  const lines = [
-    `Feature: ${name}`,
-    '',
-    ...indent(tests.flatMap((test) => test.toGherkin())),
-  ]
-  lines[0] = `Feature: ${name}`
-  return lines.join('\n')
+  const of = new OutFile()
+  const cg = new NodeTest(of)
+  cg.feature(name, tests)
+  return of.value
 }
