@@ -1,13 +1,13 @@
-import { CodeGenerator, Phrase, Test } from '../model'
+import { CodeGenerator, Feature, Phrase, Test } from '../model'
 import { OutFile } from '../outFile'
 
 export class NodeTest implements CodeGenerator {
   constructor(private outFile: OutFile) {}
 
-  feature(name: string, tests: Test[]) {
+  feature(feature: Feature) {
     this.outFile.print(`import { test } from 'node:test'`)
-    this.outFile.print('')
-    for (const test of tests) {
+    this.outFile.print(feature.prelude)
+    for (const test of feature.tests) {
       test.toCode(this)
     }
   }
@@ -25,8 +25,7 @@ export class NodeTest implements CodeGenerator {
 
   phrase(p: Phrase) {
     this.outFile.print(
-      p.definition ??
-        `throw new Error('Not defined: ' + ${JSON.stringify(p.text)})`
+      p.definition() ?? `throw 'Not defined: ' + ${JSON.stringify(p.text)};`
     )
   }
 }

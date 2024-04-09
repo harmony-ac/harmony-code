@@ -1,7 +1,7 @@
-import { List, ListItem, RootContent as Node } from 'mdast'
+import { Code, List, ListItem, RootContent as Node } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
-import { Branch, Section, Step } from './model'
+import { Branch, Feature, Section, Step } from './model'
 
 export interface ParsedFeature {
   name: string
@@ -14,11 +14,11 @@ export function parseMarkdown({
 }: {
   fileName: string
   src: string
-}): ParsedFeature {
+}): Feature {
   const tree = unified().use(remarkParse).parse(src)
   const rootNodes = tree.children
-  const root = new Section('', [])
-  const headings = [root]
+  const feature = new Feature('')
+  const headings = [feature.root]
   let name: string | undefined
 
   for (let i = 0; i < rootNodes.length; i++) {
@@ -35,25 +35,49 @@ export function parseMarkdown({
       headings.length = level + 1
     } else {
       const last = headings[headings.length - 1]
-      for (const branch of topLevel(node)) last.addChild(branch)
+      for (const branch of topLevel(node, feature)) last.addChild(branch)
     }
   }
-
-  return {
-    name: name ?? fileName,
-    root,
-  }
+  feature.name = name ?? fileName
+  feature.root.setFeature(feature)
+  return feature
 }
 
-function topLevel(node: Node) {
+function topLevel(node: Node, feature: Feature) {
   if (node.type === 'paragraph') return []
   if (node.type == 'list') return list(node)
+  if (node.type === 'code') return code(node, feature)
   return []
 }
 
 function list(node: List) {
   const isFork = node.ordered === false
   return node.children.map((item) => listItem(item, isFork))
+}
+
+function code(node: Code, feature: Feature) {
+  if (!node.meta?.match(/harmony/)) return []
+  const code = node.value
+  const marker = '///'
+  const re = new RegExp(`^\s*${q(marker)}(.*?)$`, 'gm')
+  let match = re.exec(node.value)
+  const start = match?.index ?? code.length
+  feature.prelude += code.slice(0, start)
+  while (match) {
+    const bodyStart = match.index + match[0].length
+    const head = match[1].trim()
+    match = re.exec(code)
+    const end = match?.index ?? code.length
+    const body = code.slice(bodyStart, end).trim()
+    if (body) {
+      feature.definitions.set(head, body)
+    }
+  }
+  return []
+}
+
+function q(pattern: string) {
+  return pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 function listItem(node: ListItem, isFork: boolean) {

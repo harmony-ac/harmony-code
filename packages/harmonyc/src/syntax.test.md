@@ -177,26 +177,15 @@ Responses are specified with `=>` after the action.
 
 ### Syntax
 
-```typescript harmony node:test
+```js harmony
 import expect from 'expect'
 import { parse } from './syntax'
 import { describe, test } from 'node:test'
 
-///@before
-let input: string
-
+/// empty
+const input = ''
 /// there is/are {}
-input = $DOCSTRING
+const input = $DOCSTRING
 /// => {}
 expect(parse(input)).toMatchSnapshot($ARG1)
-```
-
-### Bash
-
-```bash harmony bats
-## there is/are {}
-local input="$DOCSTRING"
-## => {}
-run harmonyc "$input"
-assert_output "$ARG1"
 ```

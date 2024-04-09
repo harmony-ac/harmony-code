@@ -1,14 +1,22 @@
 import { Routers } from './Router'
 
 export interface CodeGenerator {
-  feature(name: string, tests: Test[]): void
+  feature(feature: Feature): void
   test(test: Test): void
   phrase(phrase: Phrase): void
 }
 
 export class Feature {
+  root = new Section()
   definitions = new Map<string, string>()
+  prelude = ''
   constructor(public name: string) {}
+  get tests() {
+    return makeTests(this.root)
+  }
+  toCode(cg: CodeGenerator) {
+    cg.feature(this)
+  }
 }
 
 export abstract class Branch {
@@ -132,7 +140,7 @@ export abstract class Phrase {
   toCode(cg: CodeGenerator) {
     return cg.phrase(this)
   }
-  get definition() {
+  definition() {
     return this.feature.definitions.get(this.text)
   }
 }
