@@ -15,6 +15,11 @@ exports[`T4 - Syntax - Section headings > one section 1`] = `
     "label": Label {
       "text": "Login form",
     },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -36,6 +41,11 @@ exports[`T5 - Syntax - Section headings > forked sections 1`] = `
     "label": Label {
       "text": "Login",
     },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -51,6 +61,11 @@ exports[`T5 - Syntax - Section headings > forked sections 1`] = `
     "isFork": true,
     "label": Label {
       "text": "Logout",
+    },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 3,
     },
     "parent": Section {
       "children": [Circular],
@@ -75,6 +90,11 @@ exports[`T6 - Syntax - Section headings > nested forked sections 1`] = `
         "label": Label {
           "text": "Log in",
         },
+        "location": {
+          "column": 1,
+          "fileName": "test",
+          "line": 3,
+        },
         "parent": [Circular],
       },
     ],
@@ -82,6 +102,11 @@ exports[`T6 - Syntax - Section headings > nested forked sections 1`] = `
     "isFork": true,
     "label": Label {
       "text": "Login form",
+    },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
     },
     "parent": Section {
       "children": [Circular],
@@ -108,6 +133,11 @@ exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
             "label": Label {
               "text": "Empty checks",
             },
+            "location": {
+              "column": 1,
+              "fileName": "test",
+              "line": 5,
+            },
             "parent": [Circular],
           },
           Section {
@@ -117,6 +147,11 @@ exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
             "label": Label {
               "text": "Email validation",
             },
+            "location": {
+              "column": 1,
+              "fileName": "test",
+              "line": 7,
+            },
             "parent": [Circular],
           },
         ],
@@ -124,6 +159,11 @@ exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
         "isFork": true,
         "label": Label {
           "text": "Log in",
+        },
+        "location": {
+          "column": 1,
+          "fileName": "test",
+          "line": 3,
         },
         "parent": [Circular],
       },
@@ -136,6 +176,11 @@ exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
             "label": Label {
               "text": "Re-login",
             },
+            "location": {
+              "column": 1,
+              "fileName": "test",
+              "line": 11,
+            },
             "parent": [Circular],
           },
         ],
@@ -144,6 +189,11 @@ exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
         "label": Label {
           "text": "Log out",
         },
+        "location": {
+          "column": 1,
+          "fileName": "test",
+          "line": 9,
+        },
         "parent": [Circular],
       },
     ],
@@ -151,6 +201,11 @@ exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
     "isFork": true,
     "label": Label {
       "text": "Login form",
+    },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
     },
     "parent": Section {
       "children": [Circular],
@@ -182,11 +237,21 @@ exports[`T8 - Syntax - Bulleted lists > one step 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -218,11 +283,21 @@ exports[`T9 - Syntax - Bulleted lists > forked steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -249,11 +324,21 @@ exports[`T9 - Syntax - Bulleted lists > forked steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 2,
+      },
       "text": "log out",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 2,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -285,6 +370,11 @@ exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [
@@ -304,11 +394,21 @@ exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 5,
+            "fileName": "test",
+            "line": 2,
+          },
           "text": "create order",
         },
         "children": [],
         "isEnd": false,
         "isFork": true,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 2,
+        },
         "parent": [Circular],
         "responses": [],
       },
@@ -328,17 +428,32 @@ exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 5,
+            "fileName": "test",
+            "line": 3,
+          },
           "text": "log out",
         },
         "children": [],
         "isEnd": false,
         "isFork": true,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 3,
+        },
         "parent": [Circular],
         "responses": [],
       },
     ],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -365,6 +480,11 @@ exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 4,
+      },
       "text": "sign up",
     },
     "children": [
@@ -384,17 +504,32 @@ exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 5,
+            "fileName": "test",
+            "line": 5,
+          },
           "text": "log out",
         },
         "children": [],
         "isEnd": false,
         "isFork": true,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 5,
+        },
         "parent": [Circular],
         "responses": [],
       },
     ],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 4,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -426,6 +561,11 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [
@@ -445,6 +585,11 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 5,
+            "fileName": "test",
+            "line": 2,
+          },
           "text": "create order",
         },
         "children": [
@@ -464,11 +609,21 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
                 },
               },
               "kind": "action",
+              "location": {
+                "column": 7,
+                "fileName": "test",
+                "line": 3,
+              },
               "text": "pay",
             },
             "children": [],
             "isEnd": false,
             "isFork": true,
+            "location": {
+              "column": 5,
+              "fileName": "test",
+              "line": 3,
+            },
             "parent": [Circular],
             "responses": [],
           },
@@ -488,17 +643,32 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
                 },
               },
               "kind": "action",
+              "location": {
+                "column": 7,
+                "fileName": "test",
+                "line": 4,
+              },
               "text": "clear cart",
             },
             "children": [],
             "isEnd": false,
             "isFork": true,
+            "location": {
+              "column": 5,
+              "fileName": "test",
+              "line": 4,
+            },
             "parent": [Circular],
             "responses": [],
           },
         ],
         "isEnd": false,
         "isFork": true,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 2,
+        },
         "parent": [Circular],
         "responses": [],
       },
@@ -518,17 +688,32 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 5,
+            "fileName": "test",
+            "line": 5,
+          },
           "text": "log out",
         },
         "children": [],
         "isEnd": false,
         "isFork": true,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 5,
+        },
         "parent": [Circular],
         "responses": [],
       },
     ],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -555,6 +740,11 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 6,
+      },
       "text": "sign up",
     },
     "children": [
@@ -574,17 +764,32 @@ exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 5,
+            "fileName": "test",
+            "line": 7,
+          },
           "text": "log out",
         },
         "children": [],
         "isEnd": false,
         "isFork": true,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 7,
+        },
         "parent": [Circular],
         "responses": [],
       },
     ],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 6,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -616,11 +821,21 @@ exports[`T12 - Syntax - Numbered lists > one step, not forked 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -652,11 +867,21 @@ exports[`T13 - Syntax - Numbered lists > sequential steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -683,11 +908,21 @@ exports[`T13 - Syntax - Numbered lists > sequential steps 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 2,
+      },
       "text": "log out",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 2,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -719,11 +954,21 @@ exports[`T14 - Syntax - Responses > step with one response and empty action 1`] 
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -748,6 +993,11 @@ exports[`T14 - Syntax - Responses > step with one response and empty action 1`] 
           },
         },
         "kind": "response",
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 1,
+        },
         "text": "logged out",
       },
     ],
@@ -773,11 +1023,21 @@ exports[`T15 - Syntax - Responses > step with more responses 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log out",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -802,6 +1062,11 @@ exports[`T15 - Syntax - Responses > step with more responses 1`] = `
           },
         },
         "kind": "response",
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 1,
+        },
         "text": "logged out",
       },
       Response {
@@ -819,6 +1084,11 @@ exports[`T15 - Syntax - Responses > step with more responses 1`] = `
           },
         },
         "kind": "response",
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 1,
+        },
         "text": "on home page",
       },
     ],
@@ -834,6 +1104,11 @@ exports[`T16 - Syntax - Headings within lists > one section 1`] = `
     "isFork": true,
     "label": Label {
       "text": "Login form",
+    },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
     },
     "parent": Section {
       "children": [Circular],
@@ -871,11 +1146,21 @@ Jane",
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "the user writes an email",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -898,6 +1183,11 @@ exports[`T19 - Syntax - Section headings > forked sections 1`] = `
     "label": Label {
       "text": "Login",
     },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -913,6 +1203,11 @@ exports[`T19 - Syntax - Section headings > forked sections 1`] = `
     "isFork": true,
     "label": Label {
       "text": "Logout",
+    },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 3,
     },
     "parent": Section {
       "children": [Circular],
@@ -944,6 +1239,11 @@ exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [
@@ -963,6 +1263,11 @@ exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 6,
+            "fileName": "test",
+            "line": 2,
+          },
           "text": "create order",
         },
         "children": [
@@ -982,11 +1287,21 @@ exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `
                 },
               },
               "kind": "action",
+              "location": {
+                "column": 8,
+                "fileName": "test",
+                "line": 3,
+              },
               "text": "pay",
             },
             "children": [],
             "isEnd": false,
             "isFork": true,
+            "location": {
+              "column": 6,
+              "fileName": "test",
+              "line": 3,
+            },
             "parent": [Circular],
             "responses": [],
           },
@@ -1006,17 +1321,32 @@ exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `
                 },
               },
               "kind": "action",
+              "location": {
+                "column": 8,
+                "fileName": "test",
+                "line": 4,
+              },
               "text": "clear cart",
             },
             "children": [],
             "isEnd": false,
             "isFork": true,
+            "location": {
+              "column": 6,
+              "fileName": "test",
+              "line": 4,
+            },
             "parent": [Circular],
             "responses": [],
           },
         ],
         "isEnd": false,
         "isFork": false,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 2,
+        },
         "parent": [Circular],
         "responses": [],
       },
@@ -1036,17 +1366,32 @@ exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `
             },
           },
           "kind": "action",
+          "location": {
+            "column": 6,
+            "fileName": "test",
+            "line": 5,
+          },
           "text": "log out",
         },
         "children": [],
         "isEnd": false,
         "isFork": false,
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 5,
+        },
         "parent": [Circular],
         "responses": [],
       },
     ],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1078,11 +1423,21 @@ exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered item
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log in",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1109,11 +1464,21 @@ exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered item
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 3,
+      },
       "text": "create order",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 3,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1140,11 +1505,21 @@ exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered item
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 4,
+      },
       "text": "pay",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 4,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1171,11 +1546,21 @@ exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered item
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 6,
+      },
       "text": "log out",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 6,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1202,11 +1587,21 @@ exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered item
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 8,
+      },
       "text": "log in",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 8,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1233,11 +1628,21 @@ exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered item
         },
       },
       "kind": "action",
+      "location": {
+        "column": 4,
+        "fileName": "test",
+        "line": 9,
+      },
       "text": "log out",
     },
     "children": [],
     "isEnd": false,
     "isFork": false,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 9,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1269,11 +1674,21 @@ exports[`T22 - Syntax - Responses > step with action and response 1`] = `
         },
       },
       "kind": "action",
+      "location": {
+        "column": 3,
+        "fileName": "test",
+        "line": 1,
+      },
       "text": "log out",
     },
     "children": [],
     "isEnd": false,
     "isFork": true,
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1298,6 +1713,11 @@ exports[`T22 - Syntax - Responses > step with action and response 1`] = `
           },
         },
         "kind": "response",
+        "location": {
+          "column": 3,
+          "fileName": "test",
+          "line": 1,
+        },
         "text": "logged out",
       },
     ],
@@ -1314,6 +1734,11 @@ exports[`T23 - Syntax - Headings within lists > forked sections 1`] = `
     "label": Label {
       "text": "Login",
     },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 1,
+    },
     "parent": Section {
       "children": [Circular],
       "isEnd": false,
@@ -1329,6 +1754,11 @@ exports[`T23 - Syntax - Headings within lists > forked sections 1`] = `
     "isFork": true,
     "label": Label {
       "text": "Logout",
+    },
+    "location": {
+      "column": 1,
+      "fileName": "test",
+      "line": 2,
     },
     "parent": Section {
       "children": [Circular],

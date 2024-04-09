@@ -7,6 +7,12 @@ export interface CodeGenerator {
   phrase(phrase: Phrase): void
 }
 
+export interface Location {
+  line: number
+  column: number
+  fileName: string
+}
+
 export class Feature {
   root = new Section()
   definitions = new Map<CucumberExpression, string>()
@@ -25,6 +31,7 @@ export abstract class Branch {
   children: Branch[]
   isFork = false
   isEnd = false
+  location?: Location
 
   constructor(children: Branch[] = []) {
     this.children = children
@@ -128,6 +135,7 @@ export abstract class Phrase {
   text: string
   feature!: Feature
   docstring?: string
+  location?: Location
   abstract get kind(): string
   constructor(text = '') {
     this.text = text
