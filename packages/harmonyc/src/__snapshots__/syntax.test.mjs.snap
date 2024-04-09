@@ -1,0 +1,1343 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`T1 - Syntax - Empty file > empty test design 1`] = `[]`;
+
+exports[`T2 - Syntax - Empty file > empty test design 1`] = `[]`;
+
+exports[`T3 - Syntax - Empty file > empty test design 1`] = `[]`;
+
+exports[`T4 - Syntax - Section headings > one section 1`] = `
+[
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login form",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;
+
+exports[`T5 - Syntax - Section headings > forked sections 1`] = `
+[
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Logout",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;
+
+exports[`T6 - Syntax - Section headings > nested forked sections 1`] = `
+[
+  Section {
+    "children": [
+      Section {
+        "children": [],
+        "isEnd": false,
+        "isFork": true,
+        "label": Label {
+          "text": "Log in",
+        },
+        "parent": [Circular],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login form",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;
+
+exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `
+[
+  Section {
+    "children": [
+      Section {
+        "children": [
+          Section {
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "label": Label {
+              "text": "Empty checks",
+            },
+            "parent": [Circular],
+          },
+          Section {
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "label": Label {
+              "text": "Email validation",
+            },
+            "parent": [Circular],
+          },
+        ],
+        "isEnd": false,
+        "isFork": true,
+        "label": Label {
+          "text": "Log in",
+        },
+        "parent": [Circular],
+      },
+      Section {
+        "children": [
+          Section {
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "label": Label {
+              "text": "Re-login",
+            },
+            "parent": [Circular],
+          },
+        ],
+        "isEnd": false,
+        "isFork": true,
+        "label": Label {
+          "text": "Log out",
+        },
+        "parent": [Circular],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login form",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;
+
+exports[`T8 - Syntax - Bulleted lists > one step 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T9 - Syntax - Bulleted lists > forked steps 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log out",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "create order",
+        },
+        "children": [],
+        "isEnd": false,
+        "isFork": true,
+        "parent": [Circular],
+        "responses": [],
+      },
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "log out",
+        },
+        "children": [],
+        "isEnd": false,
+        "isFork": true,
+        "parent": [Circular],
+        "responses": [],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "sign up",
+    },
+    "children": [
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "log out",
+        },
+        "children": [],
+        "isEnd": false,
+        "isFork": true,
+        "parent": [Circular],
+        "responses": [],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "create order",
+        },
+        "children": [
+          Step {
+            "action": Action {
+              "feature": Feature {
+                "definitions": Map {},
+                "name": "test",
+                "prelude": "",
+                "root": Section {
+                  "children": [Circular],
+                  "isEnd": false,
+                  "isFork": false,
+                  "label": Label {
+                    "text": "",
+                  },
+                },
+              },
+              "kind": "action",
+              "text": "pay",
+            },
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "parent": [Circular],
+            "responses": [],
+          },
+          Step {
+            "action": Action {
+              "feature": Feature {
+                "definitions": Map {},
+                "name": "test",
+                "prelude": "",
+                "root": Section {
+                  "children": [Circular],
+                  "isEnd": false,
+                  "isFork": false,
+                  "label": Label {
+                    "text": "",
+                  },
+                },
+              },
+              "kind": "action",
+              "text": "clear cart",
+            },
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "parent": [Circular],
+            "responses": [],
+          },
+        ],
+        "isEnd": false,
+        "isFork": true,
+        "parent": [Circular],
+        "responses": [],
+      },
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "log out",
+        },
+        "children": [],
+        "isEnd": false,
+        "isFork": true,
+        "parent": [Circular],
+        "responses": [],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "sign up",
+    },
+    "children": [
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "log out",
+        },
+        "children": [],
+        "isEnd": false,
+        "isFork": true,
+        "parent": [Circular],
+        "responses": [],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T12 - Syntax - Numbered lists > one step, not forked 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T13 - Syntax - Numbered lists > sequential steps 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log out",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T14 - Syntax - Responses > step with one response and empty action 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [
+      Response {
+        "feature": Feature {
+          "definitions": Map {},
+          "name": "test",
+          "prelude": "",
+          "root": Section {
+            "children": [Circular],
+            "isEnd": false,
+            "isFork": false,
+            "label": Label {
+              "text": "",
+            },
+          },
+        },
+        "kind": "response",
+        "text": "logged out",
+      },
+    ],
+  },
+]
+`;
+
+exports[`T15 - Syntax - Responses > step with more responses 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log out",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [
+      Response {
+        "feature": Feature {
+          "definitions": Map {},
+          "name": "test",
+          "prelude": "",
+          "root": Section {
+            "children": [Circular],
+            "isEnd": false,
+            "isFork": false,
+            "label": Label {
+              "text": "",
+            },
+          },
+        },
+        "kind": "response",
+        "text": "logged out",
+      },
+      Response {
+        "feature": Feature {
+          "definitions": Map {},
+          "name": "test",
+          "prelude": "",
+          "root": Section {
+            "children": [Circular],
+            "isEnd": false,
+            "isFork": false,
+            "label": Label {
+              "text": "",
+            },
+          },
+        },
+        "kind": "response",
+        "text": "on home page",
+      },
+    ],
+  },
+]
+`;
+
+exports[`T16 - Syntax - Headings within lists > one section 1`] = `
+[
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login form",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;
+
+exports[`T17 - Syntax - Docstrings > action with docstring 1`] = `
+[
+  Step {
+    "action": Action {
+      "docstring": "Hello John,
+
+Please find the attached invoice.
+
+Best regards,
+Jane",
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "the user writes an email",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T19 - Syntax - Section headings > forked sections 1`] = `
+[
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Logout",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;
+
+exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "create order",
+        },
+        "children": [
+          Step {
+            "action": Action {
+              "feature": Feature {
+                "definitions": Map {},
+                "name": "test",
+                "prelude": "",
+                "root": Section {
+                  "children": [Circular],
+                  "isEnd": false,
+                  "isFork": false,
+                  "label": Label {
+                    "text": "",
+                  },
+                },
+              },
+              "kind": "action",
+              "text": "pay",
+            },
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "parent": [Circular],
+            "responses": [],
+          },
+          Step {
+            "action": Action {
+              "feature": Feature {
+                "definitions": Map {},
+                "name": "test",
+                "prelude": "",
+                "root": Section {
+                  "children": [Circular],
+                  "isEnd": false,
+                  "isFork": false,
+                  "label": Label {
+                    "text": "",
+                  },
+                },
+              },
+              "kind": "action",
+              "text": "clear cart",
+            },
+            "children": [],
+            "isEnd": false,
+            "isFork": true,
+            "parent": [Circular],
+            "responses": [],
+          },
+        ],
+        "isEnd": false,
+        "isFork": false,
+        "parent": [Circular],
+        "responses": [],
+      },
+      Step {
+        "action": Action {
+          "feature": Feature {
+            "definitions": Map {},
+            "name": "test",
+            "prelude": "",
+            "root": Section {
+              "children": [Circular],
+              "isEnd": false,
+              "isFork": false,
+              "label": Label {
+                "text": "",
+              },
+            },
+          },
+          "kind": "action",
+          "text": "log out",
+        },
+        "children": [],
+        "isEnd": false,
+        "isFork": false,
+        "parent": [Circular],
+        "responses": [],
+      },
+    ],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered items not 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "create order",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "pay",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log out",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log in",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log out",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": false,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [],
+  },
+]
+`;
+
+exports[`T22 - Syntax - Responses > step with action and response 1`] = `
+[
+  Step {
+    "action": Action {
+      "feature": Feature {
+        "definitions": Map {},
+        "name": "test",
+        "prelude": "",
+        "root": Section {
+          "children": [Circular],
+          "isEnd": false,
+          "isFork": false,
+          "label": Label {
+            "text": "",
+          },
+        },
+      },
+      "kind": "action",
+      "text": "log out",
+    },
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+    "responses": [
+      Response {
+        "feature": Feature {
+          "definitions": Map {},
+          "name": "test",
+          "prelude": "",
+          "root": Section {
+            "children": [Circular],
+            "isEnd": false,
+            "isFork": false,
+            "label": Label {
+              "text": "",
+            },
+          },
+        },
+        "kind": "response",
+        "text": "logged out",
+      },
+    ],
+  },
+]
+`;
+
+exports[`T23 - Syntax - Headings within lists > forked sections 1`] = `
+[
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Login",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+  Section {
+    "children": [],
+    "isEnd": false,
+    "isFork": true,
+    "label": Label {
+      "text": "Logout",
+    },
+    "parent": Section {
+      "children": [Circular],
+      "isEnd": false,
+      "isFork": false,
+      "label": Label {
+        "text": "",
+      },
+    },
+  },
+]
+`;

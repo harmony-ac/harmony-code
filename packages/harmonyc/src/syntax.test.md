@@ -86,7 +86,16 @@ Markdown code is mapped to the Harmony test model along the following rules.
   - sign up
     - log out
   ```
-- deep nested bullet points => deep nested forked steps
+- there are deep nested bullet points => deep nested forked steps
+  ```markdown
+  - log in
+    - create order
+      - pay
+      - clear cart
+    - log out
+  - sign up
+    - log out
+  ```
 
 ## Numbered lists
 
@@ -178,14 +187,12 @@ Responses are specified with `=>` after the action.
 ### Syntax
 
 ```js harmony
-import expect from 'expect'
 import { parse } from './syntax'
-import { describe, test } from 'node:test'
 
 /// empty
-const input = ''
+const src = ''
 /// there is/are {}
-const input = $DOCSTRING
+const src = $_
 /// => {}
-expect(parse(input)).toMatchSnapshot($ARG1)
+expect(parse({ src, fileName: 'test' }).root.children).toMatchSnapshot($1)
 ```

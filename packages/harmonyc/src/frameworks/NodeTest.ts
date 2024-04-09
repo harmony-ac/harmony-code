@@ -2,10 +2,13 @@ import { CodeGenerator, Feature, Phrase, Test } from '../model'
 import { OutFile } from '../outFile'
 
 export class NodeTest implements CodeGenerator {
+  framework = 'vitest'
   constructor(private outFile: OutFile) {}
 
   feature(feature: Feature) {
-    this.outFile.print(`import { test } from 'node:test'`)
+    if (this.framework === 'vitest') {
+      this.outFile.print(`import { test, expect } from 'vitest';`)
+    }
     this.outFile.print(feature.prelude)
     for (const test of feature.tests) {
       test.toCode(this)

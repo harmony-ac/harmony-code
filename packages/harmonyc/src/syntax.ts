@@ -2,13 +2,19 @@ import { Code, List, ListItem, RootContent as Node } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { Branch, Feature, Section, Step } from './model'
+import {
+  CucumberExpression,
+  ParameterTypeRegistry,
+} from '@cucumber/cucumber-expressions'
 
 export interface ParsedFeature {
   name: string
   root: Section
 }
 
-export function parseMarkdown({
+const registry = new ParameterTypeRegistry()
+
+export function parse({
   fileName,
   src,
 }: {
@@ -70,7 +76,7 @@ function code(node: Code, feature: Feature) {
     const end = match?.index ?? code.length
     const body = code.slice(bodyStart, end).trim()
     if (body) {
-      feature.definitions.set(head, body)
+      feature.definitions.set(new CucumberExpression(head, registry), body)
     }
   }
   return []

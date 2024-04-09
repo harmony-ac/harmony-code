@@ -1,4 +1,5 @@
 import { Routers } from './Router'
+import { Argument, CucumberExpression } from '@cucumber/cucumber-expressions'
 
 export interface CodeGenerator {
   feature(feature: Feature): void
@@ -8,7 +9,7 @@ export interface CodeGenerator {
 
 export class Feature {
   root = new Section()
-  definitions = new Map<string, string>()
+  definitions = new Map<CucumberExpression, string>()
   prelude = ''
   constructor(public name: string) {}
   get tests() {
@@ -141,7 +142,24 @@ export abstract class Phrase {
     return cg.phrase(this)
   }
   definition() {
-    return this.feature.definitions.get(this.text)
+    const key = this.kind === 'action' ? this.text : `=> ${this.text}`
+    let args: readonly Argument[] | undefined
+    let code: string | undefined
+    for (const [ce, c] of this.feature.definitions.entries()) {
+      const m = ce.match(key)
+      if (!m) continue
+      if (args !== undefined) throw new Error(`Ambiguous definition: ${key}`)
+      args = m
+      code = c
+    }
+    if (args === undefined) return undefined
+    return code!.replace(/\$([$_1-9])/g, (s, varName) => {
+      if (varName.match(/[1-9]/))
+        return JSON.stringify(args![parseInt(varName) - 1].getValue(undefined))
+      else if (varName === '_') return JSON.stringify(this.docstring ?? '')
+      else if (varName === '$') return '$'
+      else return s
+    })
   }
 }
 

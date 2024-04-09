@@ -1,7 +1,7 @@
 import { NodeTest } from './frameworks/NodeTest'
 import { Feature, makeTests } from './model'
 import { OutFile } from './outFile'
-import { parseMarkdown } from './syntax'
+import { parse } from './syntax'
 
 export interface CompiledFeature {
   name: string
@@ -9,7 +9,7 @@ export interface CompiledFeature {
 }
 
 export function compileFeature(fileName: string, src: string) {
-  const feature = parseMarkdown({ fileName, src })
+  const feature = parse({ fileName, src })
   const of = new OutFile()
   const cg = new NodeTest(of)
   feature.toCode(cg)
