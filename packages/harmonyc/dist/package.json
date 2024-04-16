@@ -1,7 +1,7 @@
 {
   "name": "harmonyc",
-  "description": "Harmony Code - Test design compiler from high-level model to Gherkin",
-  "version": "0.2.0",
+  "description": "Harmony Code - model-driven BDD for Vitest",
+  "version": "0.4.0",
   "author": "Bernát Kalló",
   "type": "module",
   "bin": {
@@ -23,20 +23,17 @@
   "keywords": [
     "unit test",
     "unit testing",
-    "cucumber",
     "bdd",
     "behavior-driven",
     "test design",
     "test design automation",
-    "gherkin",
-    "cucumber",
-    "specflow",
     "harmony.ac",
     "test framework",
     "model-based test",
     "model-based testing",
     "test model",
     "test modeling",
-    "test modelling"
+    "test modelling",
+    "vitest"
   ]
 }
