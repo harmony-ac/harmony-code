@@ -1,4 +1,4 @@
-import { NodeTest } from './frameworks/NodeTest'
+import { NodeTest } from './languages/JavaScript'
 import { Feature, makeTests } from './model'
 import { OutFile } from './outFile'
 import { parse } from './syntax'

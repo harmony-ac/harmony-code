@@ -3,6 +3,7 @@
   "description": "Harmony Code - Test design compiler from high-level model to Gherkin",
   "version": "0.2.0",
   "author": "Bernát Kalló",
+  "type": "module",
   "bin": {
     "harmonyc": "./cli.js"
   },

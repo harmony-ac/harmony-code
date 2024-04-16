@@ -1,16 +1,8 @@
----
-steps:
-  Have Node.js installed: command -v node
-  '{} by running': run "$script"; assert_success
-  this will output: assert_output "$expected"
-  a file {code} will be created {}: assert_file_exists $1
----
-
 # Harmony Code
 
-A test design & BDD tool that helps you separate the _what_ to test from the _how_ to automate it. You write test cases in a simple Markdown format, and then automate them with your favorite test framework.
+A test design & BDD tool that helps you separate the _what_ to test from the _how_ to automate it. You write test cases in a simple Markdown format, and then automate them with Vitest (and soon with many more frameworks and languages).
 
-(This readme itself is a Harmony Code file. Scroll to the end to see how it is automated.)
+(**Note**: There have been big changes since v0.2.)
 
 ## Usage
 
@@ -18,7 +10,13 @@ A test design & BDD tool that helps you separate the _what_ to test from the _ho
 2. You can compile your `*.md` files in the `src` folder by running
 
    ```bash script
-   harmonyc src
+   npx harmonyc src/**/*.md
+   ```
+
+3. Then you can run the generated tests with Vitest by running
+
+   ```bash script
+   npx vitest
    ```
 
 ## Syntax
@@ -62,15 +60,3 @@ Paragraphs outside of lists are for humans only, they are ignored in the automat
 ## License
 
 MIT
-
-## Automation
-
-This file is automated with the following YAML:
-
-```yaml harmony bats
-steps:
-  Have Node.js installed: command -v node
-  '{} by running': run "$script"; assert_success
-  this will output: assert_output "$expected"
-  a file {code} will be created {}: assert_file_exists $1
-```

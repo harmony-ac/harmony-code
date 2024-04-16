@@ -2,7 +2,7 @@ import {
   CucumberExpression,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import { Feature } from './model'
+import { Feature } from './model.js'
 
 const registry = new ParameterTypeRegistry()
 

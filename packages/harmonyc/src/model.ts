@@ -1,4 +1,4 @@
-import { Routers } from './Router'
+import { Routers } from './Router.js'
 import { Argument, CucumberExpression } from '@cucumber/cucumber-expressions'
 
 export interface CodeGenerator {

@@ -1,15 +1,15 @@
-import { CodeGenerator, Phrase, Test } from '../model'
+import { CodeGenerator, Feature, Phrase, Test } from '../model'
 import { OutFile } from '../outFile'
 import { Indent } from '../util/indent'
 
 export class Gherkin implements CodeGenerator {
   constructor(private outFile: OutFile) {}
 
-  feature(name: string, tests: Test[]) {
-    this.outFile.print(`Feature: ${name}`)
+  feature(feature: Feature) {
+    this.outFile.print(`Feature: ${feature.name}`)
     this.outFile.print('')
     this.outFile.indent(() => {
-      for (const test of tests) {
+      for (const test of feature.tests) {
         test.toCode(this)
       }
     })
