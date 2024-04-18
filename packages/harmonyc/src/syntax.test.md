@@ -187,7 +187,7 @@ Responses are specified with `=>` after the action.
 ### Syntax
 
 ```js harmony
-import { parse } from './syntax.js'
+import { parse } from './syntax.ts'
 
 /// empty
 var src = ''

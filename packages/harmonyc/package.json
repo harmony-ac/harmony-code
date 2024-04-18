@@ -4,6 +4,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "harmonyc": "tsx ./src/cli",
     "test": "tsx ./src/cli src/**/*.md && vitest run",
     "test:watch": "tsx watch ./src/cli --watch src/**/*.md & vitest",
     "publish": "rm dist/*.js && npm run build && cp -f ../../README.md dist/ && cd dist && npm publish"

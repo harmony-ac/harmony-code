@@ -2,11 +2,13 @@
 import { compileFiles } from './compiler.js'
 import { parseArgs } from 'node:util'
 import { watchFiles } from './watch.js'
+import { run, runWatch } from './run.js'
 
 const args = parseArgs({
   options: {
     help: { type: 'boolean' },
     watch: { type: 'boolean' },
+    run: { type: 'boolean' },
   },
   allowPositionals: true,
 })
@@ -16,8 +18,16 @@ if (args.positionals.length === 0 || args.values.help) {
   process.exit(1)
 }
 
-if (args.values.watch) {
-  void watchFiles(args.positionals)
-} else {
-  void compileFiles(args.positionals)
-}
+;(async () => {
+  if (args.values.watch) {
+    const outFns = await watchFiles(args.positionals)
+    if (args.values.run) {
+      runWatch(outFns)
+    }
+  } else {
+    const { outFns } = await compileFiles(args.positionals)
+    if (args.values.run) {
+      run(outFns)
+    }
+  }
+})()

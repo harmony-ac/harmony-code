@@ -6,18 +6,35 @@ A test design & BDD tool that helps you separate the _what_ to test from the _ho
 
 ## Usage
 
-1. Have Node.js installed.
-2. You can compile your `*.md` files in the `src` folder by running
+- ### watch and run mode
 
-   ```bash script
-   npx harmonyc src/**/*.md
-   ```
+  - You can compile and run your `*.md` files in the `src` folder, and watch it, by running
 
-3. Then you can run the generated tests with Vitest by running
+    ```bash script
+    npx harmonyc --run --watch src/**/*.md
+    ```
 
-   ```bash script
-   npx vitest
-   ```
+- ### compiling and running
+
+  - You can compile and run your `*.md` files in the `src` folder by running
+
+    ```bash script
+    npx harmonyc --run src/**/*.md
+    ```
+
+- ### compiling and running separately
+
+  1.  You can compile your `*.md` files in the `src` folder by running
+
+      ```bash script
+      npx harmonyc src/**/*.md
+      ```
+
+  2.  Then you can run the generated tests with Vitest by running
+
+      ```bash script
+      npx vitest
+      ```
 
 ## Syntax
 
