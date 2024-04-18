@@ -187,27 +187,12 @@ Responses are specified with `=>` after the action.
 ### Syntax
 
 ```js harmony
-import { parse } from './syntax'
+import { parse } from './syntax.js'
 
 /// empty
 var src = ''
 /// there is/are {}
 var src = $_
-/// => {}
-expect(parse({ src, fileName: 'test' }).root.children).toMatchSnapshot($1)
-```
-
-```js harmony
-import { parse } from './syntax'
-
-export default {
-  'empty'() {
-    const src = ''
-  },
-  'there is/are {}'() {
-
-  }
-const src = $_
 /// => {}
 expect(parse({ src, fileName: 'test' }).root.children).toMatchSnapshot($1)
 ```

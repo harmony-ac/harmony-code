@@ -1,8 +1,8 @@
 import { Code, List, ListItem, RootContent as Node } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
-import { Branch, Feature, Location, Section, Step } from './model'
-import { definitions } from './definitions'
+import { Branch, Feature, Location, Section, Step } from './model.js'
+import { definitions } from './definitions.js'
 
 export interface ParsedFeature {
   name: string

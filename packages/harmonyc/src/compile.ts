@@ -1,7 +1,6 @@
-import { NodeTest } from './languages/JavaScript'
-import { Feature, makeTests } from './model'
-import { OutFile } from './outFile'
-import { parse } from './syntax'
+import { NodeTest } from './languages/JavaScript.js'
+import { OutFile } from './outFile.js'
+import { parse } from './syntax.js'
 
 export interface CompiledFeature {
   name: string

@@ -1,7 +1,7 @@
 import glob from 'fast-glob'
 import { readFileSync, writeFileSync } from 'fs'
 import { basename } from 'path'
-import { compileFeature } from './compile'
+import { compileFeature } from './compile.js'
 
 export async function compileFiles(pattern: string | string[]) {
   const fns = await glob(pattern)

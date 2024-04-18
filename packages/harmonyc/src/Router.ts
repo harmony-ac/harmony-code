@@ -1,4 +1,4 @@
-import { xmur3 } from './util/xmur3'
+import { xmur3 } from './util/xmur3.js'
 
 export class Router<N> {
   index = 0

@@ -1,6 +1,5 @@
-import { CodeGenerator, Feature, Phrase, Test } from '../model'
-import { OutFile } from '../outFile'
-import { Indent } from '../util/indent'
+import { CodeGenerator, Feature, Phrase, Test } from '../model.js'
+import { OutFile } from '../outFile.js'
 
 export class Gherkin implements CodeGenerator {
   constructor(private outFile: OutFile) {}

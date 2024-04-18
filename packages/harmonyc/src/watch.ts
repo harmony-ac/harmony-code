@@ -1,5 +1,5 @@
 import { watch } from 'node:fs'
-import { compileFile, compileFiles } from './compiler'
+import { compileFile, compileFiles } from './compiler.js'
 
 export async function watchFiles(patterns: string[]) {
   const fns = await compileFiles(patterns)

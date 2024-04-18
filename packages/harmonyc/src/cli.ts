@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { compileFiles } from './compiler'
+import { compileFiles } from './compiler.js'
 import { parseArgs } from 'node:util'
-import { watchFiles } from './watch'
+import { watchFiles } from './watch.js'
 
 const args = parseArgs({
   options: {
@@ -16,5 +16,8 @@ if (args.positionals.length === 0 || args.values.help) {
   process.exit(1)
 }
 
-if (args.values.watch) watchFiles(args.positionals)
-void compileFiles(args.positionals)
+if (args.values.watch) {
+  void watchFiles(args.positionals)
+} else {
+  void compileFiles(args.positionals)
+}

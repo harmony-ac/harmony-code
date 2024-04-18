@@ -1,5 +1,5 @@
-import { CodeGenerator, Feature, Phrase, Test } from '../model'
-import { OutFile } from '../outFile'
+import { CodeGenerator, Feature, Phrase, Test } from '../model.js'
+import { OutFile } from '../outFile.js'
 
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'
