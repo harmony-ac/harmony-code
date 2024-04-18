@@ -1,7 +1,7 @@
 {
   "name": "harmonyc",
   "description": "Harmony Code - model-driven BDD for Vitest",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Bernát Kalló",
   "type": "module",
   "bin": {
@@ -16,8 +16,9 @@
     "url": "https://github.com/harmony-ac/code/issues"
   },
   "dependencies": {
+    "@cucumber/cucumber-expressions": "^17.1.0",
     "fast-glob": "^3.3.2",
-    "typescript-parsec": "0.3.4"
+    "source-map-js": "^1.2.0"
   },
   "license": "MIT",
   "keywords": [
