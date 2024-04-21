@@ -9,8 +9,9 @@ export interface CompiledFeature {
 
 export function compileFeature(fileName: string, src: string) {
   const feature = parse({ fileName, src })
-  const of = new OutFile()
+  const outFn = `${fileName.replace(/\.[a-z]+$/i, '')}.mjs`
+  const of = new OutFile(outFn)
   const cg = new NodeTest(of)
   feature.toCode(cg)
-  return of.value
+  return of
 }

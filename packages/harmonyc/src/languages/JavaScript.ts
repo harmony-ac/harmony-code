@@ -1,35 +1,50 @@
+import { basename } from 'path'
 import { CodeGenerator, Feature, Phrase, Test } from '../model.js'
 import { OutFile } from '../outFile.js'
 
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'
-  constructor(private outFile: OutFile) {}
+  phrases: Phrase[] = []
+  constructor(private of: OutFile) {}
 
   feature(feature: Feature) {
+    const stepsModule =
+      './' +
+      basename(this.of.name.replace(/(\.(spec|test)s?)?\.[a-z]+$/i, '.steps'))
+    this.phrases = []
     if (this.framework === 'vitest') {
-      this.outFile.print(`import { test, expect } from 'vitest';`)
+      this.of.print(`import { test, expect } from 'vitest';`)
+      this.of.print(`import { Feature } from 'harmonyc/test';`)
+      this.of.print(`import ${JSON.stringify(stepsModule)};`)
     }
-    this.outFile.print(feature.prelude)
+    this.of.print(feature.prelude)
     for (const test of feature.tests) {
       test.toCode(this)
     }
   }
 
   test(t: Test) {
-    this.outFile.print(`test('${t.name}', async () => {`)
-    this.outFile.indent(() => {
+    this.of.print(`test('${t.name}', async (context) => {`)
+    this.of.indent(() => {
       for (const step of t.steps) {
         step.toCode(this)
       }
     })
-    this.outFile.print('})')
-    this.outFile.print('')
+    this.of.print('})')
+    this.of.print('')
   }
 
   phrase(p: Phrase) {
-    this.outFile.loc(p).print('/// ' + p.text)
-    const code =
-      p.definition() ?? `throw 'Not defined: ' + ${JSON.stringify(p.text)};`
-    this.outFile.print(...code.split('\n'))
+    if (!this.phrases.some((x) => x.text === p.text)) this.phrases.push(p)
+    const feature = p.feature.name
+    this.of.print(
+      `await Feature(${JSON.stringify(feature)}).${capitalize(
+        p.kind
+      )}(${JSON.stringify(p.text)})`
+    )
   }
+}
+
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }

@@ -6,8 +6,14 @@
     "build:watch": "tsc --watch",
     "harmonyc": "tsx ./src/cli",
     "test": "tsx ./src/cli src/**/*.md && vitest run",
-    "test:watch": "tsx watch ./src/cli --watch src/**/*.md & vitest",
+    "test:watch": "tsx watch ./src/cli --run --watch src/**/*.md",
     "publish": "rm dist/*.js && npm run build && cp -f ../../README.md dist/ && cd dist && npm publish"
+  },
+  "exports": {
+    "./test": {
+      "types": "./test.d.ts",
+      "default": "./dist/js_api/js_api.js"
+    }
   },
   "bin": {
     "harmonyc": "./dist/cli.js"

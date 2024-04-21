@@ -5,8 +5,9 @@ export class OutFile {
   lines: string[] = []
   level = 0
   sm = new SourceMapGenerator()
+  indentSpaces: number = 2
   private currentLoc: Location | undefined
-  constructor(private indentSpaces: number = 2) {}
+  constructor(public name: string) {}
 
   indent(fn: () => void) {
     this.level++
