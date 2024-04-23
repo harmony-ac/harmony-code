@@ -5,22 +5,38 @@ import { OutFile } from '../outFile.js'
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'
   phrases: Phrase[] = []
-  constructor(private of: OutFile) {}
+  constructor(private of: OutFile, private sf: OutFile) {}
 
   feature(feature: Feature) {
-    const stepsModule =
-      './' +
-      basename(this.of.name.replace(/(\.(spec|test)s?)?\.[a-z]+$/i, '.steps'))
+    const stepsModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
     this.phrases = []
     if (this.framework === 'vitest') {
       this.of.print(`import { test, expect } from 'vitest';`)
       this.of.print(`import { Feature } from 'harmonyc/test';`)
       this.of.print(`import ${JSON.stringify(stepsModule)};`)
     }
-    this.of.print(feature.prelude)
     for (const test of feature.tests) {
       test.toCode(this)
     }
+    this.sf.print(`import { Feature } from 'harmonyc/test';`)
+    this.sf.print('')
+    this.sf.print(
+      `Feature(${JSON.stringify(feature.name)}, ({ Action, Response }) => {`
+    )
+    this.sf.indent(() => {
+      for (const phrase of this.phrases) {
+        this.sf.print(
+          `${capitalize(phrase.kind)}(${JSON.stringify(phrase.text)}, () => {`
+        )
+        this.sf.indent(() => {
+          this.sf.print(
+            `throw new Error(${JSON.stringify(`Pending: ${phrase.text}`)})`
+          )
+        })
+        this.sf.print('})')
+      }
+    })
+    this.sf.print('})')
   }
 
   test(t: Test) {

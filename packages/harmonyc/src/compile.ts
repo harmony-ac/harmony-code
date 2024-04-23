@@ -10,8 +10,10 @@ export interface CompiledFeature {
 export function compileFeature(fileName: string, src: string) {
   const feature = parse({ fileName, src })
   const outFn = `${fileName.replace(/\.[a-z]+$/i, '')}.mjs`
-  const of = new OutFile(outFn)
-  const cg = new NodeTest(of)
+  const outFile = new OutFile(outFn)
+  const stepsFn = outFn.replace(/(\.(spec|test)s?)?\.[a-z]+$/i, '.steps.ts')
+  const stepsFile = new OutFile(stepsFn)
+  const cg = new NodeTest(outFile, stepsFile)
   feature.toCode(cg)
-  return of
+  return { outFile, stepsFile }
 }

@@ -10,6 +10,6 @@
     "noEmit": false,
     "strict": true
   },
-  "include": ["src"],
+  "include": ["src", "dist/test.d.ts"],
   "exclude": ["**/*.test.*", "**/*.spec.*", "**/*.steps.*"]
 }

@@ -6,9 +6,9 @@ import { run, runWatch } from './run.js'
 
 const args = parseArgs({
   options: {
-    help: { type: 'boolean' },
-    watch: { type: 'boolean' },
-    run: { type: 'boolean' },
+    help: { type: 'boolean'  },
+    watch: { type: 'boolean', short: 'w'},
+    run: { type: 'boolean', short: 'r'},
   },
   allowPositionals: true,
 })

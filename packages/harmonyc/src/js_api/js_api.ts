@@ -10,7 +10,8 @@ class Definition {
 const features: Map<string, FeatureContext> = new Map()
 
 class FeatureContext {
-  #defs: Definition[] = []
+  #actions: Definition[] = []
+  #responses: Definition[] = []
   #parameterTypeRegistry = new ParameterTypeRegistry()
 
   Action: ((s: string) => Promise<void>) & ((s: string, fn: Function) => void) =
@@ -18,11 +19,11 @@ class FeatureContext {
       if (fn) {
         const expr = new CucumberExpression(s, this.#parameterTypeRegistry)
         const def = new Definition(expr, fn)
-        this.#defs.push(def)
+        this.#actions.push(def)
         return
       }
       // call the action
-      const matches = this.#defs.map((def) => def.expr.match(s))
+      const matches = this.#actions.map((def) => def.expr.match(s))
       const matching = [...matches.keys()].filter((i) => matches[i])
       if (matching.length === 0) {
         throw new Error(`Not defined: ${s}`)
@@ -30,15 +31,40 @@ class FeatureContext {
       if (matching.length > 1) {
         throw new Error(
           `Ambiguous: ${s}\n${matching
-            .map((i) => this.#defs[i].expr.source)
+            .map((i) => this.#actions[i].expr.source)
             .join('\n')}`
         )
       }
       const match = matches[matching[0]]!
-      const def = this.#defs[matching[0]]
+      const def = this.#actions[matching[0]]
       return Promise.resolve(def.fn(...match.map((m) => m.getValue(undefined))))
     }) as any
-  Response = this.Action
+
+  Response: ((s: string) => Promise<void>) &
+    ((s: string, fn: Function) => void) = ((s: string, fn?: Function) => {
+    if (fn) {
+      const expr = new CucumberExpression(s, this.#parameterTypeRegistry)
+      const def = new Definition(expr, fn)
+      this.#responses.push(def)
+      return
+    }
+    // call the action
+    const matches = this.#responses.map((def) => def.expr.match(s))
+    const matching = [...matches.keys()].filter((i) => matches[i])
+    if (matching.length === 0) {
+      throw new Error(`Not defined: ${s}`)
+    }
+    if (matching.length > 1) {
+      throw new Error(
+        `Ambiguous: ${s}\n${matching
+          .map((i) => this.#responses[i].expr.source)
+          .join('\n')}`
+      )
+    }
+    const match = matches[matching[0]]!
+    const def = this.#responses[matching[0]]
+    return Promise.resolve(def.fn(...match.map((m) => m.getValue(undefined))))
+  }) as any
 }
 
 export function Feature(s: string, fn?: (ctx: FeatureContext) => void) {

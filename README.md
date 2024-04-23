@@ -2,39 +2,18 @@
 
 A test design & BDD tool that helps you separate the _what_ to test from the _how_ to automate it. You write test cases in a simple Markdown format, and then automate them with Vitest (and soon with many more frameworks and languages).
 
-(**Note**: There have been big changes since v0.2.)
-
 ## Usage
 
 - ### watch and run mode
 
-  - You can compile and run your `*.md` files in the `src` folder, and watch it, by running
+  - You can compile and run your `*.spec.md` files in the `src` folder, and watch it, by running
 
     ```bash script
-    npx harmonyc --run --watch src/**/*.md
+    npx harmonyc --run --watch 'src/**/*.spec.md'
     ```
 
-- ### compiling and running
-
-  - You can compile and run your `*.md` files in the `src` folder by running
-
-    ```bash script
-    npx harmonyc --run src/**/*.md
-    ```
-
-- ### compiling and running separately
-
-  1.  You can compile your `*.md` files in the `src` folder by running
-
-      ```bash script
-      npx harmonyc src/**/*.md
-      ```
-
-  2.  Then you can run the generated tests with Vitest by running
-
-      ```bash script
-      npx vitest
-      ```
+    - => this will generate tests into `*.spec.mjs` files
+    - => this will create a stub `*.steps.ts` file if it doesn't exist
 
 ## Syntax
 

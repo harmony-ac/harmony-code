@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`T1 - Syntax - Empty file > empty test design 1`] = `[]`;
+
+exports[`T2 - Syntax - Empty file > empty test design 1`] = `[]`;
+
+exports[`T3 - Syntax - Empty file > empty test design 1`] = `[]`;
+
+exports[`T4 - Syntax - Section headings > one section 1`] = `[]`;
+
+exports[`T5 - Syntax - Section headings > forked sections 1`] = `[]`;
+
+exports[`T6 - Syntax - Section headings > nested forked sections 1`] = `[]`;
+
+exports[`T7 - Syntax - Section headings > deep nested forked sections 1`] = `[]`;
+
+exports[`T8 - Syntax - Bulleted lists > one step 1`] = `[]`;
+
+exports[`T9 - Syntax - Bulleted lists > forked steps 1`] = `[]`;
+
+exports[`T10 - Syntax - Bulleted lists > nested forked steps 1`] = `[]`;
+
+exports[`T11 - Syntax - Bulleted lists > deep nested forked steps 1`] = `[]`;
+
+exports[`T12 - Syntax - Numbered lists > one step, not forked 1`] = `[]`;
+
+exports[`T13 - Syntax - Numbered lists > sequential steps 1`] = `[]`;
+
+exports[`T14 - Syntax - Responses > step with one response and empty action 1`] = `[]`;
+
+exports[`T15 - Syntax - Responses > step with more responses 1`] = `[]`;
+
+exports[`T16 - Syntax - Headings within lists > one section 1`] = `[]`;
+
+exports[`T17 - Syntax - Docstrings > action with docstring 1`] = `[]`;
+
+exports[`T19 - Syntax - Section headings > forked sections 1`] = `[]`;
+
+exports[`T20 - Syntax - Numbered lists > nested sequences and forks 1`] = `[]`;
+
+exports[`T21 - Syntax - Numbered lists > bulleted items are forks, numbered items not 1`] = `[]`;
+
+exports[`T22 - Syntax - Responses > step with action and response 1`] = `[]`;
+
+exports[`T23 - Syntax - Headings within lists > forked sections 1`] = `[]`;

@@ -1,5 +1,5 @@
 import glob from 'fast-glob'
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { basename } from 'path'
 import { compileFeature } from './compile.js'
 
@@ -14,7 +14,10 @@ export async function compileFiles(pattern: string | string[]) {
 
 export async function compileFile(fn: string) {
   const src = readFileSync(fn, 'utf8').toString()
-  const outFile = compileFeature(fn, src)
+  const { outFile, stepsFile } = compileFeature(fn, src)
   writeFileSync(outFile.name, outFile.value)
+  if (!existsSync(stepsFile.name)) {
+    writeFileSync(stepsFile.name, stepsFile.value)
+  }
   return outFile.name
 }
