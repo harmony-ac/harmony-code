@@ -26,7 +26,7 @@ class FeatureContext {
       const matches = this.#actions.map((def) => def.expr.match(s))
       const matching = [...matches.keys()].filter((i) => matches[i])
       if (matching.length === 0) {
-        throw new Error(`Not defined: ${s}`)
+        throw new Error(`Action not defined: ${s}`)
       }
       if (matching.length > 1) {
         throw new Error(
@@ -52,7 +52,7 @@ class FeatureContext {
     const matches = this.#responses.map((def) => def.expr.match(s))
     const matching = [...matches.keys()].filter((i) => matches[i])
     if (matching.length === 0) {
-      throw new Error(`Not defined: ${s}`)
+      throw new Error(`Response not defined: ${s}`)
     }
     if (matching.length > 1) {
       throw new Error(

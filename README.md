@@ -6,13 +6,13 @@ A test design & BDD tool that helps you separate the _what_ to test from the _ho
 
 - ### watch and run mode
 
-  - You can compile and run your `*.spec.md` files in the `src` folder, and watch it, by running
+  - You can compile and run your `*.harmony.md` files in the `src` folder, and watch it, by running
 
     ```bash script
-    npx harmonyc --run --watch 'src/**/*.spec.md'
+    npx harmonyc --run --watch 'src/**/*.harmony.md'
     ```
 
-    - => this will generate tests into `*.spec.mjs` files
+    - => this will generate tests into `*.test.mjs` files
     - => this will create a stub `*.steps.ts` file if it doesn't exist
 
 ## Syntax
