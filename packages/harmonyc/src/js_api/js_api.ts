@@ -3,11 +3,13 @@ import {
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
 
+type FeatureFn = (ctx: FeatureContext) => void
+
 class Definition {
   constructor(public expr: CucumberExpression, public fn: Function) {}
 }
 
-const features: Map<string, FeatureContext> = new Map()
+const featureDefs: Map<string, FeatureFn> = new Map()
 
 class FeatureContext {
   #actions: Definition[] = []
@@ -67,16 +69,18 @@ class FeatureContext {
   }) as any
 }
 
-export function Feature(s: string, fn?: (ctx: FeatureContext) => void) {
-  let ctx: FeatureContext | undefined
+export function Feature(s: string): FeatureContext
+export function Feature(s: string, fn: FeatureFn): void
+export function Feature(s: string, fn?: FeatureFn) {
   if (!fn) {
-    ctx = features.get(s)
-    if (!ctx) throw new Error(`Feature not found: ${s}`)
+    // instantiate the feature
+    const fn = featureDefs.get(s)
+    if (!fn) throw new Error(`Feature not found: ${s}`)
+    const ctx = new FeatureContext()
+    fn(ctx)
+    return ctx
   } else {
-    // redefine the feature
-    ctx = new FeatureContext()
-    features.set(s, ctx)
+    // (re)define the feature
+    featureDefs.set(s, fn)
   }
-  fn?.(ctx)
-  return ctx
 }
