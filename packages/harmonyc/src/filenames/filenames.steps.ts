@@ -2,11 +2,12 @@ import { Feature } from 'harmonyc/test'
 import { expect } from 'vitest'
 import { base, stepsFileName, testFileName } from './filenames.ts'
 import { mkdirSync, mkdtempSync, rmSync, rmdirSync, writeFileSync } from 'fs'
-import { basename, dirname } from 'path'
+import { tmpdir } from 'os'
+import { join, dirname } from 'path'
 
 Feature('Filenames', ({ Action, Response }) => {
   let inputFile: string
-  const tmp = mkdtempSync('harmonyc-test-')
+  const tmp = mkdtempSync(join(tmpdir(), 'harmonyc-test-')).replace(/\\/g, '/')
 
   Action('input file is {string}', (string: string) => {
     inputFile = `${tmp}/${string}`
@@ -21,7 +22,6 @@ Feature('Filenames', ({ Action, Response }) => {
     expect(stepsFileName(inputFile)).toBe(`${tmp}/${expected}`)
   })
   Action('a file {string} exists', (fn: string) => {
-    rmSync(tmp, { recursive: true }) // TODO separate tmp dirs per test case
     mkdirSync(dirname(`${tmp}/${fn}`), { recursive: true })
     writeFileSync(`${tmp}/${fn}`, '')
   })

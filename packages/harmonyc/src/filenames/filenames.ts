@@ -1,5 +1,5 @@
 import glob from 'fast-glob'
-const { globSync } = glob
+const { globSync, convertPathToPattern } = glob
 
 export function base(fn: string) {
   return fn.replace(/\.harmony\.md$/i, '')
@@ -10,7 +10,8 @@ export function testFileName(fn: string) {
 }
 
 export function stepsFileName(fn: string) {
-  const existing = globSync(base(fn) + '.steps.*')
+  const pattern = convertPathToPattern(base(fn) + '.steps.*')
+  const existing = globSync(pattern)
   if (existing.length) {
     return existing.sort()[0]
   }
