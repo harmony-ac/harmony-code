@@ -5,15 +5,15 @@ import { OutFile } from '../outFile.js'
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'
   phrases: Phrase[] = []
-  constructor(private of: OutFile, private sf: OutFile) {}
+  constructor(private tf: OutFile, private sf: OutFile) {}
 
   feature(feature: Feature) {
     const stepsModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
     this.phrases = []
     if (this.framework === 'vitest') {
-      this.of.print(`import { test, expect } from 'vitest';`)
-      this.of.print(`import { Feature } from 'harmonyc/test';`)
-      this.of.print(`import ${JSON.stringify(stepsModule)};`)
+      this.tf.print(`import { test, expect } from 'vitest';`)
+      this.tf.print(`import { Feature } from 'harmonyc/test';`)
+      this.tf.print(`import ${JSON.stringify(stepsModule)};`)
     }
     for (const test of feature.tests) {
       test.toCode(this)
@@ -40,20 +40,20 @@ export class NodeTest implements CodeGenerator {
   }
 
   test(t: Test) {
-    this.of.print(`test('${t.name}', async (context) => {`)
-    this.of.indent(() => {
+    this.tf.print(`test('${t.name}', async (context) => {`)
+    this.tf.indent(() => {
       for (const step of t.steps) {
         step.toCode(this)
       }
     })
-    this.of.print('})')
-    this.of.print('')
+    this.tf.print('})')
+    this.tf.print('')
   }
 
   phrase(p: Phrase) {
     if (!this.phrases.some((x) => x.text === p.text)) this.phrases.push(p)
     const feature = p.feature.name
-    this.of.print(
+    this.tf.print(
       `await Feature(${JSON.stringify(feature)}).${capitalize(
         p.kind
       )}(${JSON.stringify(p.text)})`

@@ -11,11 +11,11 @@ export interface CompiledFeature {
 
 export function compileFeature(fileName: string, src: string) {
   const feature = parse({ fileName, src })
-  const outFn = testFileName(fileName)
-  const outFile = new OutFile(outFn)
+  const testFn = testFileName(fileName)
+  const testFile = new OutFile(testFn)
   const stepsFn = stepsFileName(fileName)
   const stepsFile = new OutFile(stepsFn)
-  const cg = new NodeTest(outFile, stepsFile)
+  const cg = new NodeTest(testFile, stepsFile)
   feature.toCode(cg)
-  return { outFile, stepsFile }
+  return { outFile: testFile, stepsFile }
 }
