@@ -147,7 +147,8 @@ export abstract class Phrase {
     return this.kind === 'action' ? 'When' : 'Then'
   }
   toCode(cg: CodeGenerator) {
-    return cg.phrase(this)
+    if (!this.text) return
+    cg.phrase(this)
   }
   definition() {
     const key = this.kind === 'action' ? this.text : `=> ${this.text}`
