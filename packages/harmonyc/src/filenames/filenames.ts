@@ -1,4 +1,5 @@
-import { globSync } from 'fast-glob'
+import glob from 'fast-glob'
+const { globSync } = glob
 
 export function base(fn: string) {
   return fn.replace(/\.harmony\.md$/i, '')
