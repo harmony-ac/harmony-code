@@ -24,6 +24,9 @@ Response('result is {int}', (n) => {
 ```
 
 - ### It can add numbers
-  - add 2 => result is 2
-  - add 4 => result is 6
-  - add 4 => result is 10
+  1. add 2 => result is 2
+  2. add 4 => result is 6
+  3. add 4 => result is 10
+- ### Test cases are separate
+  1. add 2 => result is 2
+  2. add 2 => result is 4
