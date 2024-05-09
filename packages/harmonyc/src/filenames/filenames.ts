@@ -10,10 +10,11 @@ export function testFileName(fn: string) {
 }
 
 export function stepsFileName(fn: string) {
-  const pattern = convertPathToPattern(base(fn) + '.steps.*')
-  const existing = globSync(pattern)
+  const baseFn = base(fn)
+  const pattern = convertPathToPattern(baseFn)
+  const existing = globSync(`${pattern}.steps.*`)
   if (existing.length) {
     return existing.sort()[0]
   }
-  return base(fn) + '.steps.ts'
+  return `${baseFn}.steps.ts`
 }
