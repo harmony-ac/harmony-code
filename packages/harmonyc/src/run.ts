@@ -14,6 +14,7 @@ function args(patterns: string[]) {
 export function run(patterns: string[]) {
   const cmd = runCommand(patterns)
   const p = exec(cmd, { cwd: process.cwd() })
+  p.stdin?.pipe(process.stdin)
   p.stdout?.pipe(process.stdout)
   p.stderr?.pipe(process.stderr)
 }
@@ -21,6 +22,7 @@ export function run(patterns: string[]) {
 export function runWatch(patterns: string[]) {
   const cmd = runWatchCommand(patterns)
   const p = exec(cmd, { cwd: process.cwd() })
+  p.stdin?.pipe(process.stdin)
   p.stdout?.pipe(process.stdout)
   p.stderr?.pipe(process.stderr)
 }
