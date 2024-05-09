@@ -46,11 +46,12 @@ export class OutFile {
   }
 
   get value() {
-    return (
-      this.lines.join('\n') +
-      `\n\n//# sourceMappingURL=data:application/json,${encodeURIComponent(
+    let res = this.lines.join('\n')
+    if (this.currentLoc) {
+      res += `\n\n//# sourceMappingURL=data:application/json,${encodeURIComponent(
         this.sm.toString()
       )}`
-    )
+    }
+    return res
   }
 }
