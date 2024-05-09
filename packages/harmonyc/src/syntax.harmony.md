@@ -181,18 +181,3 @@ Responses are specified with `=>` after the action.
     Jane
     ```
   ````
-
-## Automation
-
-### Syntax
-
-```js harmony
-import { parse } from './syntax.ts'
-
-/// empty
-var src = ''
-/// there is/are {}
-var src = $_
-/// => {}
-expect(parse({ src, fileName: 'test' }).root.children).toMatchSnapshot($1)
-```

@@ -54,13 +54,20 @@ export class NodeTest implements CodeGenerator {
       f = toId(feature, this.featureVars)
       this.tf.print(`const ${f} = Feature(${str(feature)})`)
     }
-    this.tf.print(`await ${f}.${capitalize(p.kind)}(${str(p.text)})`)
+    const docstring = p.docstring ? ', \n' + templateStr(p.docstring) : ''
+    this.tf.print(
+      `await ${f}.${capitalize(p.kind)}(${str(p.text)}${docstring})`
+    )
   }
 }
 
 function str(s: string) {
   let r = JSON.stringify(s)
   return r
+}
+
+function templateStr(s: string) {
+  return '`' + s.replace(/([`$])/g, '\\$1') + '`'
 }
 
 function capitalize(s: string) {

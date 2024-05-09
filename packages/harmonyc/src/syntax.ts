@@ -2,7 +2,6 @@ import { Code, List, ListItem, RootContent as Node } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { Branch, Feature, Location, Section, Step } from './model.js'
-import { definitions } from './definitions.js'
 
 export interface ParsedFeature {
   name: string
@@ -47,21 +46,12 @@ export function parse({
   function topLevel(node: Node) {
     if (node.type === 'paragraph') return []
     if (node.type == 'list') return list(node)
-    if (node.type === 'code') return code(node)
     return []
   }
 
   function list(node: List) {
     const isFork = node.ordered === false
     return node.children.map((item) => listItem(item, isFork))
-  }
-
-  function code(node: Code) {
-    if (!node.meta?.match(/harmony/)) return []
-    const code = node.value
-    const marker = '///'
-    definitions({ marker, code, feature })
-    return []
   }
 
   function listItem(node: ListItem, isFork: boolean) {

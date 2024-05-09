@@ -26,5 +26,3 @@ Feature('Filenames', ({ Action, Response }) => {
     writeFileSync(`${tmp}/${fn}`, '')
   })
 })
-
-//# sourceMappingURL=data:application/json,%7B%22version%22%3A3%2C%22sources%22%3A%5B%5D%2C%22names%22%3A%5B%5D%2C%22mappings%22%3A%22%22%7D
