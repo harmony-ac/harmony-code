@@ -1,0 +1,25 @@
+{
+  "name": "harmony-code",
+  "displayName": "Harmony Code",
+  "description": "Language support for the Harmony Code language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "harmony",
+      "aliases": ["Harmony", "harmony"],
+      "extensions": [".harmony"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "harmony",
+      "scopeName": "source.harmony",
+      "path": "./syntaxes/harmony.tmLanguage.json"
+    }]
+  }
+}
