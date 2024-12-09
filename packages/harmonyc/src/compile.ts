@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { NodeTest } from './languages/JavaScript.js'
+import { NodeTest } from './code_generator/JavaScript.js'
 import { OutFile } from './outFile.js'
 import { parse } from './syntax.js'
 import { stepsFileName, testFileName } from './filenames/filenames.js'

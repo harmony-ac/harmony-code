@@ -4,64 +4,71 @@ import { OutFile } from '../outFile.js'
 
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'
-  phrases: Phrase[] = []
+  phraseFns: string[] = []
+  currentFeatureName = ''
   constructor(private tf: OutFile, private sf: OutFile) {}
 
   feature(feature: Feature) {
     const stepsModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
-    this.phrases = []
+    const fn = (this.currentFeatureName = pascalCase(feature.name))
+    this.phraseFns = []
     if (this.framework === 'vitest') {
-      this.tf.print(`import { test, expect } from 'vitest';`)
-      this.tf.print(`import { Feature } from 'harmonyc/test';`)
-      this.tf.print(`import ${str(stepsModule)};`)
+      this.tf.print(`import { test } from 'vitest';`)
     }
+    this.tf.print(`import ${fn} from ${str(stepsModule)};`)
+    this.tf.print(``)
     for (const test of feature.tests) {
       test.toCode(this)
     }
-    this.sf.print(`import { Feature } from 'harmonyc/test';`)
-    this.sf.print('')
-    this.sf.print(`Feature(${str(feature.name)}, ({ Action, Response }) => {`)
+    this.sf.print(`export class ${pascalCase(feature.name)} {`)
     this.sf.indent(() => {
-      for (const phrase of this.phrases) {
-        this.sf.print(`${capitalize(phrase.kind)}(${str(phrase.text)}, () => {`)
+      for (const fn of this.phraseFns) {
+        this.sf.print(`async ${fn}() {`)
         this.sf.indent(() => {
-          this.sf.print(`throw new Error(${str(`Pending: ${phrase.text}`)})`)
+          this.sf.print(`throw new Error(${str(`Pending: ${fn}`)});`)
         })
-        this.sf.print('})')
+        this.sf.print(`}`)
       }
     })
-    this.sf.print('})')
+    this.sf.print(`};`)
   }
 
   featureVars!: Map<string, string>
   test(t: Test) {
     this.featureVars = new Map()
+    // avoid shadowing this import name
+    this.featureVars.set(new Object() as any, this.currentFeatureName)
     this.tf.print(`test('${t.name}', async (context) => {`)
     this.tf.indent(() => {
       for (const step of t.steps) {
         step.toCode(this)
       }
     })
-    this.tf.print('})')
+    this.tf.print('});')
     this.tf.print('')
   }
 
   phrase(p: Phrase) {
-    if (!this.phrases.some((x) => x.text === p.text)) this.phrases.push(p)
+    const phrasefn = toFunctionName(p.text, p.kind)
+    if (!this.phraseFns.includes(phrasefn)) this.phraseFns.push(phrasefn)
     const feature = p.feature.name
     let f = this.featureVars.get(feature)
     if (!f) {
       f = toId(feature, this.featureVars)
-      this.tf.print(`const ${f} = Feature(${str(feature)})`)
+      this.tf.print(`const ${f} = new ${pascalCase(feature)}();`)
     }
-    const docstring = p.docstring ? ', \n' + templateStr(p.docstring) : ''
+    const args: any[] = []
+    p.text.replace(/"([^"]*)"/g, (_, s) => (args.push(s), ''))
+    if (p.docstring) args.push(p.docstring)
+    const formattedArgs = args.map((x) => str(x)).join(', ')
     this.tf.print(
-      `await ${f}.${capitalize(p.kind)}(${str(p.text)}${docstring})`
+      `await ${f}.${toFunctionName(p.text, p.kind)}(${formattedArgs});`
     )
   }
 }
 
 function str(s: string) {
+  if (s.includes('\n')) return '\n' + templateStr(s)
   let r = JSON.stringify(s)
   return r
 }
@@ -76,7 +83,7 @@ function capitalize(s: string) {
 
 function toId(s: string, previous: Map<string, string>) {
   if (previous.has(s)) return previous.get(s)!
-  let base = pascalCase(s)
+  let base = abbrev(s)
   let id = base
   if ([...previous.values()].includes(id)) {
     let i = 1
@@ -92,4 +99,21 @@ function pascalCase(s: string) {
     .split(/[^a-zA-Z0-9]/)
     .map(capitalize)
     .join('')
+}
+
+function abbrev(s: string) {
+  return s
+    .split(/[^a-zA-Z0-9]/)
+    .map((x) => x.charAt(0).toLowerCase())
+    .join('')
+}
+
+function toFunctionName(phrase: string, type: string) {
+  return (
+    (type === 'response' ? '__' : '') +
+    phrase
+      .replace(/"([^"]*)"/g, '_')
+      .replace(/[^\w]+/g, '_')
+      .replace(/__$/, '___')
+  )
 }
