@@ -5,8 +5,9 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "harmonyc": "tsx ./src/cli",
-    "test": "node ./dist/cli src/**/*.harmony && vitest",
-    "test:watch": "tsx watch ./src/cli ./src/**/*.harmony.md --watch & vitest --watch",
+    "test": "node ./dist/cli 'src/**/*.harmony' && vitest",
+    "test:compile": "tsx ./src/cli 'src/**/*.harmony'",
+    "test:watch": "tsx watch ./src/cli './src/**/*.harmony' --watch & vitest --watch",
     "publish": "rm dist/*.js && npm run build && npm run test && cp -f ../../README.md dist/ && cd dist && npm publish"
   },
   "exports": {
@@ -21,8 +22,7 @@
   "dependencies": {
     "@cucumber/cucumber-expressions": "^17.1.0",
     "fast-glob": "^3.3.2",
-    "remark-parse": "^11.0.0",
-    "source-map-js": "^1.2.0"
+    "typescript-parsec": "0.3.4"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^10.3.2",

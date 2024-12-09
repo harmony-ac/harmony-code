@@ -1,8 +1,10 @@
 import { existsSync } from 'node:fs'
 import { NodeTest } from './code_generator/JavaScript.js'
 import { OutFile } from './outFile.js'
-import { parse } from './syntax.js'
-import { stepsFileName, testFileName } from './filenames/filenames.js'
+import { parse } from './parser.js'
+import { base, stepsFileName, testFileName } from './filenames/filenames.js'
+import { Feature, Section } from './model.js'
+import { basename } from 'node:path'
 
 export interface CompiledFeature {
   name: string
@@ -10,7 +12,9 @@ export interface CompiledFeature {
 }
 
 export function compileFeature(fileName: string, src: string) {
-  const feature = parse({ fileName, src })
+  const feature = new Feature(basename(base(fileName)))
+  feature.root = parse(src) as Section
+  feature.root.setFeature(feature)
   const testFn = testFileName(fileName)
   const testFile = new OutFile(testFn)
   const stepsFn = stepsFileName(fileName)

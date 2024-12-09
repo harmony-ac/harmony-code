@@ -21,7 +21,7 @@ export async function compileFiles(pattern: string | string[]) {
 }
 
 export async function compileFile(fn: string) {
-  const src = readFileSync(fn, 'utf8').toString()
+  const src = readFileSync(fn, 'utf8').toString().replace(/\r\n/g, '\n')
   const { outFile, stepsFile } = compileFeature(fn, src)
   writeFileSync(outFile.name, outFile.value)
   let stepsFileAction = 'ignored'

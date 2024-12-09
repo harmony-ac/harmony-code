@@ -20,7 +20,7 @@ export class NodeTest implements CodeGenerator {
     for (const test of feature.tests) {
       test.toCode(this)
     }
-    this.sf.print(`export class ${pascalCase(feature.name)} {`)
+    this.sf.print(`export default class ${pascalCase(feature.name)} {`)
     this.sf.indent(() => {
       for (const fn of this.phraseFns) {
         this.sf.print(`async ${fn}() {`)
@@ -111,9 +111,6 @@ function abbrev(s: string) {
 function toFunctionName(phrase: string, type: string) {
   return (
     (type === 'response' ? '__' : '') +
-    phrase
-      .replace(/"([^"]*)"/g, '_')
-      .replace(/[^\w]+/g, '_')
-      .replace(/__$/, '___')
+    phrase.replace(/"([^"]*)"/g, '$').replace(/[^\w$]+/g, '_')
   )
 }
