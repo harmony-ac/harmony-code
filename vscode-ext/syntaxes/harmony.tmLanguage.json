@@ -3,33 +3,70 @@
   "name": "Harmony",
   "patterns": [
     {
+      "include": "#comments"
+    },
+    {
       "include": "#keywords"
     },
     {
       "include": "#strings"
+    },
+    {
+      "include": "#labels"
     }
   ],
   "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.harmony",
+          "match": "^\\s*#.*"
+        },
+        {
+          "name": "comment.line.double-slash.harmony",
+          "match": "^\\s*//.*"
+        },
+        {
+          "name": "comment.line.angle.harmony",
+          "match": "^\\s*>.*"
+        }
+      ]
+    },
     "keywords": {
       "patterns": [
         {
-          "name": "keyword.control.harmony",
-          "match": "\\b(if|while|for|return)\\b"
+          "name": "keyword.operator.response.harmony",
+          "match": "=>"
+        },
+        {
+          "name": "keyword.operator.fork.harmony",
+          "match": "^\\s*\\+"
+        },
+        {
+          "name": "keyword.operator.sequence.harmony",
+          "match": "^\\s*\\-"
         }
       ]
     },
     "strings": {
-      "name": "string.quoted.double.harmony",
-      "begin": "\"",
-      "end": "\"",
       "patterns": [
         {
-          "name": "constant.character.escape.harmony",
-          "match": "\\\\(?:[\"\\\\/bfnrt]|u[0-9a-fA-F]{4})"
+          "name": "string.quoted.double.harmony",
+          "begin": "\"",
+          "end": "\""
         },
         {
-          "name": "invalid.illegal.unrecognized-string-escape.harmony",
-          "match": "\\\\."
+          "name": "string.quoted.other.harmony",
+          "begin": "`",
+          "end": "`"
+        }
+      ]
+    },
+    "labels": {
+      "patterns": [
+        {
+          "name": "markup.heading.label.harmony",
+          "match": "[^\\n:]+:"
         }
       ]
     }
