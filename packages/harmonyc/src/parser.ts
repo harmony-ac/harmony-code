@@ -20,19 +20,33 @@ export function parse(input: string) {
   return expectSingleResult(expectEOF(TEST_DESIGN.parse(tokens)))
 }
 
+const PHRASE_TEXT = rule<T, string>()
+PHRASE_TEXT.setPattern(apply(tok(T.PhraseText), ({ text }) => text))
+const DOUBLE_QUOTE_STRING = rule<T, string>()
+DOUBLE_QUOTE_STRING.setPattern(
+  apply(tok(T.DoubleQuoteString), ({ text }) => text)
+)
+const BACKTICK_STRING = rule<T, string>()
+BACKTICK_STRING.setPattern(apply(tok(T.BacktickString), ({ text }) => text))
+
+const PHRASE_PART = rule<T, string>()
+PHRASE_PART.setPattern(
+  alt_sc(PHRASE_TEXT, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
+)
+
 const PHRASE = rule<T, string>()
-PHRASE.setPattern(apply(tok(T.Phrase), ({ text }) => text))
+PHRASE.setPattern(apply(rep_sc(PHRASE_PART), (parts) => parts.join(' ')))
 
 const STEP = rule<T, Branch>()
 STEP.setPattern(
   apply(
-    seq(PHRASE, rep_sc(kright(tok(T.ResponseMark), PHRASE))),
-    ([action, responses]) => new Step(action, responses).setFork(true),
-  ),
+    seq(PHRASE, rep_sc(kright(tok(T.ResponseArrow), PHRASE))),
+    ([action, responses]) => new Step(action, responses).setFork(true)
+  )
 )
 const SECTION = rule<T, Section>()
 SECTION.setPattern(
-  apply(tok(T.Label), ({ text }) => new Section(text.slice(0, -1))),
+  apply(tok(T.Label), ({ text }) => new Section(text.slice(0, -1)))
 )
 const BRANCH = rule<T, Branch>()
 BRANCH.setPattern(alt_sc(STEP, SECTION))
@@ -45,8 +59,8 @@ DENTS.setPattern(
       if (!lineHead) return { dent: 0, isFork: true }
       const [dents, seqOrFork] = lineHead
       return { dent: dents.length + 1, isFork: seqOrFork.kind === T.Fork }
-    },
-  ),
+    }
+  )
 )
 
 const LINE = rule<T, { dent: number; branch: Branch }>()
@@ -54,7 +68,7 @@ LINE.setPattern(
   apply(seq(DENTS, BRANCH), ([{ dent, isFork }, branch], [start, end]) => ({
     dent,
     branch: branch.setFork(isFork),
-  })),
+  }))
 )
 
 const TEST_DESIGN = rule<T, Branch>()
@@ -84,7 +98,7 @@ TEST_DESIGN.setPattern(
     }
 
     return root
-  }),
+  })
 )
 
 function inputText(start: Token<T>, end: Token<T> | undefined) {

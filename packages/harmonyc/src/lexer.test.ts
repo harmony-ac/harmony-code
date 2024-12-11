@@ -15,7 +15,7 @@ test('comment', () => {
 })
 
 test('response mark', () => {
-  expect(lexer.parse('=>')?.kind).toBe(T.ResponseMark)
+  expect(lexer.parse('=>')?.kind).toBe(T.ResponseArrow)
 })
 test('[', () => {
   expect(() => lexer.parse('[')).toThrow()
@@ -23,43 +23,43 @@ test('[', () => {
 
 test('text', () => {
   const hello = lexer.parse('hello')
-  expect(hello?.kind).toBe(T.Phrase)
+  expect(hello?.kind).toBe(T.PhraseText)
   expect(hello?.text).toBe('hello')
   expect(hello?.next).toBe(undefined)
   const helloWorld = lexer.parse('hello world')
-  expect(helloWorld?.kind).toBe(T.Phrase)
+  expect(helloWorld?.kind).toBe(T.PhraseText)
   expect(helloWorld?.text).toBe('hello world')
   expect(helloWorld?.next).toBe(undefined)
 })
 
 test('text with space after', () => {
   const hello = lexer.parse('hello ')
-  expect(hello?.kind).toBe(T.Phrase)
+  expect(hello?.kind).toBe(T.PhraseText)
   expect(hello?.text).toBe('hello')
   expect(hello?.next).toBe(undefined)
 })
 
 test('text with => after', () => {
   const hello = lexer.parse('hello=>')
-  expect(hello?.kind).toBe(T.Phrase)
+  expect(hello?.kind).toBe(T.PhraseText)
   expect(hello?.text).toBe('hello')
-  expect(hello?.next?.kind).toBe(T.ResponseMark)
+  expect(hello?.next?.kind).toBe(T.ResponseArrow)
   const withSpace = lexer.parse('hello, world =>')
-  expect(withSpace?.kind).toBe(T.Phrase)
+  expect(withSpace?.kind).toBe(T.PhraseText)
   expect(withSpace?.text).toBe('hello, world')
-  expect(withSpace?.next?.kind).toBe(T.ResponseMark)
+  expect(withSpace?.next?.kind).toBe(T.ResponseArrow)
 })
 test('soft break before =>', () => {
   const withSpace = lexer.parse('hello, world \n  =>')
-  expect(withSpace?.kind).toBe(T.Phrase)
+  expect(withSpace?.kind).toBe(T.PhraseText)
   expect(withSpace?.text).toBe('hello, world')
-  expect(withSpace?.next?.kind).toBe(T.ResponseMark)
+  expect(withSpace?.next?.kind).toBe(T.ResponseArrow)
 })
 
 test('newline', () => {
   const two = lexer.parse('hello\nworld')
   expect(two?.text).toBe('hello')
-  expect(two?.next?.kind).toBe(T.Phrase)
+  expect(two?.next?.kind).toBe(T.PhraseText)
   expect(two?.next?.text).toBe('world')
 })
 
@@ -67,13 +67,13 @@ describe('seq and fork', () => {
   test('seq', () => {
     const hello = lexer.parse('- hello')
     expect(hello?.kind).toBe(T.Seq)
-    expect(hello?.next?.kind).toBe(T.Phrase)
+    expect(hello?.next?.kind).toBe(T.PhraseText)
     expect(hello?.next?.text).toBe('hello')
   })
   test('fork', () => {
     const hello = lexer.parse('+ hello')
     expect(hello?.kind).toBe(T.Fork)
-    expect(hello?.next?.kind).toBe(T.Phrase)
+    expect(hello?.next?.kind).toBe(T.PhraseText)
     expect(hello?.next?.text).toBe('hello')
   })
 })
@@ -97,17 +97,17 @@ describe('dent', () => {
     expect(dent?.next?.kind).toBe(T.Seq)
     expect(dent?.next?.next).toBe(undefined)
   })
-  test('dent with seq and phrase', () => {
+  test('dent with seq and PhraseText', () => {
     const dent = lexer.parse('  - hi')
     expect(dent?.kind).toBe(T.Dent)
     expect(dent?.next?.kind).toBe(T.Seq)
-    expect(dent?.next?.next?.kind).toBe(T.Phrase)
+    expect(dent?.next?.next?.kind).toBe(T.PhraseText)
   })
-  test('dent with fork and phrase', () => {
+  test('dent with fork and PhraseText', () => {
     const dent = lexer.parse('  + hi')
     expect(dent?.kind).toBe(T.Dent)
     expect(dent?.next?.kind).toBe(T.Fork)
-    expect(dent?.next?.next?.kind).toBe(T.Phrase)
+    expect(dent?.next?.next?.kind).toBe(T.PhraseText)
   })
 })
 
@@ -143,5 +143,29 @@ describe('label', () => {
     expect(dentFork?.kind).toBe(T.Dent)
     expect(dentFork?.next?.kind).toBe(T.Fork)
     expect(dentFork?.next?.next?.kind).toBe(T.Label)
+  })
+})
+
+describe('double-quote string', () => {
+  test('empty', () => {
+    const s = lexer.parse('""')
+    expect(s?.kind).toBe(T.DoubleQuoteString)
+    expect(s?.text).toBe('""')
+  })
+  test('simple', () => {
+    const hello = lexer.parse('"hello"')
+    expect(hello?.kind).toBe(T.DoubleQuoteString)
+    expect(hello?.text).toBe('"hello"')
+  })
+})
+
+describe('backtick string', () => {
+  test('empty', () => {
+    expect(() => lexer.parse('``')).toThrow()
+  })
+  test('simple', () => {
+    const hello = lexer.parse('`hello`')
+    expect(hello?.kind).toBe(T.BacktickString)
+    expect(hello?.text).toBe('`hello`')
   })
 })
