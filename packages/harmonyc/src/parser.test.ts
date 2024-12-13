@@ -51,8 +51,11 @@ happy:
 + world`.trim(),
   new Section(new Label(), [
     new Section(
-      'happy',
-      [new Step('hello', [], [], true), new Step('world', [], [], true)],
+      new Label('happy'),
+      [
+        new Step(new Action([new Word('hello')]), [], [], true),
+        new Step(new Action([new Word('world')]), [], [], true),
+      ],
       true
     ),
   ])

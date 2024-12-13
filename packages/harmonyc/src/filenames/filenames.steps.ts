@@ -8,7 +8,7 @@ export default class Filenames {
   inputFile: string
   tmp = mkdtempSync(join(tmpdir(), 'harmonyc-test-')).replace(/\\/g, '/')
 
-  async input_file_is_$(string: string) {
+  async $(string: string) {
     this.inputFile = `${this.tmp}/${string}`
   }
   async __base_is_$(expected: string) {
