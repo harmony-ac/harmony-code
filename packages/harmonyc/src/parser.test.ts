@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { Section, Step } from './model'
+import { Action, Label, Section, Step, Word } from './model'
 import { parse } from './parser'
 
 function check(input: string, expected?: Section) {
@@ -10,16 +10,21 @@ function check(input: string, expected?: Section) {
   })
 }
 
-check('', new Section(''))
-check('hello', new Section('', [new Step('hello', [], [], true)]))
+check('', new Section())
+check(
+  'hello',
+  new Section(new Label(), [
+    new Step(new Action([new Word('hello')]), [], [], true),
+  ])
+)
 check(
   `
 > comment
 hello
 world`.trim(),
-  new Section('', [
-    new Step('hello', [], [], true),
-    new Step('world', [], [], true),
+  new Section(new Label(), [
+    new Step(new Action([new Word('hello')]), [], [], true),
+    new Step(new Action([new Word('world')]), [], [], true),
   ])
 )
 check(
@@ -28,10 +33,13 @@ happy:
 # comment
 - hello
 - world`.trim(),
-  new Section('', [
+  new Section(new Label(), [
     new Section(
-      'happy',
-      [new Step('hello', [], [], false), new Step('world', [], [], false)],
+      new Label('happy'),
+      [
+        new Step(new Action([new Word('hello')]), [], [], false),
+        new Step(new Action([new Word('world')]), [], [], false),
+      ],
       true
     ),
   ])
@@ -41,7 +49,7 @@ check(
 happy:
 + hello
 + world`.trim(),
-  new Section('', [
+  new Section(new Label(), [
     new Section(
       'happy',
       [new Step('hello', [], [], true), new Step('world', [], [], true)],

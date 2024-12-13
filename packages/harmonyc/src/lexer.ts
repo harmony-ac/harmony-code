@@ -2,7 +2,6 @@ import { Token, buildLexer } from 'typescript-parsec'
 
 export enum T {
   Newline = 'newline',
-  EOF = 'EOF',
   Comment = 'comment',
   /** the => */
   ResponseArrow = '=>',
@@ -25,7 +24,6 @@ export const lexer = buildLexer([
   // if multiple patterns match, the longest one wins, if same, the former
   // patterns must start with ^ and be /g
   [true, /^\n/g, T.Newline],
-  [true, /^$/g, T.EOF],
   [true, /^\t/g, T.InvalidTab],
   [true, /^[\x00-\x1f]/g, T.InvalidWhitespace],
   [true, /^ /g, T.Space],

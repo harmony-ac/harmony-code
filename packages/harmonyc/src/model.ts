@@ -5,6 +5,8 @@ export interface CodeGenerator {
   feature(feature: Feature): void
   test(test: Test): void
   phrase(phrase: Phrase): void
+  stringLiteral(text: string): string
+  codeLiteral(src: string): string
 }
 
 export interface Location {
@@ -83,14 +85,14 @@ export class Step extends Branch {
   state?: State
 
   constructor(
-    action = '',
-    responses: string[] = [],
+    action: Action,
+    responses: Response[] = [],
     children?: Branch[],
     isFork = false
   ) {
     super(children)
-    this.action = new Action(action)
-    this.responses = responses.map((response) => new Response(response))
+    this.action = action
+    this.responses = responses
     this.isFork = isFork
   }
   get phrases(): Phrase[] {
@@ -124,21 +126,63 @@ export class Label {
 
 export class Section extends Branch {
   label: Label
-  constructor(label = '', children?: Branch[], isFork = false) {
+  constructor(label?: Label, children?: Branch[], isFork = false) {
     super(children)
-    this.label = new Label(label)
+    this.label = label ?? new Label()
     this.isFork = isFork
   }
 }
 
-export abstract class Phrase {
+export abstract class Part {}
+
+export class Word extends Part {
   text: string
+  constructor(text = '') {
+    super()
+    this.text = text
+  }
+  toString() {
+    return this.text
+  }
+}
+export abstract class Arg extends Part {
+  abstract toCode(cg: CodeGenerator): string
+}
+export class StringLiteral extends Arg {
+  text: string
+  constructor(text = '') {
+    super()
+    this.text = text
+  }
+  toString() {
+    return JSON.stringify(this.text)
+  }
+  toCode(cg: CodeGenerator) {
+    return cg.stringLiteral(this.text)
+  }
+}
+export class CodeLiteral extends Arg {
+  src: string
+  constructor(src = '') {
+    super()
+    this.src = src
+  }
+  toString() {
+    return '`' + this.src + '`'
+  }
+  toCode(cg: CodeGenerator) {
+    return cg.codeLiteral(this.src)
+  }
+}
+
+export abstract class Phrase {
+  content: Part[]
   feature!: Feature
   docstring?: string
   location?: Location
   abstract get kind(): string
-  constructor(text = '') {
-    this.text = text
+  constructor(content: Part[] = []) {
+    this.content = content
   }
   setFeature(feature: Feature) {
     this.feature = feature
@@ -146,12 +190,19 @@ export abstract class Phrase {
   get keyword() {
     return this.kind === 'action' ? 'When' : 'Then'
   }
+  get args() {
+    return this.content.filter((c) => c instanceof Arg)
+  }
   toCode(cg: CodeGenerator) {
-    if (!this.text) return
+    if (!this.content.length) return
     cg.phrase(this)
   }
+  toString() {
+    return this.content.map((c) => c.toString()).join(' ')
+  }
   definition() {
-    const key = this.kind === 'action' ? this.text : `=> ${this.text}`
+    const key =
+      this.kind === 'action' ? this.toString() : `=> ${this.toString()}`
     let args: readonly Argument[] | undefined
     let code: string | undefined
     for (const [ce, c] of this.feature.definitions.entries()) {

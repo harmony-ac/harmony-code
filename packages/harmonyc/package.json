@@ -8,6 +8,7 @@
     "test": "node ./dist/cli 'src/**/*.harmony' && vitest",
     "test:compile": "tsx ./src/cli 'src/**/*.harmony'",
     "test:watch": "tsx watch ./src/cli './src/**/*.harmony' --watch & vitest --watch",
+    "dev": "tsx watch ./src/cli './src/**/*.harmony' --watch",
     "publish": "rm dist/*.js && npm run build && npm run test && cp -f ../../README.md dist/ && cd dist && npm publish"
   },
   "exports": {
@@ -22,7 +23,8 @@
   "dependencies": {
     "@cucumber/cucumber-expressions": "^17.1.0",
     "fast-glob": "^3.3.2",
-    "typescript-parsec": "0.3.4"
+    "typescript-parsec": "0.3.4",
+    "watcher": "^2.3.1"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^10.3.2",

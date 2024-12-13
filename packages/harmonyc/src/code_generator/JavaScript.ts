@@ -1,5 +1,5 @@
 import { basename } from 'path'
-import { CodeGenerator, Feature, Phrase, Test } from '../model.js'
+import { Arg, CodeGenerator, Feature, Phrase, Test, Word } from '../model.js'
 import { OutFile } from '../outFile.js'
 
 export class NodeTest implements CodeGenerator {
@@ -45,24 +45,40 @@ export class NodeTest implements CodeGenerator {
       }
     })
     this.tf.print('});')
-    this.tf.print('')
   }
 
   phrase(p: Phrase) {
-    const phrasefn = toFunctionName(p.text, p.kind)
+    const phrasefn = this.functionName(p)
     if (!this.phraseFns.includes(phrasefn)) this.phraseFns.push(phrasefn)
     const feature = p.feature.name
     let f = this.featureVars.get(feature)
     if (!f) {
-      f = toId(feature, this.featureVars)
+      f = toId(feature, abbrev, this.featureVars)
       this.tf.print(`const ${f} = new ${pascalCase(feature)}();`)
     }
-    const args: any[] = []
-    p.text.replace(/"([^"]*)"/g, (_, s) => (args.push(s), ''))
-    if (p.docstring) args.push(p.docstring)
-    const formattedArgs = args.map((x) => str(x)).join(', ')
-    this.tf.print(
-      `await ${f}.${toFunctionName(p.text, p.kind)}(${formattedArgs});`
+    const args = p.args.map((a) => a.toCode(this))
+    if (p.docstring) args.push(str(p.docstring))
+    this.tf.print(`await ${f}.${this.functionName(p)}(${args.join(', ')});`)
+  }
+
+  stringLiteral(text: string): string {
+    return str(text)
+  }
+
+  codeLiteral(src: string): string {
+    return src
+  }
+
+  private functionName(phrase: Phrase) {
+    const { kind } = phrase
+    return (
+      (kind === 'response' ? '__' : '') +
+      (phrase.content
+        .map((c) =>
+          c instanceof Word ? underscore(c.text) : c instanceof Arg ? '$' : ''
+        )
+        .filter((x) => x)
+        .join('_') || '_')
     )
   }
 }
@@ -81,9 +97,13 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-function toId(s: string, previous: Map<string, string>) {
+function toId(
+  s: string,
+  transform: (s: string) => string,
+  previous: Map<string, string>
+) {
   if (previous.has(s)) return previous.get(s)!
-  let base = abbrev(s)
+  let base = transform(s)
   let id = base
   if ([...previous.values()].includes(id)) {
     let i = 1
@@ -94,23 +114,20 @@ function toId(s: string, previous: Map<string, string>) {
   return id
 }
 
+function words(s: string) {
+  return s.split(/[^0-9\p{L}]+/gu)
+}
+
 function pascalCase(s: string) {
-  return s
-    .split(/[^a-zA-Z0-9]/)
-    .map(capitalize)
-    .join('')
+  return words(s).map(capitalize).join('')
+}
+
+function underscore(s: string) {
+  return words(s).join('_')
 }
 
 function abbrev(s: string) {
-  return s
-    .split(/[^a-zA-Z0-9]/)
-    .map((x) => x.charAt(0).toLowerCase())
+  return words(s)
+    .map((x) => x.charAt(0).toUpperCase())
     .join('')
-}
-
-function toFunctionName(phrase: string, type: string) {
-  return (
-    (type === 'response' ? '__' : '') +
-    phrase.replace(/"([^"]*)"/g, '$').replace(/[^\w$]+/g, '_')
-  )
 }

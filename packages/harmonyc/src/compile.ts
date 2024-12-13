@@ -1,4 +1,3 @@
-import { existsSync } from 'node:fs'
 import { NodeTest } from './code_generator/JavaScript.js'
 import { OutFile } from './outFile.js'
 import { parse } from './parser.js'
@@ -13,7 +12,16 @@ export interface CompiledFeature {
 
 export function compileFeature(fileName: string, src: string) {
   const feature = new Feature(basename(base(fileName)))
-  feature.root = parse(src) as Section
+  try {
+    feature.root = parse(src) as Section
+  } catch (e: any) {
+    if (e.pos) {
+      e.stack = `Error in ${fileName}:${e.pos.rowBegin}:${e.pos.columnBegin}\n${e.stack}`
+    } else {
+      e.stack = `Error in ${fileName}\n${e.stack} ${src}`
+    }
+    throw e
+  }
   feature.root.setFeature(feature)
   const testFn = testFileName(fileName)
   const testFile = new OutFile(testFn)

@@ -10,73 +10,85 @@ import {
   rule,
   seq,
   tok,
+  list_sc,
+  kleft,
+  kmid,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer'
 import type { Branch } from './model'
-import { Section, Step } from './model'
+import {
+  Action,
+  Response,
+  CodeLiteral,
+  StringLiteral,
+  Section,
+  Step,
+  Word,
+  Label,
+} from './model'
 
 export function parse(input: string) {
   const tokens = lexer.parse(input)
   return expectSingleResult(expectEOF(TEST_DESIGN.parse(tokens)))
 }
 
-const PHRASE_TEXT = rule<T, string>()
-PHRASE_TEXT.setPattern(apply(tok(T.PhraseText), ({ text }) => text))
-const DOUBLE_QUOTE_STRING = rule<T, string>()
-DOUBLE_QUOTE_STRING.setPattern(
-  apply(tok(T.DoubleQuoteString), ({ text }) => text)
+const NEWLINE = tok(T.Newline)
+const SPACE = tok(T.Space)
+const WORD = apply(tok(T.Word), ({ text }) => new Word(text))
+const DOUBLE_QUOTE_STRING = apply(
+  tok(T.DoubleQuoteString),
+  ({ text }) => new StringLiteral(JSON.parse(text))
 )
-const BACKTICK_STRING = rule<T, string>()
-BACKTICK_STRING.setPattern(apply(tok(T.BacktickString), ({ text }) => text))
-
-const PHRASE_PART = rule<T, string>()
-PHRASE_PART.setPattern(
-  alt_sc(PHRASE_TEXT, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
+const BACKTICK_STRING = apply(
+  tok(T.BacktickString),
+  ({ text }) => new CodeLiteral(text.slice(1, -1))
 )
-
-const PHRASE = rule<T, string>()
-PHRASE.setPattern(apply(rep_sc(PHRASE_PART), (parts) => parts.join(' ')))
-
-const STEP = rule<T, Branch>()
-STEP.setPattern(
-  apply(
-    seq(PHRASE, rep_sc(kright(tok(T.ResponseArrow), PHRASE))),
-    ([action, responses]) => new Step(action, responses).setFork(true)
-  )
-)
-const SECTION = rule<T, Section>()
-SECTION.setPattern(
-  apply(tok(T.Label), ({ text }) => new Section(text.slice(0, -1)))
-)
-const BRANCH = rule<T, Branch>()
-BRANCH.setPattern(alt_sc(STEP, SECTION))
-
-const DENTS = rule<T, { dent: number; isFork: boolean }>()
-DENTS.setPattern(
-  apply(
-    opt_sc(seq(rep_sc(tok(T.Dent)), alt_sc(tok(T.Seq), tok(T.Fork)))),
-    (lineHead) => {
-      if (!lineHead) return { dent: 0, isFork: true }
-      const [dents, seqOrFork] = lineHead
-      return { dent: dents.length + 1, isFork: seqOrFork.kind === T.Fork }
-    }
-  )
+const PART = alt_sc(WORD, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
+const PHRASE = list_sc(PART, rep_sc(SPACE))
+const ACTION = apply(PHRASE, (parts) => new Action(parts))
+const RESPONSE = apply(PHRASE, (parts) => new Response(parts))
+const ARROW = kmid(
+  rep_sc(alt_sc(SPACE, NEWLINE)),
+  tok(T.ResponseArrow),
+  rep_sc(SPACE)
 )
 
-const LINE = rule<T, { dent: number; branch: Branch }>()
-LINE.setPattern(
-  apply(seq(DENTS, BRANCH), ([{ dent, isFork }, branch], [start, end]) => ({
+const STEP = apply(
+  seq(ACTION, rep_sc(kright(ARROW, RESPONSE))),
+  ([action, responses]) => new Step(action, responses).setFork(true)
+)
+
+const LABEL = apply(
+  kleft(list_sc(WORD, rep_sc(SPACE)), tok(T.Colon)),
+  (words) => new Label(words.map((w) => w.text).join(' '))
+)
+
+const SECTION = apply(LABEL, (text) => new Section(text))
+const BRANCH = alt_sc(SECTION, STEP) // section first, to make sure there is no colon after step
+
+const DENTS = apply(
+  opt_sc(seq(rep_sc(SPACE), alt_sc(tok(T.Plus), tok(T.Minus)), SPACE)),
+  (lineHead) => {
+    if (!lineHead) return { dent: 0, isFork: true }
+    const [dents, seqOrFork] = lineHead
+    return { dent: dents.length / 2, isFork: seqOrFork.kind === T.Plus }
+  }
+)
+
+const LINE = apply(
+  seq(DENTS, BRANCH),
+  ([{ dent, isFork }, branch], [start, end]) => ({
     dent,
     branch: branch.setFork(isFork),
-  }))
+  })
 )
 
-const TEST_DESIGN = rule<T, Branch>()
-TEST_DESIGN.setPattern(
-  apply(rep_sc(LINE), (lines) => {
+const TEST_DESIGN = kmid(
+  rep_sc(NEWLINE),
+  apply(list_sc(LINE, rep_sc(NEWLINE)), (lines) => {
     const startDent = 0
     let dent = startDent
-    const root = new Section()
+    const root = new Section(new Label(''))
     let parent: Branch = root
 
     let lineNo = 0
@@ -98,7 +110,8 @@ TEST_DESIGN.setPattern(
     }
 
     return root
-  })
+  }),
+  rep_sc(NEWLINE)
 )
 
 function inputText(start: Token<T>, end: Token<T> | undefined) {
