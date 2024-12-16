@@ -1,0 +1,123 @@
+empty:
++ "" => ""
+
+space:
++ "   " => "space space space"
+
+comment:
++ hash:
+  + "#" => ""
+  + "#hello" => ""
+  + "# hello\n" => "newline"
+  + "#hello\nworld" => "newline word"
+  + "# hello\nworld\n" => "newline word newline"
+  + "#hello\nworld\n#goodbye" => "newline word newline"
++ double slash:
+  + "//" => ""
+  + "//hello" => ""
+  + "// hello\n" => "newline"
+  + "//hello\nworld" => "newline word"
+  + "// hello\nworld\n" => "newline word newline"
+  + "//hello\nworld\n//goodbye" => "newline word newline"
++ blockquote:
+  + ">" => ""
+  + ">hello" => ""
+  + "> hello\n" => "newline"
+  + ">hello\nworld" => "newline word"
+  + "> hello\nworld\n" => "newline word newline"
+  + ">hello\nworld\n>goodbye" => "newline word newline"
+
+response mark:
++ "=>" => "=>"
++ " =>" => "space =>"
++ "=> " => "=> space"
++ " => " => "space => space"
++ with words:
+  + "a =>" => "word space =>"
+  + "a=> " => "word => space"
+  + "=>a" => "=> word"
+  + "a=>b" => "word => word"
++ with newlines:
++ soft break before "=>":
+
+
+bracket:
++ "[" => "["
++ "]" => "]"
++ "[a" => "[ word"
++ "a]" => "word ]"
+
+text:
++ "a" => "word"
++ "a " => "word space"
++ "a b" => "word space word"
++ "a b c" => "word space word space word"
++ "a b\nc d" => "word space word newline word space word"
++ "a b\nc\n" => "word space word newline word newline"
++ "a b\nc \n" => "word space word newline word space newline"
+
+newline:
++ "\n" => "newline"
++ "\n\n"  => "newline newline"
++ "\n\na" => "newline newline word"
++ "a\n"   => "word newline"
++ "a\n\n" => "word newline newline"
++ "a\nb"   => "word newline word"
++ "a\nb\n" => "word newline word newline"
+
+list items:
++ "- " => "- space"
++ "- a" => "- space word"
++ "-a" => "word"
+
++ "+ " => "+ space"
++ "+ a" => "+ space word"
++ "+a" => "word"
+
+dent:
++ single dent:
+  + "  " => "space space"
+  + "  a" => "space space word"
+  + "  [x ] " => "space space [ word space ] space"
++ multiple dent:
+  + "    + " => "space space space space + space"
+  + "    + a" => "space space space space + space word"
++ dent with seq:
+  + "  - " => "space space - space"
+  + "  - a" => "space space - space word"
++ dent with fork:
+  + "  + " => "space space + space"
+  + "  + a" => "space space + space word"
+
+state:
++ "[]" => "[ ]"
++ "[x]" => "[ word ]"
++ "[ x ]" => "[ space word space ]"
+
+colon:
++ "hello:" => "word :"
+
+double-quote string:
++ unclosed:
+  + "\"" => "unclosed double-quote string"
+  + "\" " => "unclosed double-quote string"
+  + "\":" => "unclosed double-quote string"
+  + "\"hello" => "unclosed double-quote string"
+  + "\"hello, world" => "unclosed double-quote string"
++ empty:
+  + "\"\"" => "double-quote string"
++ simple:
+  + "\"hello\"" => "double-quote string"
+
+backtick string:
++ unclosed:
+  + "`" => "unclosed backtick string"
+  + "` " => "unclosed backtick string"
+  + "`:" => "unclosed backtick string"
+  + "`hello" => "unclosed backtick string"
+  + "`hello, world" => "unclosed backtick string"
++ empty:
+  + "``" => "invalid empty backtick string"
++ simple:
+  + "`hello`" => "backtick string"
+  + "a`hello`" => "word backtick string"

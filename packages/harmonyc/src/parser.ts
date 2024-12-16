@@ -59,8 +59,8 @@ const STEP = apply(
 )
 
 const LABEL = apply(
-  kleft(list_sc(WORD, rep_sc(SPACE)), tok(T.Colon)),
-  (words) => new Label(words.map((w) => w.text).join(' '))
+  kleft(list_sc(PART, rep_sc(SPACE)), tok(T.Colon)),
+  (words) => new Label(words.map((w) => w.toString()).join(' '))
 )
 
 const SECTION = apply(LABEL, (text) => new Section(text))

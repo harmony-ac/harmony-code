@@ -15,17 +15,17 @@ export class NodeTest implements CodeGenerator {
     if (this.framework === 'vitest') {
       this.tf.print(`import { test } from 'vitest';`)
     }
-    this.tf.print(`import ${fn} from ${str(stepsModule)};`)
+    this.tf.print(`import ${fn}Steps from ${str(stepsModule)};`)
     this.tf.print(``)
     for (const test of feature.tests) {
       test.toCode(this)
     }
-    this.sf.print(`export default class ${pascalCase(feature.name)} {`)
+    this.sf.print(`export default class ${pascalCase(feature.name)}Steps {`)
     this.sf.indent(() => {
-      for (const fn of this.phraseFns) {
-        this.sf.print(`async ${fn}() {`)
+      for (const ph of this.phraseFns) {
+        this.sf.print(`async ${ph}() {`)
         this.sf.indent(() => {
-          this.sf.print(`throw new Error(${str(`Pending: ${fn}`)});`)
+          this.sf.print(`throw new Error(${str(`Pending: ${ph}`)});`)
         })
         this.sf.print(`}`)
       }
@@ -38,7 +38,7 @@ export class NodeTest implements CodeGenerator {
     this.featureVars = new Map()
     // avoid shadowing this import name
     this.featureVars.set(new Object() as any, this.currentFeatureName)
-    this.tf.print(`test('${t.name}', async (context) => {`)
+    this.tf.print(`test('${t.name}', async () => {`)
     this.tf.indent(() => {
       for (const step of t.steps) {
         step.toCode(this)
@@ -54,7 +54,7 @@ export class NodeTest implements CodeGenerator {
     let f = this.featureVars.get(feature)
     if (!f) {
       f = toId(feature, abbrev, this.featureVars)
-      this.tf.print(`const ${f} = new ${pascalCase(feature)}();`)
+      this.tf.print(`const ${f} = new ${pascalCase(feature)}Steps();`)
     }
     const args = p.args.map((a) => a.toCode(this))
     if (p.docstring) args.push(str(p.docstring))
@@ -72,10 +72,10 @@ export class NodeTest implements CodeGenerator {
   private functionName(phrase: Phrase) {
     const { kind } = phrase
     return (
-      (kind === 'response' ? '__' : '') +
+      (kind === 'response' ? 'Then_' : 'When_') +
       (phrase.content
         .map((c) =>
-          c instanceof Word ? underscore(c.text) : c instanceof Arg ? '$' : ''
+          c instanceof Word ? underscore(c.text) : c instanceof Arg ? '_' : ''
         )
         .filter((x) => x)
         .join('_') || '_')
