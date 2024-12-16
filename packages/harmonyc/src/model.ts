@@ -117,9 +117,8 @@ export class Step extends Branch {
     return (
       `${this.action}` +
       this.responses.map((r) => ` => ${r}`).join('') +
-      '\n' +
-      super.toString()
-    ).trimEnd()
+      indent(super.toString())
+    )
   }
 }
 export class State {
@@ -146,7 +145,7 @@ export class Section extends Branch {
   }
   toString() {
     if (this.label.text === '') return super.toString()
-    return this.label.text + ':'
+    return this.label.text + ':' + indent(super.toString())
   }
 }
 
@@ -198,8 +197,9 @@ export abstract class Phrase {
   docstring?: string
   location?: Location
   abstract get kind(): string
-  constructor(content: Part[] = []) {
+  constructor(content: Part[] = [], docstring?: string) {
     this.content = content
+    this.docstring = docstring
   }
   setFeature(feature: Feature) {
     this.feature = feature
@@ -211,11 +211,18 @@ export abstract class Phrase {
     return this.content.filter((c) => c instanceof Arg)
   }
   toCode(cg: CodeGenerator) {
-    if (!this.content.length) return
+    if (!this.content.length && this.docstring === undefined) return
     cg.phrase(this)
   }
   toString() {
-    return this.content.map((c) => c.toString()).join(' ')
+    return [
+      ...(this.content.length > 0
+        ? [this.content.map((c) => c.toString()).join(' ')]
+        : []),
+      ...(this.docstring !== undefined
+        ? this.docstring.split('\n').map((l) => '| ' + l)
+        : []),
+    ].join('\n')
   }
   definition() {
     const key =
@@ -310,13 +317,13 @@ export class Test {
   }
 }
 
-function indent(isFork: boolean, s: string) {
+function indent(s: string) {
+  if (!s) return ''
   return (
-    (isFork ? '+' : '-') +
+    '\n' +
     s
       .split('\n')
       .map((l) => '  ' + l)
       .join('\n')
-      .slice(1)
   )
 }

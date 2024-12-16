@@ -1,4 +1,73 @@
-"hello" => "+ hello"
-"hello => world" => "+ hello => world"
-"hello
-  => world" => "+ hello => world"
++ production "ACTION"
+  + | hello
+    =>
+    | hello
+  + | hello "John"
+    =>
+    | hello "John"
+  + | | asdf
+    =>
+    | | asdf
+  + | 
+    | | asdf
+    =>
+    | | asdf
+
++ production "RESPONSE_ITEM"
+  + | => hello
+    =>
+    | hello
+  + | => "Jon"
+    =>
+    | "Jon"
+  + | => | asdf
+    =>
+    | | asdf
+  + | =>
+    | | asdf
+    =>
+    | | asdf
+
++ production "TEST_DESIGN"
+  + | hello
+    => | + hello
+  + "hello => world"    => | + hello => world
+  + "hello\n  => world" => | + hello => world
+  + "hello\n  => world" => | + hello => world
+
+  + string:
+    + | hello"John"
+      =>| + hello "John"
+
+  + multiline string:
+    + | | asdf
+      => | + | asdf
+    + | | asdf
+      | | bsdf
+      => | + | asdf
+         | | bsdf
+    + "hello\n| John" => "+ hello\n| John"
+    + "hello\n| John\n| Jim" => "+ hello\n| John\n| Jim"
+    + "hello\n| John\n    | Jim" => "+ hello\n| John\n| Jim"
+
+    + | hello
+      | world
+      =>
+      | + hello
+      | + world
+
+    + | + hello
+      | + world
+      => | + hello
+         | + world
+
+    + | + hello
+      | + world
+      => | + hello
+         | + world
+
+    + | + label:
+      |   + world
+      =>
+      | + label:
+      |   + world

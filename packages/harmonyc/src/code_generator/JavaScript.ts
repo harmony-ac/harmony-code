@@ -1,5 +1,13 @@
 import { basename } from 'path'
-import { Arg, CodeGenerator, Feature, Phrase, Test, Word } from '../model.js'
+import {
+  Arg,
+  CodeGenerator,
+  Feature,
+  Phrase,
+  StringLiteral,
+  Test,
+  Word,
+} from '../model.js'
 import { OutFile } from '../outFile.js'
 
 export class NodeTest implements CodeGenerator {
@@ -73,7 +81,10 @@ export class NodeTest implements CodeGenerator {
     const { kind } = phrase
     return (
       (kind === 'response' ? 'Then_' : 'When_') +
-      (phrase.content
+      ([
+        ...phrase.content,
+        phrase.docstring ? [new StringLiteral(phrase.docstring)] : [],
+      ]
         .map((c) =>
           c instanceof Word ? underscore(c.text) : c instanceof Arg ? '_' : ''
         )
@@ -90,7 +101,7 @@ function str(s: string) {
 }
 
 function templateStr(s: string) {
-  return '`' + s.replace(/([`$])/g, '\\$1') + '`'
+  return '`' + s.replace(/([`$\\])/g, '\\$1') + '`'
 }
 
 function capitalize(s: string) {

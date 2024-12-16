@@ -126,9 +126,16 @@ strings:
   + "|" => "multiline string"
   + "| " => "multiline string"
   + "|:" => "invalid multiline string mark"
-  + "| hello\n|:" => "multiline string invalid multiline string mark"
+  + "| hello\n|:" => "multiline string newline invalid multiline string mark"
   + "| hello" => "multiline string"
-  + "| hello\nworld" => "multiline string word"
-  + "| hello\n| world\n" => "multiline string multiline string"
-  + "| hello\n| world\n|" => "multiline string multiline string multiline string"
+  + "| hello\nworld" => "multiline string newline word"
+  + "| hello\n| world\n" => "multiline string newline multiline string newline"
+  + "| hello\n| world\n|" => "multiline string newline multiline string newline multiline string"
 
+  + | + | hello
+    |   => | hello
+    => "+ space multiline string newline space space => space multiline string"
+  + | + | hello
+    |   =>
+    |   | hello
+    => "+ space multiline string newline space space => newline space space multiline string"

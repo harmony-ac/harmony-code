@@ -40,18 +40,18 @@ export const lexer = buildLexer([
   [false, /^(#|>|\/\/).*?(?=\n|$)/g, T.Comment],
   [
     true,
-    /^"(?:[^"\\]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/g,
+    /^"(?:[^"\\\n]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/g,
     T.DoubleQuoteString,
   ],
   [
     true,
-    /^"(?:[^"\\]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*/g,
+    /^"(?:[^"\\\n]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*/g,
     T.UnclosedDoubleQuoteString,
   ],
   [true, /^``/g, T.InvalidEmptyBacktickString],
   [true, /^`[^`]+`/g, T.BacktickString],
   [true, /^`[^`]*/g, T.UnclosedBacktickString],
   [true, /^(?!=>)[^\s[\]"`:|]+?(?=[\s[\]"`:|]|=>|$)/g, T.Word],
-  [true, /^\|(?: .*)?(?:\n[ ]*|$)/g, T.MultilineString],
+  [true, /^\|(?: .*)?/g, T.MultilineString],
   [true, /^\|[^ ]/g, T.InvalidMultilineStringMark],
 ])

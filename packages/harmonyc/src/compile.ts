@@ -15,8 +15,9 @@ export function compileFeature(fileName: string, src: string) {
   try {
     feature.root = parse(src) as Section
   } catch (e: any) {
-    if (e.pos) {
-      e.stack = `Error in ${fileName}:${e.pos.rowBegin}:${e.pos.columnBegin}\n${e.stack}`
+    if (e.pos && e.errorMessage) {
+      e.message =
+        e.stack = `Error in ${fileName}:${e.pos.rowBegin}:${e.pos.columnBegin}\n${e.errorMessage}`
     } else {
       e.stack = `Error in ${fileName}\n${e.stack}`
     }

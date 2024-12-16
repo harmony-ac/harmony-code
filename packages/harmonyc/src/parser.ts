@@ -13,6 +13,11 @@ import {
   list_sc,
   kleft,
   kmid,
+  err,
+  fail,
+  nil,
+  rep,
+  alt,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer'
 import type { Branch } from './model'
@@ -27,50 +32,66 @@ import {
   Label,
 } from './model'
 
-export function parse(input: string) {
+export function parse(input: string, production = TEST_DESIGN) {
   const tokens = lexer.parse(input)
-  return expectSingleResult(expectEOF(TEST_DESIGN.parse(tokens)))
+  return expectSingleResult(expectEOF(production.parse(tokens)))
 }
 
-const NEWLINE = kleft(
-  tok(T.Newline),
-  rep_sc(seq(rep_sc(tok(T.Space)), tok(T.Newline)))
+export const SPACES = rep_sc(tok(T.Space))
+export const NEWLINES = list_sc(tok(T.Newline), SPACES) // empty lines can have spaces
+
+export const WORD = apply(tok(T.Word), ({ text }) => new Word(text))
+export const DOUBLE_QUOTE_STRING = alt_sc(
+  apply(
+    tok(T.DoubleQuoteString),
+    ({ text }) => new StringLiteral(JSON.parse(text))
+  ),
+  seq(tok(T.UnclosedDoubleQuoteString), fail('unclosed double-quote string'))
 )
-const SPACE = tok(T.Space)
-const WORD = apply(tok(T.Word), ({ text }) => new Word(text))
-const DOUBLE_QUOTE_STRING = apply(
-  tok(T.DoubleQuoteString),
-  ({ text }) => new StringLiteral(JSON.parse(text))
-)
-const BACKTICK_STRING = apply(
+export const BACKTICK_STRING = apply(
   tok(T.BacktickString),
   ({ text }) => new CodeLiteral(text.slice(1, -1))
 )
-const PART = alt_sc(WORD, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
-const PHRASE = list_sc(PART, rep_sc(SPACE))
-const ACTION = apply(PHRASE, (parts) => new Action(parts))
-const RESPONSE = apply(PHRASE, (parts) => new Response(parts))
-const ARROW = kmid(
-  rep_sc(alt_sc(SPACE, NEWLINE)),
-  tok(T.ResponseArrow),
-  rep_sc(SPACE)
+export const DOCSTRING = apply(
+  list_sc(tok(T.MultilineString), seq(tok(T.Newline), SPACES)),
+  (lines) => lines.map(({ text }) => text.slice(2)).join('\n')
 )
 
-const STEP = apply(
-  seq(ACTION, rep_sc(kright(ARROW, RESPONSE))),
+export const PART = alt_sc(WORD, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
+export const PHRASE = seq(
+  opt_sc(list_sc(PART, SPACES)),
+  opt_sc(kright(opt_sc(NEWLINES), kright(SPACES, DOCSTRING)))
+)
+export const ACTION = apply(
+  PHRASE,
+  ([parts, docstring]) => new Action(parts, docstring)
+)
+export const RESPONSE = apply(
+  PHRASE,
+  ([parts, docstring]) => new Response(parts, docstring)
+)
+export const ARROW = kmid(
+  seq(opt_sc(NEWLINES), SPACES),
+  tok(T.ResponseArrow),
+  SPACES
+)
+
+export const RESPONSE_ITEM = kright(ARROW, RESPONSE)
+export const STEP = apply(
+  seq(ACTION, rep_sc(RESPONSE_ITEM)),
   ([action, responses]) => new Step(action, responses).setFork(true)
 )
 
-const LABEL = apply(
-  kleft(list_sc(PART, rep_sc(SPACE)), tok(T.Colon)),
+export const LABEL = apply(
+  kleft(list_sc(PART, SPACES), tok(T.Colon)),
   (words) => new Label(words.map((w) => w.toString()).join(' '))
 )
 
-const SECTION = apply(LABEL, (text) => new Section(text))
-const BRANCH = alt_sc(SECTION, STEP) // section first, to make sure there is no colon after step
+export const SECTION = apply(LABEL, (text) => new Section(text))
+export const BRANCH = alt_sc(SECTION, STEP) // section first, to make sure there is no colon after step
 
-const DENTS = apply(
-  opt_sc(seq(rep_sc(SPACE), alt_sc(tok(T.Plus), tok(T.Minus)), SPACE)),
+export const DENTS = apply(
+  opt_sc(seq(SPACES, alt_sc(tok(T.Plus), tok(T.Minus)), tok(T.Space))),
   (lineHead) => {
     if (!lineHead) return { dent: 0, isFork: true }
     const [dents, seqOrFork] = lineHead
@@ -78,7 +99,7 @@ const DENTS = apply(
   }
 )
 
-const LINE = apply(
+export const LINE = apply(
   seq(DENTS, BRANCH),
   ([{ dent, isFork }, branch], [start, end]) => ({
     dent,
@@ -86,14 +107,14 @@ const LINE = apply(
   })
 )
 
-const TEST_DESIGN = kmid(
-  rep_sc(NEWLINE),
+export const TEST_DESIGN = kmid(
+  rep_sc(NEWLINES),
   apply(
     list_sc(
       apply(LINE, (line, [start, end]) => ({ line, start, end })),
-      NEWLINE
+      NEWLINES
     ),
-    (lines, [start, end]) => {
+    (lines) => {
       const startDent = 0
       let dent = startDent
       const root = new Section(new Label(''))
@@ -123,7 +144,7 @@ const TEST_DESIGN = kmid(
       return root
     }
   ),
-  rep_sc(NEWLINE)
+  rep_sc(NEWLINES)
 )
 
 function inputText(start: Token<T>, end: Token<T> | undefined) {

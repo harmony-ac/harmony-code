@@ -5,9 +5,9 @@ export async function watchFiles(patterns: string[]) {
   const { fns, outFns } = await compileFiles(patterns)
   for (const file of fns) {
     const watcher = new Watcher(file, { debounce: 20, ignoreInitial: true })
-    watcher.on('all', () => {
+    watcher.on('all', async () => {
       try {
-        compileFile(file)
+        await compileFile(file)
       } catch (e: any) {
         process.stdout.write(`\n`)
         console.log(e.message ?? e)

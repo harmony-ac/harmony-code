@@ -7,7 +7,16 @@ export async function compileFiles(pattern: string | string[]) {
   const fns = await glob(pattern)
   if (!fns.length)
     throw new Error(`No files found for pattern: ${String(pattern)}`)
-  const features = await Promise.all(fns.map((fn) => compileFile(fn)))
+  const results = await Promise.allSettled(fns.map((fn) => compileFile(fn)))
+  const features = results.flatMap((r) =>
+    r.status === 'fulfilled' ? [r.value] : []
+  )
+  const errors = results.flatMap((r) =>
+    r.status === 'rejected' ? [r.reason] : []
+  )
+  for (const error of errors) {
+    console.log(error.message ?? error)
+  }
   console.log(`Compiled ${fns.length} file${fns.length === 1 ? '' : 's'}.`)
   const generated = features.filter((f) => f.stepsFileAction === 'generated')
   if (generated.length) {
