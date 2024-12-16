@@ -77,6 +77,11 @@ export abstract class Branch {
   get siblingIndex() {
     return this.parent?.children.indexOf(this) ?? -1
   }
+  toString(): string {
+    return this.children
+      .map((c) => (c.isFork ? '+ ' : '- ') + c.toString())
+      .join('\n')
+  }
 }
 
 export class Step extends Branch {
@@ -108,6 +113,14 @@ export class Step extends Branch {
     for (const response of this.responses) response.setFeature(feature)
     return super.setFeature(feature)
   }
+  toString() {
+    return (
+      `${this.action}` +
+      this.responses.map((r) => ` => ${r}`).join('') +
+      '\n' +
+      super.toString()
+    ).trimEnd()
+  }
 }
 export class State {
   text: string
@@ -130,6 +143,10 @@ export class Section extends Branch {
     super(children)
     this.label = label ?? new Label()
     this.isFork = isFork
+  }
+  toString() {
+    if (this.label.text === '') return super.toString()
+    return this.label.text + ':'
   }
 }
 
@@ -291,4 +308,15 @@ export class Test {
   toCode(cg: CodeGenerator) {
     cg.test(this)
   }
+}
+
+function indent(isFork: boolean, s: string) {
+  return (
+    (isFork ? '+' : '-') +
+    s
+      .split('\n')
+      .map((l) => '  ' + l)
+      .join('\n')
+      .slice(1)
+  )
 }

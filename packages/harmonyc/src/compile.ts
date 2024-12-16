@@ -18,7 +18,7 @@ export function compileFeature(fileName: string, src: string) {
     if (e.pos) {
       e.stack = `Error in ${fileName}:${e.pos.rowBegin}:${e.pos.columnBegin}\n${e.stack}`
     } else {
-      e.stack = `Error in ${fileName}\n${e.stack} ${src}`
+      e.stack = `Error in ${fileName}\n${e.stack}`
     }
     throw e
   }

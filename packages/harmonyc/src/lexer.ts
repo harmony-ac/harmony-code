@@ -19,6 +19,8 @@ export enum T {
   InvalidEmptyBacktickString = 'invalid empty backtick string',
   InvalidWhitespace = 'invalid whitespace',
   InvalidTab = 'invalid tab',
+  MultilineString = 'multiline string',
+  InvalidMultilineStringMark = 'invalid multiline string mark',
 }
 
 export const lexer = buildLexer([
@@ -49,5 +51,7 @@ export const lexer = buildLexer([
   [true, /^``/g, T.InvalidEmptyBacktickString],
   [true, /^`[^`]+`/g, T.BacktickString],
   [true, /^`[^`]*/g, T.UnclosedBacktickString],
-  [true, /^(?!=>)[^\s[\]"`:]+?(?=[\s[\]"`:]|=>|$)/g, T.Word],
+  [true, /^(?!=>)[^\s[\]"`:|]+?(?=[\s[\]"`:|]|=>|$)/g, T.Word],
+  [true, /^\|(?: .*)?(?:\n[ ]*|$)/g, T.MultilineString],
+  [true, /^\|[^ ]/g, T.InvalidMultilineStringMark],
 ])

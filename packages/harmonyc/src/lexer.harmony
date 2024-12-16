@@ -97,27 +97,38 @@ state:
 colon:
 + "hello:" => "word :"
 
-double-quote string:
-+ unclosed:
-  + "\"" => "unclosed double-quote string"
-  + "\" " => "unclosed double-quote string"
-  + "\":" => "unclosed double-quote string"
-  + "\"hello" => "unclosed double-quote string"
-  + "\"hello, world" => "unclosed double-quote string"
-+ empty:
-  + "\"\"" => "double-quote string"
-+ simple:
-  + "\"hello\"" => "double-quote string"
+strings:
++ double-quote string:
+  + unclosed:
+    + "\"" => "unclosed double-quote string"
+    + "\" " => "unclosed double-quote string"
+    + "\":" => "unclosed double-quote string"
+    + "\"hello" => "unclosed double-quote string"
+    + "\"hello, world" => "unclosed double-quote string"
+  + empty:
+    + "\"\"" => "double-quote string"
+  + simple:
+    + "\"hello\"" => "double-quote string"
 
-backtick string:
-+ unclosed:
-  + "`" => "unclosed backtick string"
-  + "` " => "unclosed backtick string"
-  + "`:" => "unclosed backtick string"
-  + "`hello" => "unclosed backtick string"
-  + "`hello, world" => "unclosed backtick string"
-+ empty:
-  + "``" => "invalid empty backtick string"
-+ simple:
-  + "`hello`" => "backtick string"
-  + "a`hello`" => "word backtick string"
++ backtick string:
+  + unclosed:
+    + "`" => "unclosed backtick string"
+    + "` " => "unclosed backtick string"
+    + "`:" => "unclosed backtick string"
+    + "`hello" => "unclosed backtick string"
+    + "`hello, world" => "unclosed backtick string"
+  + empty:
+    + "``" => "invalid empty backtick string"
+  + simple:
+    + "`hello`" => "backtick string"
+    + "a`hello`" => "word backtick string"
++ multiline string:
+  + "|" => "multiline string"
+  + "| " => "multiline string"
+  + "|:" => "invalid multiline string mark"
+  + "| hello\n|:" => "multiline string invalid multiline string mark"
+  + "| hello" => "multiline string"
+  + "| hello\nworld" => "multiline string word"
+  + "| hello\n| world\n" => "multiline string multiline string"
+  + "| hello\n| world\n|" => "multiline string multiline string multiline string"
+

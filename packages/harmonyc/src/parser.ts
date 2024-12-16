@@ -32,7 +32,10 @@ export function parse(input: string) {
   return expectSingleResult(expectEOF(TEST_DESIGN.parse(tokens)))
 }
 
-const NEWLINE = tok(T.Newline)
+const NEWLINE = kleft(
+  tok(T.Newline),
+  rep_sc(seq(rep_sc(tok(T.Space)), tok(T.Newline)))
+)
 const SPACE = tok(T.Space)
 const WORD = apply(tok(T.Word), ({ text }) => new Word(text))
 const DOUBLE_QUOTE_STRING = apply(
@@ -85,32 +88,41 @@ const LINE = apply(
 
 const TEST_DESIGN = kmid(
   rep_sc(NEWLINE),
-  apply(list_sc(LINE, rep_sc(NEWLINE)), (lines) => {
-    const startDent = 0
-    let dent = startDent
-    const root = new Section(new Label(''))
-    let parent: Branch = root
+  apply(
+    list_sc(
+      apply(LINE, (line, [start, end]) => ({ line, start, end })),
+      NEWLINE
+    ),
+    (lines, [start, end]) => {
+      const startDent = 0
+      let dent = startDent
+      const root = new Section(new Label(''))
+      let parent: Branch = root
 
-    let lineNo = 0
-    for (const { dent: d, branch } of lines) {
-      ++lineNo
-      if (d > dent + 1) {
-        throw new Error(`invalid indent ${d} at line ${lineNo}`)
-      } else if (d === dent + 1) {
-        parent = parent.children[parent.children.length - 1]
-        ++dent
-      } else if (d < startDent) {
-        throw new Error(`invalid indent at line ${lineNo}`)
-      } else
-        while (d < dent) {
-          parent = parent.parent!
-          --dent
-        }
-      parent.addChild(branch)
+      for (const { line, start } of lines) {
+        const { dent: d, branch } = line
+        if (Math.round(d) !== d) {
+          throw new Error(
+            `invalid odd indent of ${d * 2} at line ${start!.pos.rowBegin}`
+          )
+        } else if (d > dent + 1) {
+          throw new Error(`invalid indent ${d} at line ${start!.pos.rowBegin}`)
+        } else if (d === dent + 1) {
+          parent = parent.children[parent.children.length - 1]
+          ++dent
+        } else if (d < startDent) {
+          throw new Error(`invalid indent ${d} at line ${start!.pos.rowBegin}`)
+        } else
+          while (d < dent) {
+            parent = parent.parent!
+            --dent
+          }
+        parent.addChild(branch)
+      }
+
+      return root
     }
-
-    return root
-  }),
+  ),
   rep_sc(NEWLINE)
 )
 

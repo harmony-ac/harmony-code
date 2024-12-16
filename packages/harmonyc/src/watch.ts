@@ -1,13 +1,18 @@
 import Watcher from 'watcher'
 import { compileFile, compileFiles } from './compiler.js'
-import { log } from 'console'
 
 export async function watchFiles(patterns: string[]) {
   const { fns, outFns } = await compileFiles(patterns)
   for (const file of fns) {
     const watcher = new Watcher(file, { debounce: 20, ignoreInitial: true })
     watcher.on('all', () => {
-      compileFile(file)
+      try {
+        compileFile(file)
+      } catch (e: any) {
+        process.stdout.write(`\n`)
+        console.log(e.message ?? e)
+        process.stdout.write(`\n`)
+      }
       logger.log(`Compiled ${file}`)
     })
   }
