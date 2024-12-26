@@ -12,7 +12,8 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--profile=ExtDev"
-      ]
+      ],
+      "preLaunchTask": "${defaultBuildTask}"
     }
   ]
 }

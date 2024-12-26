@@ -4,6 +4,9 @@
   "displayName": "Harmony Code",
   "description": "Language support for the Harmony Code language",
   "version": "0.0.3",
+  "scripts": {
+    "build": "tsx ./tools/build_textmate.ts"
+  },
   "engines": {
     "vscode": "*"
   },
@@ -36,5 +39,8 @@
         "path": "./syntaxes/harmony.tmLanguage.json"
       }
     ]
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
   }
 }

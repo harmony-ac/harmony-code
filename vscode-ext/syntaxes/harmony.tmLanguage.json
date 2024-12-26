@@ -3,6 +3,18 @@
   "name": "Harmony",
   "patterns": [
     {
+      "name": "invalid.indent.harmony",
+      "match": "^(?:  )*[ ][+-].*?$"
+    },
+    {
+      "name": "invalid.line.start.harmony",
+      "match": "^[ ]*(?![#>|+-]|=>|\\/\\/)."
+    },
+    {
+      "name": "markup.heading.label.harmony",
+      "match": "(?<=^ *[+-] )[^\\s].*:\\s*$"
+    },
+    {
       "name": "invalid.whitespace.tab.harmony",
       "match": "\\t"
     },
@@ -20,7 +32,7 @@
     },
     {
       "name": "markup.heading.marker.harmony",
-      "match": ":"
+      "match": ":(?=\\s*(?:\\n|$))"
     },
     {
       "name": "punctuation.section.embedded.state.harmony",
@@ -60,7 +72,7 @@
     },
     {
       "name": "source.word.harmony",
-      "match": "(?!=>)[^\\s\\[\\]\"`:|]+?(?=[\\s\\[\\]\"`:|]|=>|$)"
+      "match": "(?!=>)[^\\s\\[\\]\"`|]+?(?=[\\s\\[\\]\"`|]|=>|:\\s*(?:\\n|$)|$)"
     },
     {
       "name": "string.harmony",

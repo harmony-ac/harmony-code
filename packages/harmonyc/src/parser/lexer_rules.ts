@@ -31,7 +31,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /^ /g, T.Space],
   [true, /^-/g, T.Minus],
   [true, /^\+/g, T.Plus],
-  [true, /^:/g, T.Colon],
+  [true, /^:(?=\s*(?:\n|$))/g, T.Colon],
   [true, /^\[/g, T.OpeningBracket],
   [true, /^\]/g, T.ClosingBracket],
   [true, /^=>/g, T.ResponseArrow],
@@ -49,7 +49,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /^``/g, T.InvalidEmptyBacktickString],
   [true, /^`[^`]+`/g, T.BacktickString],
   [true, /^`[^`]*/g, T.UnclosedBacktickString],
-  [true, /^(?!=>)[^\s\[\]"`:|]+?(?=[\s\[\]"`:|]|=>|$)/g, T.Word],
+  [true, /^(?!=>)[^\s\[\]"`|]+?(?=[\s\[\]"`|]|=>|:\s*(?:\n|$)|$)/g, T.Word],
   [true, /^\|(?: .*|(?=\n|$))/g, T.MultilineString],
   [true, /^\|[^ ]/g, T.InvalidMultilineStringMark],
 ]

@@ -28,6 +28,15 @@ const tm = {
     'https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json',
   name: 'Harmony',
   patterns: [
+    { name: 'invalid.indent.harmony', match: /^(?:  )*[ ][+-].*?$/.source },
+    {
+      name: 'invalid.line.start.harmony',
+      match: /^[ ]*(?![#>|+-]|=>|\/\/)./.source,
+    },
+    {
+      name: 'markup.heading.label.harmony',
+      match: /(?<=^ *[+-] )[^\s].*:\s*$/.source,
+    },
     ...rules.flatMap(([, re, t]) =>
       names[t]
         ? [

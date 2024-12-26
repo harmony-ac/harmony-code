@@ -4,10 +4,10 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "harmonyc": "tsx ./src/cli",
-    "test": "node ./dist/cli 'src/**/*.harmony' && vitest --no-watch",
-    "test:compile": "tsx ./src/cli 'src/**/*.harmony'",
-    "dev": "tsx watch ./src/cli './src/**/*.harmony' --watch & vitest --watch",
+    "harmonyc": "tsx ./src/cli/cli",
+    "test": "node ./dist/cli/cli 'src/**/*.harmony' && vitest --no-watch",
+    "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
+    "dev": "tsx watch ./src/cli/cli './src/**/*.harmony' --watch & vitest --watch",
     "publish": "rm dist/*.js && npm run build && npm run test && cp -f ../../README.md dist/ && cd dist && npm publish"
   },
   "exports": {
@@ -17,7 +17,7 @@
     }
   },
   "bin": {
-    "harmonyc": "./dist/cli.js"
+    "harmonyc": "./dist/cli/cli.js"
   },
   "dependencies": {
     "@cucumber/cucumber-expressions": "^17.1.0",
