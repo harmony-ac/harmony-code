@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-import { compileFiles } from './compiler.ts'
+import { compileFiles } from '../compiler/compiler.ts'
 import { parseArgs } from 'node:util'
 import { watchFiles } from './watch.ts'
 import { run, runWatch } from './run.ts'
 
 const args = parseArgs({
   options: {
-    help: { type: 'boolean'  },
-    watch: { type: 'boolean', short: 'w'},
-    run: { type: 'boolean', short: 'r'},
+    help: { type: 'boolean' },
+    watch: { type: 'boolean', short: 'w' },
+    run: { type: 'boolean', short: 'r' },
   },
   allowPositionals: true,
 })

@@ -1,5 +1,5 @@
 import Watcher from 'watcher'
-import { compileFile, compileFiles } from './compiler.ts'
+import { compileFile, compileFiles } from '../compiler/compiler.ts'
 
 export async function watchFiles(patterns: string[]) {
   const { fns, outFns } = await compileFiles(patterns)

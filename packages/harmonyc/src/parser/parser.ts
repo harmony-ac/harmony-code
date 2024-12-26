@@ -20,7 +20,7 @@ import {
   alt,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
-import type { Branch } from './model.ts'
+import type { Branch } from '../model/model.ts'
 import {
   Action,
   Response,
@@ -30,7 +30,7 @@ import {
   Step,
   Word,
   Label,
-} from './model.ts'
+} from '../model/model.ts'
 
 export function parse(input: string, production = TEST_DESIGN) {
   const tokens = lexer.parse(input)

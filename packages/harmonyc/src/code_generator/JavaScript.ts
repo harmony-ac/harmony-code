@@ -7,8 +7,8 @@ import {
   StringLiteral,
   Test,
   Word,
-} from '../model.ts'
-import { OutFile } from '../outFile.ts'
+} from '../model/model.ts'
+import { OutFile } from './outFile.ts'
 
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'

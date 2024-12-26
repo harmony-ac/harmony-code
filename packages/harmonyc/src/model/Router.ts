@@ -1,4 +1,4 @@
-import { xmur3 } from './util/xmur3.ts'
+import { xmur3 } from '../util/xmur3.ts'
 
 export class Router<N> {
   index = 0
