@@ -3,73 +3,44 @@
   "name": "Harmony",
   "patterns": [
     {
-      "include": "#comments"
+      "name": "comment.line.number-sign.harmony",
+      "match": "^\\s*#.*"
     },
     {
-      "include": "#keywords"
+      "name": "comment.line.double-slash.harmony",
+      "match": "^\\s*//.*"
     },
     {
-      "include": "#strings"
+      "name": "comment.line.angle.harmony",
+      "match": "^\\s*>.*"
     },
     {
-      "include": "#labels"
+      "name": "keyword.operator.response.harmony",
+      "match": "=>"
+    },
+    {
+      "name": "keyword.operator.fork.harmony",
+      "match": "^\\s*\\+"
+    },
+    {
+      "name": "keyword.operator.sequence.harmony",
+      "match": "^\\s*\\-"
+    },
+    {
+      "name": "string.quoted.double.harmony",
+      "begin": "\"",
+      "end": "\""
+    },
+    {
+      "name": "string.quoted.other.harmony",
+      "begin": "`",
+      "end": "`"
+    },
+    {
+      "name": "markup.heading.label.harmony",
+      "match": "[^\\n:]+:"
     }
   ],
-  "repository": {
-    "comments": {
-      "patterns": [
-        {
-          "name": "comment.line.number-sign.harmony",
-          "match": "^\\s*#.*"
-        },
-        {
-          "name": "comment.line.double-slash.harmony",
-          "match": "^\\s*//.*"
-        },
-        {
-          "name": "comment.line.angle.harmony",
-          "match": "^\\s*>.*"
-        }
-      ]
-    },
-    "keywords": {
-      "patterns": [
-        {
-          "name": "keyword.operator.response.harmony",
-          "match": "=>"
-        },
-        {
-          "name": "keyword.operator.fork.harmony",
-          "match": "^\\s*\\+"
-        },
-        {
-          "name": "keyword.operator.sequence.harmony",
-          "match": "^\\s*\\-"
-        }
-      ]
-    },
-    "strings": {
-      "patterns": [
-        {
-          "name": "string.quoted.double.harmony",
-          "begin": "\"",
-          "end": "\""
-        },
-        {
-          "name": "string.quoted.other.harmony",
-          "begin": "`",
-          "end": "`"
-        }
-      ]
-    },
-    "labels": {
-      "patterns": [
-        {
-          "name": "markup.heading.label.harmony",
-          "match": "[^\\n:]+:"
-        }
-      ]
-    }
-  },
+  "repository": {},
   "scopeName": "source.harmony"
 }
