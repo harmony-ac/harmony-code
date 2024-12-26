@@ -1,44 +1,45 @@
 # Filenames
-Input files:
-# Input files are `.harmony.md` files. The base is the file path without the `.harmony.md` extension.
-- for filename "./src/hello.harmony.md" => base is "./src/hello"
 
-Test files:
-# Test files are generated from the input files. Its name is `<base>.test.mjs`.
-- for filename "./src/hello.harmony.md" => test file is "./src/hello.test.mjs"
++ Input files:
+  # Input files are `.harmony.md` files. The base is the file path without the `.harmony.md` extension.
+  - for filename "./src/hello.harmony.md" => base is "./src/hello"
 
-Steps files:
-# Steps files are generated from the input files if they do not exist.
-# If a `<base>.steps.*` file exists, it is the steps file.
-# If no step file exists, a `.steps.ts` file will be generated.
-- extension:
-  + .harmony.md:
-    + for filename "./src/hello.harmony.md"
-      => steps file is "./src/hello.steps.ts"
-  + .harmony:
-    + for filename "./src/hello.harmony"
-      => steps file is "./src/hello.steps.ts"
-- existing file:
-  + ts:
-    - a file "./src/hello.steps.ts" exists
-      => steps file is "./src/hello.steps.ts"
-  + not ts:
-    - a file "./src/hello.steps.tsx" exists
-      => steps file is "./src/hello.steps.tsx"
++ Test files:
+  # Test files are generated from the input files. Its name is `<base>.test.mjs`.
+  - for filename "./src/hello.harmony.md" => test file is "./src/hello.test.mjs"
 
-+ multiple existing files:
-  + tsx wins over ts:
-    - a file "./src/hello.steps.ts" exists
-    - a file "./src/hello.steps.tsx" exists
-    - for filename "./src/hello.harmony"
-      => steps file is "./src/hello.steps.tsx"
-  + ts wins over js:
-    - a file "./src/hello.steps.js" exists
-    - a file "./src/hello.steps.ts" exists
-    - for filename "./src/hello.harmony"
-      => steps file is "./src/hello.steps.ts"
-  + jsx wins over js:
-    - a file "./src/hello.steps.js" exists
-    - a file "./src/hello.steps.jsx" exists
-    - for filename "./src/hello.harmony"
-      => steps file is "./src/hello.steps.jsx"
++ Steps files:
+  # Steps files are generated from the input files if they do not exist.
+  # If a `<base>.steps.*` file exists, it is the steps file.
+  # If no step file exists, a `.steps.ts` file will be generated.
+  - extension:
+    + .harmony.md:
+      + for filename "./src/hello.harmony.md"
+        => steps file is "./src/hello.steps.ts"
+    + .harmony:
+      + for filename "./src/hello.harmony"
+        => steps file is "./src/hello.steps.ts"
+  - existing file:
+    + ts:
+      - a file "./src/hello.steps.ts" exists
+        => steps file is "./src/hello.steps.ts"
+    + not ts:
+      - a file "./src/hello.steps.tsx" exists
+        => steps file is "./src/hello.steps.tsx"
+
+  + multiple existing files:
+    + tsx wins over ts:
+      - a file "./src/hello.steps.ts" exists
+      - a file "./src/hello.steps.tsx" exists
+      - for filename "./src/hello.harmony"
+        => steps file is "./src/hello.steps.tsx"
+    + ts wins over js:
+      - a file "./src/hello.steps.js" exists
+      - a file "./src/hello.steps.ts" exists
+      - for filename "./src/hello.harmony"
+        => steps file is "./src/hello.steps.ts"
+    + jsx wins over js:
+      - a file "./src/hello.steps.js" exists
+      - a file "./src/hello.steps.jsx" exists
+      - for filename "./src/hello.harmony"
+        => steps file is "./src/hello.steps.jsx"

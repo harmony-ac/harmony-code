@@ -14,7 +14,7 @@ export function stepsFileName(fn: string) {
   const pattern = convertPathToPattern(baseFn)
   const existing = globSync(`${pattern}.steps.{tsx,jsx,ts,js}`)
   if (existing.length) {
-    return existing.sort().at(-1)
+    return existing.sort().at(-1)!
   }
   return `${baseFn}.steps.ts`
 }

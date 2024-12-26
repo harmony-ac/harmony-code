@@ -2,12 +2,15 @@
   + | hello
     =>
     | hello
+
   + | hello "John"
     =>
     | hello "John"
+    
   + | | asdf
     =>
     | | asdf
+
   + | 
     | | asdf
     =>
@@ -17,16 +20,25 @@
   + | => hello
     =>
     | hello
+
   + | => "Jon"
     =>
     | "Jon"
+
   + | => | asdf
     =>
     | | asdf
-  + | =>
-    | | asdf
-    =>
-    | | asdf
+
+  + newline after "=>":
+    + | => 
+      | | asdf
+      =>
+      | | asdf
+
+    + | =>
+      | | asdf
+      =>
+      | | asdf
 
 + production "TEST_DESIGN"
   + | hello
@@ -66,8 +78,44 @@
       => | + hello
          | + world
 
-    + | + label:
-      |   + world
-      =>
-      | + label:
-      |   + world
+  + structure:
+    + sequence:
+      + | - hello
+        | - world
+        =>
+        | - hello
+        | - world
+    + fork:
+      + | + hello
+        | + world
+        =>
+        | + hello
+        | + world
+    + fork and sequence:
+      + | + hello
+        | - world
+        =>
+        | + hello
+        | - world
+
+      + | - hello
+        | + world
+        =>
+        | - hello
+        | + world
+
+    + indent:
+      + | + hello
+        |   + world
+        =>
+        | + hello
+        |   + world
+      
+    + label:
+      + | + label:
+        |   + world
+        =>
+        | + label:
+        |   + world
+    
+  

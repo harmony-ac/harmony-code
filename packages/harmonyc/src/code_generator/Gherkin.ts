@@ -25,7 +25,7 @@ export class Gherkin implements CodeGenerator {
   }
 
   phrase(p: Phrase) {
-    this.outFile.print(`${p.keyword} ${p.text} || ${p.feature}`)
+    this.outFile.print(`${p.keyword} ${p.toString()} || ${p.feature}`)
     if (p.docstring !== undefined) {
       this.outFile.indent(() => {
         this.outFile.print(`"""`)
@@ -33,5 +33,12 @@ export class Gherkin implements CodeGenerator {
         this.outFile.print(`"""`)
       })
     }
+  }
+
+  stringLiteral(text: string): string {
+    return `"${text}"`
+  }
+  codeLiteral(src: string): string {
+    return `\`${src}\``
   }
 }

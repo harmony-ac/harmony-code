@@ -64,7 +64,7 @@ export class NodeTest implements CodeGenerator {
       f = toId(feature, abbrev, this.featureVars)
       this.tf.print(`const ${f} = new ${pascalCase(feature)}Steps();`)
     }
-    const args = p.args.map((a) => a.toCode(this))
+    const args = p.args.map((a) => (a as Arg).toCode(this))
     if (p.docstring) args.push(str(p.docstring))
     this.tf.print(`await ${f}.${this.functionName(p)}(${args.join(', ')});`)
   }
