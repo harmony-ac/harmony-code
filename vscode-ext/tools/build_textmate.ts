@@ -1,9 +1,9 @@
 import { writeFileSync } from 'fs'
-import rules, { T } from '../packages/harmonyc/src/parser/lexer_rules'
+import rules, { T } from '../../packages/harmonyc/src/parser/lexer_rules'
 
-const names: { [k in T]: string } = {
-  '+': 'keyword.operator.plus.exponent',
-  '-': 'keyword.operator.minus.exponent',
+const names: { [k in T]: string | null } = {
+  '+': 'keyword.operator.wordlike.fork',
+  '-': 'keyword.operator.wordlike.sequence',
   ':': 'markup.heading.marker',
   '=>': 'keyword.operator.wordlike.response',
   '[': 'punctuation.section.embedded.state',
@@ -16,21 +16,27 @@ const names: { [k in T]: string } = {
   'invalid tab': 'invalid.whitespace.tab',
   'invalid whitespace': 'invalid.whitespace',
   'multiline string': 'string',
-  newline: 'source.newline',
-  space: 'source.space',
+  newline: null,
+  space: null,
   'unclosed backtick string': 'constant.numeric.code',
   'unclosed double-quote string': 'string',
-  word: 'source.word',
+  word: null,
 }
 
 const tm = {
   $schema:
     'https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json',
   name: 'Harmony',
-  patterns: rules.map(([, re, t]) => ({
-    name: names[t] + '.harmony',
-    match: re.source.replace(/^\^/, ''),
-  })),
+  patterns: rules.flatMap(([, re, t]) =>
+    names[t]
+      ? [
+          {
+            name: names[t] + '.harmony',
+            match: re.source.replace(/^\^/, ''),
+          },
+        ]
+      : []
+  ),
   scopeName: 'source.harmony',
 }
 
