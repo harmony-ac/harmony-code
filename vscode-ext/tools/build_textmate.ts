@@ -20,27 +20,29 @@ const names: { [k in T]: string | null } = {
   space: null,
   'unclosed backtick string': 'constant.numeric.code',
   'unclosed double-quote string': 'string',
-  word: null,
+  word: 'source.word',
 }
 
 const tm = {
   $schema:
     'https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json',
   name: 'Harmony',
-  patterns: rules.flatMap(([, re, t]) =>
-    names[t]
-      ? [
-          {
-            name: names[t] + '.harmony',
-            match: re.source.replace(/^\^/, ''),
-          },
-        ]
-      : []
-  ),
+  patterns: [
+    ...rules.flatMap(([, re, t]) =>
+      names[t]
+        ? [
+            {
+              name: names[t] + '.harmony',
+              match: re.source.replace(/^\^/, ''),
+            },
+          ]
+        : []
+    ),
+  ],
   scopeName: 'source.harmony',
 }
 
 writeFileSync(
-  __dirname + '/../vscode-ext/syntaxes/harmony.tmLanguage.json',
+  __dirname + '/../syntaxes/harmony.tmLanguage.json',
   JSON.stringify(tm, null, 2)
 )

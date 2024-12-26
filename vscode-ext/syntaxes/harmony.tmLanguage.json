@@ -3,10 +3,6 @@
   "name": "Harmony",
   "patterns": [
     {
-      "name": "source.newline.harmony",
-      "match": "\\n"
-    },
-    {
       "name": "invalid.whitespace.tab.harmony",
       "match": "\\t"
     },
@@ -16,11 +12,11 @@
     },
     {
       "name": "keyword.operator.wordlike.sequence.harmony",
-      "match": "^\\s*\\-"
+      "match": "-"
     },
     {
       "name": "keyword.operator.wordlike.fork.harmony",
-      "match": "^\\s*\\+"
+      "match": "\\+"
     },
     {
       "name": "markup.heading.marker.harmony",
@@ -61,8 +57,19 @@
     {
       "name": "constant.numeric.code.harmony",
       "match": "`[^`]*"
+    },
+    {
+      "name": "source.word.harmony",
+      "match": "(?!=>)[^\\s\\[\\]\"`:|]+?(?=[\\s\\[\\]\"`:|]|=>|$)"
+    },
+    {
+      "name": "string.harmony",
+      "match": "\\|(?: .*|(?=\\n|$))"
+    },
+    {
+      "name": "invalid.string.multiline.harmony",
+      "match": "\\|[^ ]"
     }
   ],
-  "repository": {},
   "scopeName": "source.harmony"
 }

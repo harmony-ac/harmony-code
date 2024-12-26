@@ -49,8 +49,8 @@ const rules: [boolean, RegExp, T][] = [
   [true, /^``/g, T.InvalidEmptyBacktickString],
   [true, /^`[^`]+`/g, T.BacktickString],
   [true, /^`[^`]*/g, T.UnclosedBacktickString],
-  [true, /^(?!=>)[^\s[\]"`:|]+?(?=[\s[\]"`:|]|=>|$)/g, T.Word],
-  [true, /^\|(?: .*)?/g, T.MultilineString],
+  [true, /^(?!=>)[^\s\[\]"`:|]+?(?=[\s\[\]"`:|]|=>|$)/g, T.Word],
+  [true, /^\|(?: .*|(?=\n|$))/g, T.MultilineString],
   [true, /^\|[^ ]/g, T.InvalidMultilineStringMark],
 ]
 
