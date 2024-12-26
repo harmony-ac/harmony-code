@@ -1,4 +1,4 @@
-import { Location } from './model.js'
+import { Location } from './model.ts'
 import { SourceMapGenerator } from 'source-map-js'
 
 export class OutFile {

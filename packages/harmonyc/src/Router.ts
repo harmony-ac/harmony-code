@@ -1,4 +1,4 @@
-import { xmur3 } from './util/xmur3.js'
+import { xmur3 } from './util/xmur3.ts'
 
 export class Router<N> {
   index = 0
@@ -6,10 +6,7 @@ export class Router<N> {
   started = new Set<N>()
   covered = new Set<N>()
 
-  constructor(
-    public outs: N[],
-    seed = 'TODO',
-  ) {
+  constructor(public outs: N[], seed = 'TODO') {
     this.random = xmur3(seed)
   }
 
@@ -63,7 +60,7 @@ export class Routers<N extends Node> {
   getIncompleteCount() {
     return Array.from(this.routers.values()).reduce(
       (sum, r) => sum + r.incompleteCount,
-      0,
+      0
     )
   }
 }

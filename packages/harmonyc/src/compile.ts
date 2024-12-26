@@ -1,8 +1,8 @@
-import { NodeTest } from './code_generator/JavaScript.js'
-import { OutFile } from './outFile.js'
-import { parse } from './parser.js'
-import { base, stepsFileName, testFileName } from './filenames/filenames.js'
-import { Feature, Section } from './model.js'
+import { NodeTest } from './code_generator/JavaScript.ts'
+import { OutFile } from './outFile.ts'
+import { parse } from './parser.ts'
+import { base, stepsFileName, testFileName } from './filenames/filenames.ts'
+import { Feature, Section } from './model.ts'
 import { basename } from 'node:path'
 
 export interface CompiledFeature {

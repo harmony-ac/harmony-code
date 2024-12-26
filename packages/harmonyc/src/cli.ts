@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { compileFiles } from './compiler.js'
+import { compileFiles } from './compiler.ts'
 import { parseArgs } from 'node:util'
-import { watchFiles } from './watch.js'
-import { run, runWatch } from './run.js'
+import { watchFiles } from './watch.ts'
+import { run, runWatch } from './run.ts'
 
 const args = parseArgs({
   options: {

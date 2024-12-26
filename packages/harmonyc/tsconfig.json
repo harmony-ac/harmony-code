@@ -8,7 +8,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "noEmit": false,
-    "strict": true
+    "strict": true,
+    "rewriteRelativeImportExtensions": true
   },
   "include": ["src", "dist/test.d.ts"],
   "exclude": ["**/*.test.*", "**/*.spec.*", "**/*.steps.*"]

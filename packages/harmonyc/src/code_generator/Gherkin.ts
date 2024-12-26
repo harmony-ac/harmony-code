@@ -1,5 +1,5 @@
-import { CodeGenerator, Feature, Phrase, Test } from '../model.js'
-import { OutFile } from '../outFile.js'
+import { CodeGenerator, Feature, Phrase, Test } from '../model.ts'
+import { OutFile } from '../outFile.ts'
 
 export class Gherkin implements CodeGenerator {
   constructor(private outFile: OutFile) {}
