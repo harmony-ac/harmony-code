@@ -3,44 +3,81 @@
   "name": "Harmony",
   "patterns": [
     {
-      "name": "comment.line.number-sign.harmony",
-      "match": "^\\s*#.*"
+      "name": "source.newline.harmony",
+      "match": "\\n"
     },
     {
-      "name": "comment.line.double-slash.harmony",
-      "match": "^\\s*//.*"
+      "name": "invalid.whitespace.tab.harmony",
+      "match": "\\t"
     },
     {
-      "name": "comment.line.angle.harmony",
-      "match": "^\\s*>.*"
+      "name": "invalid.whitespace.harmony",
+      "match": "[\\x00-\\x1f]"
     },
     {
-      "name": "keyword.operator.response.harmony",
+      "name": "source.space.harmony",
+      "match": " "
+    },
+    {
+      "name": "keyword.operator.minus.exponent.harmony",
+      "match": "-"
+    },
+    {
+      "name": "keyword.operator.plus.exponent.harmony",
+      "match": "\\+"
+    },
+    {
+      "name": "markup.heading.marker.harmony",
+      "match": ":"
+    },
+    {
+      "name": "punctuation.section.embedded.state.harmony",
+      "match": "\\["
+    },
+    {
+      "name": "punctuation.section.embedded.state.harmony",
+      "match": "\\]"
+    },
+    {
+      "name": "keyword.operator.wordlike.response.harmony",
       "match": "=>"
     },
     {
-      "name": "keyword.operator.fork.harmony",
-      "match": "^\\s*\\+"
+      "name": "comment.harmony",
+      "match": "(#|>|\\/\\/).*?(?=\\n|$)"
     },
     {
-      "name": "keyword.operator.sequence.harmony",
-      "match": "^\\s*\\-"
+      "name": "string.harmony",
+      "match": "\"(?:[^\"\\\\\\n]|\\\\(?:[bfnrtv\"\\\\/]|u[0-9a-fA-F]{4}))*\""
     },
     {
-      "name": "string.quoted.double.harmony",
-      "begin": "\"",
-      "end": "\""
+      "name": "string.harmony",
+      "match": "\"(?:[^\"\\\\\\n]|\\\\(?:[bfnrtv\"\\\\/]|u[0-9a-fA-F]{4}))*"
     },
     {
-      "name": "string.quoted.other.harmony",
-      "begin": "`",
-      "end": "`"
+      "name": "invalid.string.backtick.empty.harmony",
+      "match": "``"
     },
     {
-      "name": "markup.heading.label.harmony",
-      "match": "[^\\n:]+:"
+      "name": "constant.numeric.code.harmony",
+      "match": "`[^`]+`"
+    },
+    {
+      "name": "constant.numeric.code.harmony",
+      "match": "`[^`]*"
+    },
+    {
+      "name": "source.word.harmony",
+      "match": "(?!=>)[^\\s[\\]\"`:|]+?(?=[\\s[\\]\"`:|]|=>|$)"
+    },
+    {
+      "name": "string.harmony",
+      "match": "\\|(?: .*)?"
+    },
+    {
+      "name": "invalid.string.multiline.harmony",
+      "match": "\\|[^ ]"
     }
   ],
-  "repository": {},
   "scopeName": "source.harmony"
 }
