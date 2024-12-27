@@ -29,7 +29,7 @@ export class Gherkin implements CodeGenerator {
     if (p.docstring !== undefined) {
       this.outFile.indent(() => {
         this.outFile.print(`"""`)
-        this.outFile.print(...p.docstring!.split('\n'))
+        this.outFile.print(...p.docstring!.text.split('\n'))
         this.outFile.print(`"""`)
       })
     }

@@ -1,4 +1,4 @@
-import { Branch, Label, Phrase, Section, Step } from '../model/model'
+import { Branch, Label, Phrase, Section, Step } from '../../model/model.ts'
 
 export function autoLabel(s: Branch) {
   const forks = s.children.filter((c, i) => c.isFork || i === 0)

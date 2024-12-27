@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { parse } from '../parser/parser.ts'
+import { parse } from '../../parser/parser.ts'
 import { autoLabel } from './autoLabel.ts'
 
 export default class AutoLabelSteps {

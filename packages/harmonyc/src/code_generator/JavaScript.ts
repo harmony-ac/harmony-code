@@ -94,10 +94,7 @@ export class NodeTest implements CodeGenerator {
     const { kind } = phrase
     return (
       (kind === 'response' ? 'Then_' : 'When_') +
-      ([
-        ...phrase.content,
-        phrase.docstring ? [new StringLiteral(phrase.docstring)] : [],
-      ]
+      ([...phrase.content, phrase.docstring ? [phrase.docstring] : []]
         .map((c) =>
           c instanceof Word ? underscore(c.text) : c instanceof Arg ? '_' : ''
         )

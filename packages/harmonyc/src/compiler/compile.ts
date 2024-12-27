@@ -4,7 +4,7 @@ import { parse } from '../parser/parser.ts'
 import { base, stepsFileName, testFileName } from '../filenames/filenames.ts'
 import { Feature, Section } from '../model/model.ts'
 import { basename } from 'node:path'
-import { autoLabel } from '../processor/autoLabel.ts'
+import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
 
 export interface CompiledFeature {
   name: string

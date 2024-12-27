@@ -5,7 +5,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "harmonyc": "tsx ./src/cli/cli",
-    "test": "node ./dist/cli/cli 'src/**/*.harmony' && vitest --no-watch",
+    "test": "npm run build && node ./dist/cli/cli 'src/**/*.harmony' && vitest --no-watch",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "tsx watch ./src/cli/cli './src/**/*.harmony' --watch & vitest --watch",
     "publish": "rm dist/*.js && npm run build && npm run test && cp -f ../../README.md dist/ && cd dist && npm publish"
