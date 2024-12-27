@@ -1,4 +1,37 @@
-+ | - hello
-  =>
-  | + T1:
-  |   - hello
++ basic cases:
+  + | - hello
+    =>
+    | + T1:
+    |   - hello
+
+  + | - hello
+    | - world
+    =>
+    | + T1:
+    |   - hello
+    |   - world
+
++ fork:
+  + | + hello
+    | + world
+    =>
+    | + T1:
+    |   - hello
+    | + T2:
+    |   - world
+
++ labels:
+  + one:
+    + | + greeting:
+      |   - hi
+      =>
+      | + T1 - greeting:
+      |   - hi
+  + more:
+    + | + greeting:
+      |   + formal:
+      |     - good morning
+      =>
+      | + T1 - greeting - formal:
+      |   - good morning
+  + nested:

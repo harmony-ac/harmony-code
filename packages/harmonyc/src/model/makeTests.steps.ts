@@ -17,7 +17,7 @@ export default class MakeTestsSteps {
 function stringify(tests: Test[]): string {
   return tests
     .map(
-      (t) => `+ ${t.testNumber}:
+      (t) => `+ ${t.name}:
 ${t.steps.map((s) => `  - ${s.toString()}`).join('\n')}`
     )
     .join('\n')
