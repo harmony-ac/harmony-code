@@ -6,6 +6,7 @@ import {
   Phrase,
   StringLiteral,
   Test,
+  TestGroup,
   Word,
 } from '../model/model.ts'
 import { OutFile } from './outFile.ts'
@@ -21,12 +22,12 @@ export class NodeTest implements CodeGenerator {
     const fn = (this.currentFeatureName = pascalCase(feature.name))
     this.phraseFns = new Map<string, Phrase>()
     if (this.framework === 'vitest') {
-      this.tf.print(`import { test } from 'vitest';`)
+      this.tf.print(`import { describe, test } from 'vitest';`)
     }
     this.tf.print(`import ${fn}Steps from ${str(stepsModule)};`)
     this.tf.print(``)
-    for (const test of feature.tests) {
-      test.toCode(this)
+    for (const item of feature.testGroups) {
+      item.toCode(this)
     }
     this.sf.print(`export default class ${pascalCase(feature.name)}Steps {`)
     this.sf.indent(() => {
@@ -41,6 +42,16 @@ export class NodeTest implements CodeGenerator {
       }
     })
     this.sf.print(`};`)
+  }
+
+  testGroup(g: TestGroup) {
+    this.tf.print(`describe(${str(g.name)}, () => {`)
+    this.tf.indent(() => {
+      for (const item of g.items) {
+        item.toCode(this)
+      }
+    })
+    this.tf.print('});')
   }
 
   featureVars!: Map<string, string>

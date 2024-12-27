@@ -1,4 +1,10 @@
-import { CodeGenerator, Feature, Phrase, Test } from '../model/model.ts'
+import {
+  CodeGenerator,
+  Feature,
+  Phrase,
+  Test,
+  TestGroup,
+} from '../model/model.ts'
 import { OutFile } from './outFile.ts'
 
 export class Gherkin implements CodeGenerator {
@@ -35,6 +41,9 @@ export class Gherkin implements CodeGenerator {
     }
   }
 
+  testGroup(group: TestGroup): void {
+    throw new Error('Method not implemented.')
+  }
   stringLiteral(text: string): string {
     return `"${text}"`
   }

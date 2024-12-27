@@ -1,0 +1,128 @@
+> After the tests are generated, they are re-grouped by the test name fragments
+
++ empty:
+  + "" => ""
++ single test:
+  + | + log in with admin
+    |   + manage users
+    =>
+    | + T1:
+    |   - log in with admin
+    |   - manage users
++ basic:
+  + | + log in:
+    |   + admin:
+    |     + log in with admin
+    |   + user:
+    |     + log in with user
+    | - logout:
+    |   - log out
+    =>
+    | + log in:
+    |   + T1 - admin - logout:
+    |     - log in with admin
+    |     - log out
+    |   + T2 - user - logout:
+    |     - log in with user
+    |     - log out
+
++ nested:
+  + | + log in:
+    |   + admin:
+    |     + log in with admin
+    |   + user:
+    |     + log in with user
+    | + home page:
+    |   + view products
+    =>
+    | + log in:
+    |   + T1 - admin:
+    |     - log in with admin
+    |   + T2 - user:
+    |     - log in with user
+    | + T3 - home page:
+    |   - view products
+
+
++ double nested:
+  + basic:
+    + | + user mgmt:
+      |   + log in:
+      |     + admin:
+      |       + log in with admin
+      |     + user:
+      |       + log in with user
+      =>
+      | + user mgmt:
+      |   + log in:
+      |     + T1 - admin:
+      |       - log in with admin
+      |     + T2 - user:
+      |       - log in with user
+  + with additional steps:
+    + | + user mgmt:
+      |   + log in:
+      |     + admin:
+      |       + log in with admin
+      |     + user:
+      |       + log in with user
+      | - view products:
+      |   - view products
+      =>
+      | + user mgmt:
+      |   + log in:
+      |     + T1 - admin - view products:
+      |       - log in with admin
+      |       - view products
+      |     + T2 - user - view products:
+      |       - log in with user
+      |       - view products
+  + with additional fork:
+    + | + user mgmt:
+      |   + log in:
+      |     + admin:
+      |       + log in with admin
+      |     + user:
+      |       + log in with user
+      | - view products:
+      |   + on home:
+      |     - view products on home
+      |   + in search:
+      |     - view products in search
+      |   + in cart:
+      |     - view products in cart
+      =>
+      | + user mgmt:
+      |   + log in:
+      |     + T1 - admin - view products - on home:
+      |       - log in with admin
+      |       - view products on home
+      |     + user:
+      |       + view products:
+      |         + T2 - in search:
+      |           - log in with user
+      |           - view products in search
+      |         + T3 - in cart:
+      |           - log in with user
+      |           - view products in cart
+  + with additional tests:
+    + | + user mgmt:
+      |   + log in:
+      |     + admin:
+      |       + log in with admin
+      |     + user:
+      |       + log in with user
+      | + view products:
+      |   - view products
+      =>
+      | + user mgmt:
+      |   + log in:
+      |     + T1 - admin:
+      |       - log in with admin
+      |     + T2 - user:
+      |       - log in with user
+      | + T3 - view products:
+      |   - view products
+
+
+

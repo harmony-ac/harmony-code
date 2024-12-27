@@ -3,6 +3,7 @@ import { Argument, CucumberExpression } from '@cucumber/cucumber-expressions'
 
 export interface CodeGenerator {
   feature(feature: Feature): void
+  testGroup(group: TestGroup): void
   test(test: Test): void
   phrase(phrase: Phrase): void
   stringLiteral(text: string): string
@@ -25,6 +26,9 @@ export class Feature {
   get tests() {
     return makeTests(this.root)
   }
+  get testGroups() {
+    return makeGroups(this.tests)
+  }
   toCode(cg: CodeGenerator) {
     cg.feature(this)
   }
@@ -36,6 +40,7 @@ export abstract class Branch {
   isFork = false
   isEnd = false
   location?: Location
+  abstract get isEmpty(): boolean
 
   constructor(children: Branch[] = []) {
     this.children = children
@@ -122,12 +127,15 @@ export class Step extends Branch {
     for (const response of this.responses) response.setFeature(feature)
     return super.setFeature(feature)
   }
+  headToString() {
+    return `${this.action}` + this.responses.map((r) => ` => ${r}`).join('')
+  }
   toString() {
-    return (
-      `${this.action}` +
-      this.responses.map((r) => ` => ${r}`).join('') +
-      indent(super.toString())
-    )
+    return this.headToString() + indent(super.toString())
+  }
+
+  get isEmpty(): boolean {
+    return this.phrases.every((phrase) => phrase.isEmpty)
   }
 }
 export class State {
@@ -143,6 +151,9 @@ export class Label {
   constructor(text = '') {
     this.text = text
   }
+  get isEmpty() {
+    return this.text === ''
+  }
 }
 
 export class Section extends Branch {
@@ -155,6 +166,9 @@ export class Section extends Branch {
   toString() {
     if (this.label.text === '') return super.toString()
     return this.label.text + ':' + indent(super.toString())
+  }
+  get isEmpty(): boolean {
+    return this.label.isEmpty
   }
 }
 
@@ -227,6 +241,9 @@ export abstract class Phrase {
   get args() {
     return [...this.content, this.docstring].filter((c) => c instanceof Arg)
   }
+  get isEmpty() {
+    return this.content.length === 0 && this.docstring === undefined
+  }
   toCode(cg: CodeGenerator) {
     if (!this.content.length && this.docstring === undefined) return
     cg.phrase(this)
@@ -284,11 +301,14 @@ export class Precondition extends Branch {
     super()
     this.state.text = state
   }
+  get isEmpty(): boolean {
+    return this.state.text === ''
+  }
 }
 
 export function makeTests(root: Branch): Test[] {
   const routers = new Routers(root)
-  const tests = []
+  let tests = []
   let ic = routers.getIncompleteCount()
   let newIc: number
   do {
@@ -305,6 +325,7 @@ export function makeTests(root: Branch): Test[] {
     for (const child of branch.children) walk(child)
   }
   walk(root)
+  tests = tests.filter((t) => t.steps.length > 0)
   tests.sort((a, b) => branchIndex.get(a.last)! - branchIndex.get(b.last)!)
 
   tests.forEach((test, i) => (test.testNumber = `T${i + 1}`))
@@ -313,7 +334,14 @@ export function makeTests(root: Branch): Test[] {
 
 export class Test {
   testNumber?: string
-  constructor(public root: Branch, public branches: Branch[]) {}
+  labels
+  constructor(public root: Branch, public branches: Branch[]) {
+    this.branches = this.branches.filter((b) => !b.isEmpty)
+    this.labels = this.branches
+      .filter((b) => b instanceof Section)
+      .filter((s) => !s.isEmpty)
+      .map((s) => s.label.text)
+  }
 
   get steps(): Step[] {
     return this.branches.filter((b) => b instanceof Step)
@@ -323,18 +351,43 @@ export class Test {
     return this.steps[this.steps.length - 1]
   }
 
-  get labels(): string[] {
-    return this.branches
-      .filter((b): b is Section => b instanceof Section)
-      .map((s) => s.label.text)
-  }
-
   get name() {
     return `${[this.testNumber!, ...this.labels].join(' - ')}`
   }
 
   toCode(cg: CodeGenerator) {
     cg.test(this)
+  }
+
+  toString() {
+    return `+ ${this.name}:\n${this.steps
+      .map((s) => `  - ${s.headToString()}`)
+      .join('\n')}`
+  }
+}
+
+export function makeGroups(tests: Test[]): (Test | TestGroup)[] {
+  if (tests.length === 0) return []
+  if (tests[0].labels.length === 0)
+    return [tests[0], ...makeGroups(tests.slice(1))]
+  const name = tests[0].labels[0]
+  let count = tests.findIndex((t) => t.labels[0] !== name)
+  if (count === -1) count = tests.length
+  if (count === 1) return [tests[0], ...makeGroups(tests.slice(1))]
+  tests.slice(0, count).forEach((test) => test.labels.shift())
+  return [
+    new TestGroup(name, makeGroups(tests.slice(0, count))),
+    ...makeGroups(tests.slice(count)),
+  ]
+}
+
+export class TestGroup {
+  constructor(public name: string, public items: (Test | TestGroup)[]) {}
+  toString() {
+    return `+ ${this.name}:` + indent(this.items.join('\n'))
+  }
+  toCode(cg: CodeGenerator) {
+    cg.testGroup(this)
   }
 }
 

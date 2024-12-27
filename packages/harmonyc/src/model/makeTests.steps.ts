@@ -10,15 +10,6 @@ export default class MakeTestsSteps {
     this.tests = makeTests(root)
   }
   async Then__(s: string) {
-    expect(stringify(this.tests)).toEqual(s)
+    expect(this.tests.join('\n')).toEqual(s)
   }
-}
-
-function stringify(tests: Test[]): string {
-  return tests
-    .map(
-      (t) => `+ ${t.name}:
-${t.steps.map((s) => `  - ${s.toString()}`).join('\n')}`
-    )
-    .join('\n')
 }

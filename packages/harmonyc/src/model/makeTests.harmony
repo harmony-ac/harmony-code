@@ -1,3 +1,6 @@
++ no tests:
+  + "" => ""
+
 + basic cases:
   + | - hello
     =>
