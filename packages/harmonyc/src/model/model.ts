@@ -263,7 +263,7 @@ export class Precondition extends Branch {
   }
 }
 
-export function makeTests(root: Branch) {
+export function makeTests(root: Branch): Test[] {
   const routers = new Routers(root)
   const tests = []
   let ic = routers.getIncompleteCount()
@@ -293,10 +293,10 @@ export class Test {
   constructor(public root: Branch, public branches: Branch[]) {}
 
   get steps(): Step[] {
-    return this.branches.filter((b): b is Step => b instanceof Step)
+    return this.branches.filter((b) => b instanceof Step)
   }
 
-  get last() {
+  get last(): Step {
     return this.steps[this.steps.length - 1]
   }
 
