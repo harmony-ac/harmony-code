@@ -3,9 +3,10 @@
   "publisher": "harmony-ac",
   "displayName": "Harmony Code",
   "description": "Language support for the Harmony Code language",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "scripts": {
-    "build": "tsx ./tools/build_textmate.ts"
+    "build": "tsx ./tools/build_textmate.ts",
+    "publish": "vsce publish"
   },
   "engines": {
     "vscode": "*"
