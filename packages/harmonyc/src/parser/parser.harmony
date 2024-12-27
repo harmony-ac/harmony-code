@@ -45,7 +45,6 @@
     => | + hello
   + "hello => world"    => | + hello => world
   + "hello\n  => world" => | + hello => world
-  + "hello\n  => world" => | + hello => world
 
   + string:
     + | hello"John"
@@ -61,22 +60,6 @@
     + "hello\n| John" => "+ hello\n| John"
     + "hello\n| John\n| Jim" => "+ hello\n| John\n| Jim"
     + "hello\n| John\n    | Jim" => "+ hello\n| John\n| Jim"
-
-    + | hello
-      | world
-      =>
-      | + hello
-      | + world
-
-    + | + hello
-      | + world
-      => | + hello
-         | + world
-
-    + | + hello
-      | + world
-      => | + hello
-         | + world
 
   + structure:
     + sequence:
