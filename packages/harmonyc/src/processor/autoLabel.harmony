@@ -56,7 +56,7 @@
     |   + log in with user
     |     + view products
 
-+ with string, code and multiline string args:
++ with string args:
   + | + log in with "admin" role
     | + log in with "user" role
     =>
@@ -88,3 +88,37 @@
     |     + log in with user
     | - view products
     | - log out
+
++ implicit fork at first child:
+  + | - a
+    | + b
+    =>
+    | - a:
+    |   - a
+    | + b:
+    |   + b
+
+  + | - a
+    | - b
+    | + c
+    =>
+    | - a:
+    |   - a
+    | - b
+    | + c:
+    |   + c
+
++ multiline strings:
+  + | + production "ACTION"
+    |   + | hello
+    |     =>
+    |     | hello
+    |   + | hello "John"
+    |     =>
+    |     | hello "John"
+    =>
+    | + production "ACTION"
+    |   + "hello":
+    |     + | hello => | hello
+    |   + "hello \"John\"":
+    |     + | hello "John" => | hello "John"
