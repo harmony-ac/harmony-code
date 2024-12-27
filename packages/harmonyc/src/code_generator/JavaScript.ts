@@ -12,14 +12,14 @@ import { OutFile } from './outFile.ts'
 
 export class NodeTest implements CodeGenerator {
   framework = 'vitest'
-  phraseFns: string[] = []
+  phraseFns = new Map<string, Phrase>()
   currentFeatureName = ''
   constructor(private tf: OutFile, private sf: OutFile) {}
 
   feature(feature: Feature) {
     const stepsModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
     const fn = (this.currentFeatureName = pascalCase(feature.name))
-    this.phraseFns = []
+    this.phraseFns = new Map<string, Phrase>()
     if (this.framework === 'vitest') {
       this.tf.print(`import { test } from 'vitest';`)
     }
@@ -30,8 +30,10 @@ export class NodeTest implements CodeGenerator {
     }
     this.sf.print(`export default class ${pascalCase(feature.name)}Steps {`)
     this.sf.indent(() => {
-      for (const ph of this.phraseFns) {
-        this.sf.print(`async ${ph}() {`)
+      for (const ph of this.phraseFns.keys()) {
+        const p = this.phraseFns.get(ph)!
+        const params = p.args.map((a, i) => a.toDeclaration(this, i)).join(', ')
+        this.sf.print(`async ${ph}(${params}) {`)
         this.sf.indent(() => {
           this.sf.print(`throw new Error(${str(`Pending: ${ph}`)});`)
         })
@@ -46,7 +48,7 @@ export class NodeTest implements CodeGenerator {
     this.featureVars = new Map()
     // avoid shadowing this import name
     this.featureVars.set(new Object() as any, this.currentFeatureName)
-    this.tf.print(`test('${t.name}', async () => {`)
+    this.tf.print(`test(${str(t.name)}, async () => {`)
     this.tf.indent(() => {
       for (const step of t.steps) {
         step.toCode(this)
@@ -57,7 +59,7 @@ export class NodeTest implements CodeGenerator {
 
   phrase(p: Phrase) {
     const phrasefn = this.functionName(p)
-    if (!this.phraseFns.includes(phrasefn)) this.phraseFns.push(phrasefn)
+    if (!this.phraseFns.has(phrasefn)) this.phraseFns.set(phrasefn, p)
     const feature = p.feature.name
     let f = this.featureVars.get(feature)
     if (!f) {
@@ -65,7 +67,6 @@ export class NodeTest implements CodeGenerator {
       this.tf.print(`const ${f} = new ${pascalCase(feature)}Steps();`)
     }
     const args = p.args.map((a) => (a as Arg).toCode(this))
-    if (p.docstring) args.push(str(p.docstring))
     this.tf.print(`await ${f}.${this.functionName(p)}(${args.join(', ')});`)
   }
 
@@ -75,6 +76,18 @@ export class NodeTest implements CodeGenerator {
 
   codeLiteral(src: string): string {
     return src
+  }
+
+  private paramName(index: number) {
+    return 'xyz'.charAt(index) || `a${index + 1}`
+  }
+
+  stringParamDeclaration(index: number): string {
+    return `${this.paramName(index)}: string`
+  }
+
+  variantParamDeclaration(index: number): string {
+    return `${this.paramName(index)}: any`
   }
 
   private functionName(phrase: Phrase) {

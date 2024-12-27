@@ -7,6 +7,8 @@ export interface CodeGenerator {
   phrase(phrase: Phrase): void
   stringLiteral(text: string): string
   codeLiteral(src: string): string
+  stringParamDeclaration(index: number): string
+  variantParamDeclaration(index: number): string
 }
 
 export interface Location {
@@ -81,6 +83,13 @@ export abstract class Branch {
     return this.children
       .map((c) => (c.isFork ? '+ ' : '- ') + c.toString())
       .join('\n')
+  }
+  replaceWith(newBranch: Branch) {
+    if (!this.parent) throw new Error('cannot replace root')
+    this.parent.children.splice(this.siblingIndex, 1, newBranch)
+    newBranch.parent = this.parent
+    this.parent = undefined
+    return this
   }
 }
 
@@ -163,6 +172,7 @@ export class Word extends Part {
 }
 export abstract class Arg extends Part {
   abstract toCode(cg: CodeGenerator): string
+  abstract toDeclaration(cg: CodeGenerator, index: number): string
 }
 export class StringLiteral extends Arg {
   text: string
@@ -175,6 +185,9 @@ export class StringLiteral extends Arg {
   }
   toCode(cg: CodeGenerator) {
     return cg.stringLiteral(this.text)
+  }
+  toDeclaration(cg: CodeGenerator, index: number) {
+    return cg.stringParamDeclaration(index)
   }
 }
 export class CodeLiteral extends Arg {
@@ -189,17 +202,21 @@ export class CodeLiteral extends Arg {
   toCode(cg: CodeGenerator) {
     return cg.codeLiteral(this.src)
   }
+  toDeclaration(cg: CodeGenerator, index: number) {
+    return cg.variantParamDeclaration(index)
+  }
 }
 
 export abstract class Phrase {
   content: Part[]
   feature!: Feature
-  docstring?: string
+  docstring?: StringLiteral
   location?: Location
   abstract get kind(): string
   constructor(content: Part[] = [], docstring?: string) {
     this.content = content
-    this.docstring = docstring
+    this.docstring =
+      docstring === undefined ? undefined : new StringLiteral(docstring)
   }
   setFeature(feature: Feature) {
     this.feature = feature
@@ -208,7 +225,7 @@ export abstract class Phrase {
     return this.kind === 'action' ? 'When' : 'Then'
   }
   get args() {
-    return this.content.filter((c) => c instanceof Arg)
+    return [...this.content, this.docstring].filter((c) => c instanceof Arg)
   }
   toCode(cg: CodeGenerator) {
     if (!this.content.length && this.docstring === undefined) return
@@ -220,10 +237,16 @@ export abstract class Phrase {
         ? [this.content.map((c) => c.toString()).join(' ')]
         : []),
       ...(this.docstring !== undefined
-        ? this.docstring.split('\n').map((l) => '| ' + l)
+        ? this.docstring.text.split('\n').map((l) => '| ' + l)
         : []),
     ].join('\n')
   }
+  toSingleLineString() {
+    return [...this.content, ...(this.docstring ? [this.docstring] : [])]
+      .map((c) => c.toString())
+      .join(' ')
+  }
+
   definition() {
     const key =
       this.kind === 'action' ? this.toString() : `=> ${this.toString()}`
@@ -307,9 +330,7 @@ export class Test {
   }
 
   get name() {
-    return `${this.testNumber!}${
-      this.labels.length > 0 ? ' - ' : ''
-    }${this.labels.join(' - ')}`
+    return `${[this.testNumber!, ...this.labels].join(' - ')}`
   }
 
   toCode(cg: CodeGenerator) {

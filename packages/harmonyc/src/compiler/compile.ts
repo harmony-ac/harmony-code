@@ -4,6 +4,7 @@ import { parse } from '../parser/parser.ts'
 import { base, stepsFileName, testFileName } from '../filenames/filenames.ts'
 import { Feature, Section } from '../model/model.ts'
 import { basename } from 'node:path'
+import { autoLabel } from '../processor/autoLabel.ts'
 
 export interface CompiledFeature {
   name: string
@@ -24,6 +25,7 @@ export function compileFeature(fileName: string, src: string) {
     throw e
   }
   feature.root.setFeature(feature)
+  autoLabel(feature.root)
   const testFn = testFileName(fileName)
   const testFile = new OutFile(testFn)
   const stepsFn = stepsFileName(fileName)

@@ -41,4 +41,10 @@ export class Gherkin implements CodeGenerator {
   codeLiteral(src: string): string {
     return `\`${src}\``
   }
+  stringParamDeclaration(index: number): string {
+    throw new Error('Method not implemented.')
+  }
+  variantParamDeclaration(index: number): string {
+    throw new Error('Method not implemented.')
+  }
 }

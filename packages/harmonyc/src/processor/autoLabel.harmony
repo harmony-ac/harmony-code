@@ -1,0 +1,87 @@
++ single branch is not touched:
+  + | + log in with admin
+    |   + manage users
+    =>
+    | + log in with admin
+    |   + manage users
+
+  + | - log in with admin
+    |   - manage users
+    =>
+    | - log in with admin
+    |   - manage users
+
++ sequence is not touched:
+  + | - log in with admin
+    | - manage users
+    =>
+    | - log in with admin
+    | - manage users
+
+  + | + log in with admin
+    |   - manage orders
+    |   - manage users
+    =>
+    | + log in with admin
+    |   - manage orders
+    |   - manage users
+
++ forks without labels:
+  + | + log in with admin
+    |   + manage users
+    | + log in with user
+    |   + view products
+    =>
+    | + log in with admin:
+    |   + log in with admin
+    |     + manage users
+    | + log in with user:
+    |   + log in with user
+    |     + view products
+
++ some labels:
+  + | + admin:
+    |   + log in with admin
+    |     + manage users
+    | + log in with user
+    |   + view products
+    =>
+    | + admin:
+    |   + log in with admin
+    |     + manage users
+    | + log in with user:
+    |   + log in with user
+    |     + view products
+
++ with string, code and multiline string args:
+  + | + log in with "admin" role
+    | + log in with "user" role
+    =>
+    | + log in with "admin" role:
+    |   + log in with "admin" role
+    | + log in with "user" role:
+    |   + log in with "user" role
+    
++ with response:
+  + | + log in with admin => success
+    | + log in with user => success
+    =>
+    | + log in with admin:
+    |   + log in with admin => success
+    | + log in with user:
+    |   + log in with user => success
+
++ mixed forks and sequences:
+  + | - log in
+    |   + log in with admin
+    |   + log in with user
+    | - view products
+    | - log out
+    =>
+    | - log in
+    |   + log in with admin:
+    |     + log in with admin
+    |   + log in with user:
+    |     + log in with user
+    | - view products
+    | - log out
