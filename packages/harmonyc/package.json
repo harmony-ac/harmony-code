@@ -7,7 +7,7 @@
     "harmonyc": "tsx ./src/cli/cli",
     "test": "npm run build && node ./dist/cli/cli 'src/**/*.harmony' && vitest --no-watch",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
-    "dev": "tsx watch ./src/cli/cli './src/**/*.harmony' --watch & vitest --watch",
+    "dev": "vitest --watch",
     "publish": "rm dist/*.js && npm run build && npm run test && cp -f ../../README.md dist/ && cd dist && npm publish"
   },
   "exports": {
@@ -32,6 +32,7 @@
     "expect": "^29.7.0",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
+    "vite": "^6.0.6",
     "vitest": "^1.4.0"
   }
 }
