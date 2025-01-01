@@ -4,6 +4,9 @@
   "author": "Bernát Kalló",
   "license": "MIT",
   "description": "Test design compiler",
+  "scripts": {
+    "dev": "cd packages/harmonyc && npm run dev"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/harmony-ac/code.git"
