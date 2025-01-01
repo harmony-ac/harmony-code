@@ -9,23 +9,23 @@ comment:
   + "#" => ""
   + "#hello" => ""
   + "# hello\n" => "newline"
-  + "#hello\nworld" => "newline word"
-  + "# hello\nworld\n" => "newline word newline"
-  + "#hello\nworld\n#goodbye" => "newline word newline"
+  + "#hello\nworld" => "newline words"
+  + "# hello\nworld\n" => "newline words newline"
+  + "#hello\nworld\n#goodbye" => "newline words newline"
 + double slash:
   + "//" => ""
   + "//hello" => ""
   + "// hello\n" => "newline"
-  + "//hello\nworld" => "newline word"
-  + "// hello\nworld\n" => "newline word newline"
-  + "//hello\nworld\n//goodbye" => "newline word newline"
+  + "//hello\nworld" => "newline words"
+  + "// hello\nworld\n" => "newline words newline"
+  + "//hello\nworld\n//goodbye" => "newline words newline"
 + blockquote:
   + ">" => ""
   + ">hello" => ""
   + "> hello\n" => "newline"
-  + ">hello\nworld" => "newline word"
-  + "> hello\nworld\n" => "newline word newline"
-  + ">hello\nworld\n>goodbye" => "newline word newline"
+  + ">hello\nworld" => "newline words"
+  + "> hello\nworld\n" => "newline words newline"
+  + ">hello\nworld\n>goodbye" => "newline words newline"
 
 response mark:
 + "=>" => "=>"
@@ -33,10 +33,10 @@ response mark:
 + "=> " => "=> space"
 + " => " => "space => space"
 + with words:
-  + "a =>" => "word space =>"
-  + "a=> " => "word => space"
-  + "=>a" => "=> word"
-  + "a=>b" => "word => word"
+  + "a =>" => "words =>"
+  + "a=> " => "words => space"
+  + "=>a" => "=> words"
+  + "a=>b" => "words => words"
 + with newlines:
 + soft break before "=>":
 
@@ -44,58 +44,58 @@ response mark:
 bracket:
 + "[" => "["
 + "]" => "]"
-+ "[a" => "[ word"
-+ "a]" => "word ]"
++ "[a" => "[ words"
++ "a]" => "words ]"
 
 text:
-+ "a" => "word"
-+ "a " => "word space"
-+ "a b" => "word space word"
-+ "a b c" => "word space word space word"
-+ "a b\nc d" => "word space word newline word space word"
-+ "a b\nc\n" => "word space word newline word newline"
-+ "a b\nc \n" => "word space word newline word space newline"
++ "a" => "words"
++ "a " => "words"
++ "a b" => "words"
++ "a b c" => "words"
++ "a b\nc d" => "words newline words"
++ "a b\nc\n" => "words newline words newline"
++ "a b\nc \n" => "words newline words newline"
 
 newline:
 + "\n" => "newline"
 + "\n\n"  => "newline newline"
-+ "\n\na" => "newline newline word"
-+ "a\n"   => "word newline"
-+ "a\n\n" => "word newline newline"
-+ "a\nb"   => "word newline word"
-+ "a\nb\n" => "word newline word newline"
++ "\n\na" => "newline newline words"
++ "a\n"   => "words newline"
++ "a\n\n" => "words newline newline"
++ "a\nb"   => "words newline words"
++ "a\nb\n" => "words newline words newline"
 
 list items:
 + "- " => "- space"
-+ "- a" => "- space word"
-+ "-a" => "word"
++ "- a" => "- space words"
++ "-a" => "words"
 
 + "+ " => "+ space"
-+ "+ a" => "+ space word"
-+ "+a" => "word"
++ "+ a" => "+ space words"
++ "+a" => "words"
 
 dent:
 + single dent:
   + "  " => "space space"
-  + "  a" => "space space word"
-  + "  [x ] " => "space space [ word space ] space"
+  + "  a" => "space space words"
+  + "  [x ] " => "space space [ words ] space"
 + multiple dent:
   + "    + " => "space space space space + space"
-  + "    + a" => "space space space space + space word"
+  + "    + a" => "space space space space + space words"
 + dent with seq:
   + "  - " => "space space - space"
-  + "  - a" => "space space - space word"
+  + "  - a" => "space space - space words"
 + dent with fork:
   + "  + " => "space space + space"
-  + "  + a" => "space space + space word"
+  + "  + a" => "space space + space words"
 
 state:
 + "[]" => "[ ]"
-+ "[x]" => "[ word ]"
-+ "[ x ]" => "[ space word space ]"
++ "[x]" => "[ words ]"
++ "[ x ]" => "[ space words ]"
 
 colon:
-+ "hello:" => "word :"
++ "hello:" => "words :"
 
 strings:
 + double-quote string:
@@ -121,14 +121,14 @@ strings:
     + "``" => "invalid empty backtick string"
   + simple:
     + "`hello`" => "backtick string"
-    + "a`hello`" => "word backtick string"
+    + "a`hello`" => "words backtick string"
 + multiline string:
   + "|" => "multiline string"
   + "| " => "multiline string"
   + "|:" => "invalid multiline string mark"
   + "| hello\n|:" => "multiline string newline invalid multiline string mark"
   + "| hello" => "multiline string"
-  + "| hello\nworld" => "multiline string newline word"
+  + "| hello\nworld" => "multiline string newline words"
   + "| hello\n| world\n" => "multiline string newline multiline string newline"
   + "| hello\n| world\n|" => "multiline string newline multiline string newline multiline string"
 

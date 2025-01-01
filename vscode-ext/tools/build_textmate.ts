@@ -20,7 +20,7 @@ const names: { [k in T]: string | null } = {
   space: null,
   'unclosed backtick string': 'constant.numeric.code',
   'unclosed double-quote string': 'string',
-  word: 'source.word',
+  words: 'source.word',
 }
 
 const tm = {

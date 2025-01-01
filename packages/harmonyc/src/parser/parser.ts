@@ -39,9 +39,12 @@ export function parse(input: string, production = TEST_DESIGN) {
 
 export const SPACES = rep_sc(tok(T.Space))
 export const NEWLINES = list_sc(tok(T.Newline), SPACES) // empty lines can have spaces
-
-export const WORD = apply(
-  alt_sc(tok(T.Word), tok(T.Plus), tok(T.Minus)),
+export const WORDS = apply(
+  tok(T.Words),
+  ({ text }) => new Word(text.trimEnd().split(/\s+/).join(' '))
+)
+export const BULLET_POINT_LIKE_WORD = apply(
+  alt_sc(tok(T.Plus), tok(T.Minus)),
   ({ text }) => new Word(text)
 )
 export const DOUBLE_QUOTE_STRING = alt_sc(
@@ -60,7 +63,12 @@ export const DOCSTRING = apply(
   (lines) => lines.map(({ text }) => text.slice(2)).join('\n')
 )
 
-export const PART = alt_sc(WORD, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
+export const PART = alt_sc(
+  WORDS,
+  BULLET_POINT_LIKE_WORD,
+  DOUBLE_QUOTE_STRING,
+  BACKTICK_STRING
+)
 export const PHRASE = seq(
   opt_sc(list_sc(PART, SPACES)),
   opt_sc(kright(opt_sc(NEWLINES), kright(SPACES, DOCSTRING)))
