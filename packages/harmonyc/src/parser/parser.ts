@@ -40,7 +40,10 @@ export function parse(input: string, production = TEST_DESIGN) {
 export const SPACES = rep_sc(tok(T.Space))
 export const NEWLINES = list_sc(tok(T.Newline), SPACES) // empty lines can have spaces
 
-export const WORD = apply(tok(T.Word), ({ text }) => new Word(text))
+export const WORD = apply(
+  alt_sc(tok(T.Word), tok(T.Plus), tok(T.Minus)),
+  ({ text }) => new Word(text)
+)
 export const DOUBLE_QUOTE_STRING = alt_sc(
   apply(
     tok(T.DoubleQuoteString),
