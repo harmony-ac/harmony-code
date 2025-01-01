@@ -40,6 +40,22 @@
   + with newlines:
   + soft break before "=>":
 
++ error mark:
+  + "!!" => "!!"
+  + " !!" => "space !!"
+  + "!! " => "!! space"
+  + " !! " => "space !! space"
+  + with words:
+    + "a !!" => "words !!"
+    + "a!! " => "words !! space"
+    + "!!a" => "!! words"
+    + "a!!b" => "words !! words"
+  + with response mark:
+    + "!! =>" => "!! space =>"
+    + "!!=> " => "!! => space"
+    + "=>!!" => "=> !!"
+    + "=> !!" => "=> space !!"
+
 
 + bracket:
   + "[" => "["

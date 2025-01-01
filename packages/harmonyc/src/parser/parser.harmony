@@ -23,6 +23,8 @@
       | "hello"
 
   + special characters:
+    + | :
+      => !! | Unable to consume token: :
     + | a-b
       =>
       | a-b
@@ -66,6 +68,14 @@
     + | a = b
       =>
       | a = b
+
+    + | !! x
+      =>
+      | !! x
+
+    + | !! "error"
+      =>
+      | !! "error"
 
 + production "RESPONSE_ITEM"
   + | => hello

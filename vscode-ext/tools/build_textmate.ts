@@ -6,6 +6,7 @@ const names: { [k in T]: string | null } = {
   '-': 'keyword.operator.wordlike.sequence',
   ':': 'markup.heading.marker',
   '=>': 'keyword.operator.wordlike.response',
+  '!!': 'keyword.operator.wordlike.error',
   '[': 'punctuation.section.embedded.state',
   ']': 'punctuation.section.embedded.state',
   'backtick string': 'constant.numeric.code',

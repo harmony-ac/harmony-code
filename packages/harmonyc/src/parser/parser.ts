@@ -1,4 +1,4 @@
-import type { Token } from 'typescript-parsec'
+import type { Parser, Token } from 'typescript-parsec'
 import {
   alt_sc,
   apply,
@@ -30,6 +30,7 @@ import {
   Step,
   Word,
   Label,
+  ErrorResponse,
 } from '../model/model.ts'
 
 export function parse(input: string, production = TEST_DESIGN) {
@@ -43,6 +44,7 @@ export const WORDS = apply(
   tok(T.Words),
   ({ text }) => new Word(text.trimEnd().split(/\s+/).join(' '))
 )
+export const ERROR_MARK = apply(tok(T.ErrorMark), ({ text }) => new Word(text))
 export const BULLET_POINT_LIKE_WORD = apply(
   alt_sc(tok(T.Plus), tok(T.Minus)),
   ({ text }) => new Word(text)
@@ -53,7 +55,7 @@ export const DOUBLE_QUOTE_STRING = alt_sc(
     ({ text }) => new StringLiteral(JSON.parse(text))
   ),
   seq(tok(T.UnclosedDoubleQuoteString), fail('unclosed double-quote string'))
-)
+) as Parser<T, StringLiteral>
 export const BACKTICK_STRING = apply(
   tok(T.BacktickString),
   ({ text }) => new CodeLiteral(text.slice(1, -1))
@@ -65,6 +67,7 @@ export const DOCSTRING = apply(
 
 export const PART = alt_sc(
   WORDS,
+  ERROR_MARK,
   BULLET_POINT_LIKE_WORD,
   DOUBLE_QUOTE_STRING,
   BACKTICK_STRING
@@ -77,10 +80,13 @@ export const ACTION = apply(
   PHRASE,
   ([parts, docstring]) => new Action(parts, docstring)
 )
-export const RESPONSE = apply(
-  PHRASE,
-  ([parts, docstring]) => new Response(parts, docstring)
-)
+export const RESPONSE = apply(PHRASE, ([parts, docstring]) => {
+  if (parts?.[0] instanceof Word && parts[0].text === '!!') {
+    return new ErrorResponse(parts.slice(1), docstring)
+  }
+  return new Response(parts, docstring)
+})
+
 export const ARROW = kmid(
   seq(opt_sc(NEWLINES), SPACES),
   tok(T.ResponseArrow),

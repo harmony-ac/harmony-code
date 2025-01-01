@@ -1,5 +1,6 @@
 import { basename } from 'path'
 import {
+  Action,
   Arg,
   CodeGenerator,
   Feature,
@@ -22,7 +23,7 @@ export class NodeTest implements CodeGenerator {
     const fn = (this.currentFeatureName = pascalCase(feature.name))
     this.phraseFns = new Map<string, Phrase>()
     if (this.framework === 'vitest') {
-      this.tf.print(`import { describe, test } from 'vitest';`)
+      this.tf.print(`import { describe, test, expect } from 'vitest';`)
     }
     this.tf.print(`import ${fn}Steps from ${str(stepsModule)};`)
     this.tf.print(``)
@@ -66,6 +67,14 @@ export class NodeTest implements CodeGenerator {
       }
     })
     this.tf.print('});')
+  }
+
+  errorStep(action: Action, errorMessage?: StringLiteral) {
+    this.tf.print(`expect(async () => {`)
+    this.tf.indent(() => {
+      action.toCode(this)
+    })
+    this.tf.print(`}).rejects.toThrow(${errorMessage?.toCode(this) ?? ''});`)
   }
 
   phrase(p: Phrase) {

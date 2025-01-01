@@ -1,57 +1,68 @@
 # Harmony Code
 
-A test design & BDD tool that helps you separate the _what_ to test from the _how_ to automate it. You write test cases in a simple Markdown format, and then automate them with Vitest (and soon with many more frameworks and languages).
+A test design & BDD tool that helps you separate the _what_ to test from the _how_ to automate it. You write test cases in a simple easy-to-read format, and then automate them with Vitest (and soon with other frameworks and languages).
 
-## Usage
+## Setup
 
-- ### watch and run mode
+You need to have Node.js installed. Then you can install Harmony Code in your project folder by:
 
-  - You can compile and run your `*.harmony.md` files in the `src` folder, and watch it, by running
+```bash
+npm install harmonyc
+```
 
-    ```bash script
-    npx harmonyc --run --watch 'src/**/*.harmony.md'
-    ```
+And then run it for all `.harmony` files in your `src` folder:
 
-    - => this will generate tests into `*.test.mjs` files
-    - => this will create a stub `*.steps.ts` file if it doesn't exist
+```bash
+harmonyc src/**/*.harmony
+```
+
+This will generate `.test.mjs` files next to the `.harmony` files, and generate empty definition files for you.
 
 ## Syntax
 
-A Harmony Code file is a Markdown file with a syntax that looks like this:
+A `.harmony` file is a text file with a syntax that looks like this:
 
-```markdown
-# Products API
-
-- **Create**:
-  - **Anonymous:**
-    - create product => error: unauthorized
-  - **Admin**:
-    1. authenticate admin
-    2. create product => product created
-    3. **Delete:**
-       - delete product => product deleted
+```
++ Products API:
+  + Create:
+    + Anonymous:
+      - create product => !! "unauthorized"
+    + Admin:
+      - authenticate admin
+      - create product => product created
+      - Delete:
+        - delete product => product deleted
 ```
 
-### Actions and responses
+### Indentation
 
-List items (either in ordered or bulleted lists) consist of an **action** and zero or more **response**s, separated by a `=>`.
-
-The generated steps contain the feature name after a `||`. Cucumber's steps are in one global namespace, but including the feature name makes it easy to scope step defintions by feature.
+The lines of a file are nodes of a tree. The tree is specified with the indentation of the lines, which is n times 2 spaces and a `+` or `-` with one more space. The `+` or `-` sign is considered to be part of the indentation.
 
 ### Sequences and forks
 
-An ordered list means a **sequence**: the list items are included int the tests in order.
+`-` means a sequence: the node follows the previous sibling node and its descendants.
 
-A bulleted list (`-` or `*` or `+`) means a **fork**: the node directly follows its parent node. All list items are separate branches, they will generate separate scenarios.
+`+` means a fork: the node directly follows its parent node. All siblings with `+` are separate branches, they will generate separate scenarios.
 
 ### Labels
 
 Label are nodes that end with `:`. You can use them to structure your test design.
 They are not included in the test case, but the test case name is generated from the labels.
 
-### Text
+### Comments
 
-Paragraphs outside of lists are for humans only, they are ignored in the automated tests.
+Lines starting with `#` or `//` are comments and are ignored.
+
+### Steps
+
+All other lines are steps. A step consists of an action, and one or more responses denoted by `=>`.
+Actions will become `When` steps, and responses will become `Then` steps.
+
+### Error matching
+
+You can use `!!` to denote an error response. This will verify that the action throws an error. You can specify the error message after the `!!`.
+
+## Running the tests
 
 ## License
 

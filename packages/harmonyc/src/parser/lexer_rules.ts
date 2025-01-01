@@ -3,6 +3,7 @@ export enum T {
   Comment = 'comment',
   /** the => */
   ResponseArrow = '=>',
+  ErrorMark = '!!',
   Words = 'words',
   Minus = '-',
   Plus = '+',
@@ -33,13 +34,14 @@ const rules: [boolean, RegExp, T][] = [
   [true, /^:(?=\s*(?:\n|$))/g, T.Colon],
   [
     true,
-    /^(?!\s|=>|- |\+ |[\[\]"`|]).+?(?=[\[\]"`|]|\n|$|=>|:\s*(?:\n|$)|$)/g,
+    /^(?!\s|=>|!!|- |\+ |[\[\]"`|]).+?(?=[\[\]"`|]|\n|$|=>|!!|:\s*(?:\n|$)|$)/g,
     T.Words,
   ],
   [true, /^-/g, T.Minus],
   [true, /^\+/g, T.Plus],
   [true, /^\[/g, T.OpeningBracket],
   [true, /^\]/g, T.ClosingBracket],
+  [true, /^!!/g, T.ErrorMark],
   [true, /^=>/g, T.ResponseArrow],
   [
     true,

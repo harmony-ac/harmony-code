@@ -32,7 +32,7 @@
     },
     {
       "name": "source.word.harmony",
-      "match": "(?!\\s|=>|- |\\+ |[\\[\\]\"`|]).+?(?=[\\[\\]\"`|]|\\n|$|=>|:\\s*(?:\\n|$)|$)"
+      "match": "(?!\\s|=>|!!|- |\\+ |[\\[\\]\"`|]).+?(?=[\\[\\]\"`|]|\\n|$|=>|!!|:\\s*(?:\\n|$)|$)"
     },
     {
       "name": "keyword.operator.wordlike.sequence.harmony",
@@ -49,6 +49,10 @@
     {
       "name": "punctuation.section.embedded.state.harmony",
       "match": "\\]"
+    },
+    {
+      "name": "keyword.operator.wordlike.error.harmony",
+      "match": "!!"
     },
     {
       "name": "keyword.operator.wordlike.response.harmony",

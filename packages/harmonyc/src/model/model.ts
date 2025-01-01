@@ -6,6 +6,7 @@ export interface CodeGenerator {
   testGroup(group: TestGroup): void
   test(test: Test): void
   phrase(phrase: Phrase): void
+  errorStep(action: Action, errorMessage?: StringLiteral): void
   stringLiteral(text: string): string
   codeLiteral(src: string): string
   stringParamDeclaration(index: number): string
@@ -118,8 +119,12 @@ export class Step extends Branch {
     return [this.action, ...this.responses]
   }
   toCode(cg: CodeGenerator) {
-    for (const phrase of this.phrases) {
-      phrase.toCode(cg)
+    if (this.responses[0] instanceof ErrorResponse) {
+      cg.errorStep(this.action, this.responses[0].message)
+    } else {
+      for (const phrase of this.phrases) {
+        phrase.toCode(cg)
+      }
     }
   }
   setFeature(feature: Feature) {
@@ -244,10 +249,7 @@ export abstract class Phrase {
   get isEmpty() {
     return this.content.length === 0 && this.docstring === undefined
   }
-  toCode(cg: CodeGenerator) {
-    if (!this.content.length && this.docstring === undefined) return
-    cg.phrase(this)
-  }
+  abstract toCode(cg: CodeGenerator): void
   toString() {
     return [
       ...(this.content.length > 0
@@ -289,10 +291,42 @@ export abstract class Phrase {
 
 export class Action extends Phrase {
   kind = 'action'
+
+  toCode(cg: CodeGenerator) {
+    if (!this.content.length && this.docstring === undefined) return
+    cg.phrase(this)
+  }
 }
 
 export class Response extends Phrase {
   kind = 'response'
+
+  get isErrorResponse() {
+    if (
+      this.content.length === 1 &&
+      this.content[0] instanceof Word &&
+      this.content[0].text === '!!'
+    )
+      return true
+    if (
+      this.content.length === 2 &&
+      this.content[0] instanceof Word &&
+      this.content[0].text === '!!' &&
+      this.content[1] instanceof StringLiteral
+    )
+      return true
+  }
+
+  toCode(cg: CodeGenerator) {
+    if (!this.content.length && this.docstring === undefined) return
+    cg.phrase(this)
+  }
+}
+
+export class ErrorResponse extends Response {
+  get message() {
+    return (this.content[0] as StringLiteral | undefined) ?? this.docstring
+  }
 }
 
 export class Precondition extends Branch {

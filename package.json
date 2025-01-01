@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "Test design compiler",
   "scripts": {
-    "dev": "cd packages/harmonyc && npm run dev"
+    "dev": "cd packages/harmonyc && vitest --watch"
   },
   "repository": {
     "type": "git",
