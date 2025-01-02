@@ -6,6 +6,7 @@ export interface CodeGenerator {
   testGroup(group: TestGroup): void
   test(test: Test): void
   phrase(phrase: Phrase): void
+  step(action: Action, responses: Response[]): void
   errorStep(action: Action, errorMessage?: StringLiteral): void
   stringLiteral(text: string): string
   codeLiteral(src: string): string
@@ -122,9 +123,7 @@ export class Step extends Branch {
     if (this.responses[0] instanceof ErrorResponse) {
       cg.errorStep(this.action, this.responses[0].message)
     } else {
-      for (const phrase of this.phrases) {
-        phrase.toCode(cg)
-      }
+      cg.step(this.action, this.responses)
     }
   }
   setFeature(feature: Feature) {

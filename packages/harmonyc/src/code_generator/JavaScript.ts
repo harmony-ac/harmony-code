@@ -5,6 +5,7 @@ import {
   CodeGenerator,
   Feature,
   Phrase,
+  Response,
   StringLiteral,
   Test,
   TestGroup,
@@ -56,7 +57,9 @@ export class NodeTest implements CodeGenerator {
   }
 
   featureVars!: Map<string, string>
+  resultCount = 0
   test(t: Test) {
+    this.resultCount = 0
     this.featureVars = new Map()
     // avoid shadowing this import name
     this.featureVars.set(new Object() as any, this.currentFeatureName)
@@ -77,16 +80,41 @@ export class NodeTest implements CodeGenerator {
     this.tf.print(`}).rejects.toThrow(${errorMessage?.toCode(this) ?? ''});`)
   }
 
+  extraArgs: string[] = []
+  step(action: Action, responses: Response[]): void {
+    for (const p of [action, ...responses]) {
+      const feature = p.feature.name
+      let f = this.featureVars.get(feature)
+      if (!f) {
+        f = toId(feature, abbrev, this.featureVars)
+        this.tf.print(`const ${f} = new ${pascalCase(feature)}Steps();`)
+      }
+    }
+    if (responses.length === 0) {
+      action.toCode(this)
+      return
+    }
+    const res = `r${this.resultCount++ || ''}`
+    this.tf.print(`const ${res} =`)
+    this.tf.indent(() => {
+      action.toCode(this)
+      try {
+        this.extraArgs = [res]
+        for (const response of responses) {
+          response.toCode(this)
+        }
+      } finally {
+        this.extraArgs = []
+      }
+    })
+  }
+
   phrase(p: Phrase) {
     const phrasefn = this.functionName(p)
     if (!this.phraseFns.has(phrasefn)) this.phraseFns.set(phrasefn, p)
-    const feature = p.feature.name
-    let f = this.featureVars.get(feature)
-    if (!f) {
-      f = toId(feature, abbrev, this.featureVars)
-      this.tf.print(`const ${f} = new ${pascalCase(feature)}Steps();`)
-    }
+    const f = this.featureVars.get(p.feature.name)
     const args = p.args.map((a) => (a as Arg).toCode(this))
+    args.push(...this.extraArgs)
     this.tf.print(`await ${f}.${this.functionName(p)}(${args.join(', ')});`)
   }
 

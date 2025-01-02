@@ -6,14 +6,13 @@ import { inspect } from 'util'
 
 export default class ParserSteps {
   production: any
-  tree: Section
   async When_production__(value: string) {
     this.production = P[value]
   }
-  async When__(value: string) {
-    this.tree = parse(value, this.production)
+  async When__(value: string): Promise<Section> {
+    return parse(value, this.production)
   }
-  async Then__(value: string) {
-    expect(this.tree.toString()).toBe(value)
+  async Then__(value: string, tree: Section) {
+    expect(tree.toString()).toBe(value)
   }
 }
