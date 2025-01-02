@@ -8,7 +8,7 @@
     "test": "npm run build && node ./dist/cli/cli 'src/**/*.harmony' && vitest --no-watch",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "vitest --watch",
-    "publish": "rm dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish"
+    "publish": "rm -rf dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish"
   },
   "exports": {
     "./test": {
