@@ -33,7 +33,7 @@ import {
   ErrorResponse,
 } from '../model/model.ts'
 
-export function parse(input: string, production = TEST_DESIGN) {
+export function parse<T>(input: string, production: Parser<any, T> = TEST_DESIGN as any) {
   const tokens = lexer.parse(input)
   return expectSingleResult(expectEOF(production.parse(tokens)))
 }

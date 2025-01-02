@@ -115,12 +115,12 @@ export class NodeTest implements CodeGenerator {
   }
 
   phrase(p: Phrase) {
-    const phrasefn = this.functionName(p)
+    const phrasefn = functionName(p)
     if (!this.phraseFns.has(phrasefn)) this.phraseFns.set(phrasefn, p)
     const f = this.featureVars.get(p.feature.name)
     const args = p.args.map((a) => (a as Arg).toCode(this))
     args.push(...this.extraArgs)
-    this.tf.print(`await ${f}.${this.functionName(p)}(${args.join(', ')});`)
+    this.tf.print(`await ${f}.${functionName(p)}(${args.join(', ')});`)
   }
 
   stringLiteral(text: string): string {
@@ -141,19 +141,6 @@ export class NodeTest implements CodeGenerator {
 
   variantParamDeclaration(index: number): string {
     return `${this.paramName(index)}: any`
-  }
-
-  private functionName(phrase: Phrase) {
-    const { kind } = phrase
-    return (
-      (kind === 'response' ? 'Then_' : 'When_') +
-      ([...phrase.content, phrase.docstring ? [phrase.docstring] : []]
-        .map((c) =>
-          c instanceof Word ? underscore(c.text) : c instanceof Arg ? '_' : ''
-        )
-        .filter((x) => x)
-        .join('_') || '_')
-    )
   }
 }
 
@@ -204,4 +191,17 @@ function abbrev(s: string) {
   return words(s)
     .map((x) => x.charAt(0).toUpperCase())
     .join('')
+}
+
+export function functionName(phrase: Phrase) {
+  const { kind } = phrase
+  return (
+    (kind === 'response' ? 'Then_' : 'When_') +
+    ([...phrase.content, phrase.docstring ? [phrase.docstring] : []]
+      .flatMap((c) =>
+        c instanceof Word ? words(c.text) : c instanceof Arg ? ['_'] : []
+      )
+      .filter((x) => x)
+      .join('_') || '_')
+  )
 }
