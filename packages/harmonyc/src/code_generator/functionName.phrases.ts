@@ -1,12 +1,16 @@
-import { expect } from 'vitest'
+import { ExpectStatic } from 'vitest'
 import { functionName } from './JavaScript'
-import { ACTION, parse, PHRASE } from '../parser/parser'
+import { parse, ACTION } from '../parser/parser'
 
 export default class FunctionNamePhrases {
+  expect: ExpectStatic
+  constructor({ expect }: { expect: ExpectStatic }) {
+    this.expect = expect
+  }
   async When__(x: string) {
     return functionName(parse(x, ACTION))
   }
   async Then__(x: string, res: any) {
-    expect(res).toBe(x)
+    this.expect(res).toBe(x)
   }
 }

@@ -63,7 +63,7 @@ export class NodeTest implements CodeGenerator {
     this.featureVars = new Map()
     // avoid shadowing this import name
     this.featureVars.set(new Object() as any, this.currentFeatureName)
-    this.tf.print(`test(${str(t.name)}, async () => {`)
+    this.tf.print(`test(${str(t.name)}, async (context) => {`)
     this.tf.indent(() => {
       for (const step of t.steps) {
         step.toCode(this)
@@ -109,7 +109,9 @@ export class NodeTest implements CodeGenerator {
       let f = this.featureVars.get(feature)
       if (!f) {
         f = toId(feature, abbrev, this.featureVars)
-        this.tf.print(`const ${f} = new ${pascalCase(feature)}Phrases();`)
+        this.tf.print(
+          `const ${f} = new ${pascalCase(feature)}Phrases(context);`
+        )
       }
     }
   }
