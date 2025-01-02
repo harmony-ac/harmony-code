@@ -1,16 +1,16 @@
 {
   "name": "harmonyc",
   "description": "Harmony Code - model-driven BDD for Vitest",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "author": "Bernát Kalló",
   "type": "module",
   "bin": {
     "harmonyc": "./cli.js"
   },
   "exports": {
-    "./test": {
-      "types": "./test.d.ts",
-      "default": "./js_api/js_api.js"
+    "./vitest": {
+      "types": "./vitest/index.d.ts",
+      "default": "./vitest/index.js"
     }
   },
   "homepage": "https://github.com/harmony-ac/code#readme",

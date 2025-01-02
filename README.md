@@ -10,7 +10,17 @@ You need to have Node.js installed. Then you can install Harmony Code in your pr
 npm install harmonyc
 ```
 
-And then run it for all `.harmony` files in your `src` folder:
+Then add it to your `vitest.config.js` or `vite.config.js` file, and specify which folder to watch for `.harmony` files:
+
+```js
+import harmony from 'harmonyc/vitest'
+
+export default {
+  plugins: [harmony({ watchDir: 'src' })],
+}
+```
+
+You can run it manually for all `.harmony` files in your `src` folder:
 
 ```bash
 harmonyc src/**/*.harmony
