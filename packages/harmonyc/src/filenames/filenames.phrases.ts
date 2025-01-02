@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { base, stepsFileName, testFileName } from './filenames.ts'
+import { base, phrasesFileName, testFileName } from './filenames.ts'
 import { mkdirSync, mkdtempSync, rmSync, rmdirSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join, dirname } from 'path'
@@ -21,7 +21,7 @@ export default class Filenames {
   async Then_test_file_is__(expected: string) {
     expect(testFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
   }
-  async Then_steps_file_is__(expected: string) {
-    expect(stepsFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
+  async Then_phrases_file_is__(expected: string) {
+    expect(phrasesFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
   }
 }

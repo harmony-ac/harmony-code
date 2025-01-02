@@ -8,38 +8,38 @@
   # Test files are generated from the input files. Its name is `<base>.test.mjs`.
   - for filename "./src/hello.harmony.md" => test file is "./src/hello.test.mjs"
 
-+ Steps files:
-  # Steps files are generated from the input files if they do not exist.
-  # If a `<base>.steps.*` file exists, it is the steps file.
-  # If no step file exists, a `.steps.ts` file will be generated.
++ Phrases files:
+  # Phrases files are generated from the input files if they do not exist.
+  # If a `<base>.phrases.*` file exists, it is the phrases file.
+  # If no step file exists, a `.phrases.ts` file will be generated.
   - extension:
     + .harmony.md:
       + for filename "./src/hello.harmony.md"
-        => steps file is "./src/hello.steps.ts"
+        => phrases file is "./src/hello.phrases.ts"
     + .harmony:
       + for filename "./src/hello.harmony"
-        => steps file is "./src/hello.steps.ts"
+        => phrases file is "./src/hello.phrases.ts"
   - existing file:
     + ts:
-      - a file "./src/hello.steps.ts" exists
-        => steps file is "./src/hello.steps.ts"
+      - a file "./src/hello.phrases.ts" exists
+        => phrases file is "./src/hello.phrases.ts"
     + not ts:
-      - a file "./src/hello.steps.tsx" exists
-        => steps file is "./src/hello.steps.tsx"
+      - a file "./src/hello.phrases.tsx" exists
+        => phrases file is "./src/hello.phrases.tsx"
 
   + multiple existing files:
     + tsx wins over ts:
-      - a file "./src/hello.steps.ts" exists
-      - a file "./src/hello.steps.tsx" exists
+      - a file "./src/hello.phrases.ts" exists
+      - a file "./src/hello.phrases.tsx" exists
       - for filename "./src/hello.harmony"
-        => steps file is "./src/hello.steps.tsx"
+        => phrases file is "./src/hello.phrases.tsx"
     + ts wins over js:
-      - a file "./src/hello.steps.js" exists
-      - a file "./src/hello.steps.ts" exists
+      - a file "./src/hello.phrases.js" exists
+      - a file "./src/hello.phrases.ts" exists
       - for filename "./src/hello.harmony"
-        => steps file is "./src/hello.steps.ts"
+        => phrases file is "./src/hello.phrases.ts"
     + jsx wins over js:
-      - a file "./src/hello.steps.js" exists
-      - a file "./src/hello.steps.jsx" exists
+      - a file "./src/hello.phrases.js" exists
+      - a file "./src/hello.phrases.jsx" exists
       - for filename "./src/hello.harmony"
-        => steps file is "./src/hello.steps.jsx"
+        => phrases file is "./src/hello.phrases.jsx"

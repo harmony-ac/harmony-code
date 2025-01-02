@@ -1,7 +1,7 @@
 import { NodeTest } from '../code_generator/JavaScript.ts'
 import { OutFile } from '../code_generator/outFile.ts'
 import { parse } from '../parser/parser.ts'
-import { base, stepsFileName, testFileName } from '../filenames/filenames.ts'
+import { base, phrasesFileName, testFileName } from '../filenames/filenames.ts'
 import { Feature, Section } from '../model/model.ts'
 import { basename } from 'node:path'
 import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
@@ -28,9 +28,9 @@ export function compileFeature(fileName: string, src: string) {
   autoLabel(feature.root)
   const testFn = testFileName(fileName)
   const testFile = new OutFile(testFn)
-  const stepsFn = stepsFileName(fileName)
-  const stepsFile = new OutFile(stepsFn)
-  const cg = new NodeTest(testFile, stepsFile)
+  const phrasesFn = phrasesFileName(fileName)
+  const phrasesFile = new OutFile(phrasesFn)
+  const cg = new NodeTest(testFile, phrasesFile)
   feature.toCode(cg)
-  return { outFile: testFile, stepsFile }
+  return { outFile: testFile, phrasesFile }
 }

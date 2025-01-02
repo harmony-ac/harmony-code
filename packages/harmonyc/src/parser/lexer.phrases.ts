@@ -2,7 +2,7 @@ import { expect } from 'vitest'
 import { T, lexer } from './lexer'
 import { Token } from 'typescript-parsec'
 
-export default class LexerSteps {
+export default class LexerPhrases {
   async When__(input: string) {
     let list: Token<T> | undefined = lexer.parse(input)
     const arr: string[] = []

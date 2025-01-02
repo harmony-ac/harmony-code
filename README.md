@@ -58,7 +58,7 @@ The lines of a file are nodes of a tree. The tree is specified with the indentat
 
 ### Actions and responses (phrases)
 
-After the mark, every node can contain an action and zero or more responses. The action is the text before the `=>`, and the responses are the text after the `=>`.
+After the mark, every node can contain an action and zero or more responses. The action is the text before the `=>`, and the responses are the text after the `=>`. Actions will become `When_*` functions, and responses will become `Then_*` functions.
 
 Both actions and responses get compiled to simple function calls - in JavaScript, awaited function calls. The return value of the action is passed to the responses of the same step as the last argument.
 
@@ -74,11 +74,6 @@ They are not included in the test case, but the test case name is generated from
 ### Comments
 
 Lines starting with `#` or `//` are comments and are ignored.
-
-### Steps
-
-All other lines are steps. A step consists of an action, and one or more responses denoted by `=>`.
-Actions will become `When` steps, and responses will become `Then` steps.
 
 ### Error matching
 

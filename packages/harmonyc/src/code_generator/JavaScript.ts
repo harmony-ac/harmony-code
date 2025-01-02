@@ -20,18 +20,18 @@ export class NodeTest implements CodeGenerator {
   constructor(private tf: OutFile, private sf: OutFile) {}
 
   feature(feature: Feature) {
-    const stepsModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
+    const phrasesModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
     const fn = (this.currentFeatureName = pascalCase(feature.name))
     this.phraseFns = new Map<string, Phrase>()
     if (this.framework === 'vitest') {
       this.tf.print(`import { describe, test, expect } from 'vitest';`)
     }
-    this.tf.print(`import ${fn}Steps from ${str(stepsModule)};`)
+    this.tf.print(`import ${fn}Phrases from ${str(phrasesModule)};`)
     this.tf.print(``)
     for (const item of feature.testGroups) {
       item.toCode(this)
     }
-    this.sf.print(`export default class ${pascalCase(feature.name)}Steps {`)
+    this.sf.print(`export default class ${pascalCase(feature.name)}Phrases {`)
     this.sf.indent(() => {
       for (const ph of this.phraseFns.keys()) {
         const p = this.phraseFns.get(ph)!
@@ -87,7 +87,7 @@ export class NodeTest implements CodeGenerator {
       let f = this.featureVars.get(feature)
       if (!f) {
         f = toId(feature, abbrev, this.featureVars)
-        this.tf.print(`const ${f} = new ${pascalCase(feature)}Steps();`)
+        this.tf.print(`const ${f} = new ${pascalCase(feature)}Phrases();`)
       }
     }
     if (responses.length === 0) {

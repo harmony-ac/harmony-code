@@ -2,7 +2,7 @@ import { parse } from '../parser/parser'
 import { makeTests, Test } from './model'
 import { expect } from 'vitest'
 
-export default class MakeTestsSteps {
+export default class MakeTestsPhrases {
   async When__(s: string) {
     const root = parse(s)
     return makeTests(root)

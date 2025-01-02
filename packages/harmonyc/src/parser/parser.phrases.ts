@@ -4,7 +4,7 @@ import * as P from './parser'
 import { parse } from './parser'
 import { inspect } from 'util'
 
-export default class ParserSteps {
+export default class ParserPhrases {
   production: any
   async When_production__(value: string) {
     this.production = P[value]

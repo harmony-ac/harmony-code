@@ -18,7 +18,7 @@ export async function compileFiles(pattern: string | string[]) {
     console.log(error.message ?? error)
   }
   console.log(`Compiled ${fns.length} file${fns.length === 1 ? '' : 's'}.`)
-  const generated = features.filter((f) => f.stepsFileAction === 'generated')
+  const generated = features.filter((f) => f.phrasesFileAction === 'generated')
   if (generated.length) {
     console.log(
       `Generated ${generated.length} steps file${
@@ -35,12 +35,12 @@ export async function compileFile(fn: string) {
     .toString()
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
-  const { outFile, stepsFile } = compileFeature(fn, src)
+  const { outFile, phrasesFile } = compileFeature(fn, src)
   writeFileSync(outFile.name, outFile.value)
-  let stepsFileAction = 'ignored'
-  if (!existsSync(stepsFile.name)) {
-    stepsFileAction = 'generated'
-    writeFileSync(stepsFile.name, stepsFile.value)
+  let phrasesFileAction = 'ignored'
+  if (!existsSync(phrasesFile.name)) {
+    phrasesFileAction = 'generated'
+    writeFileSync(phrasesFile.name, phrasesFile.value)
   }
-  return { stepsFileAction, outFile, stepsFile }
+  return { phrasesFileAction, outFile, phrasesFile }
 }
