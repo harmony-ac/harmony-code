@@ -201,9 +201,12 @@ export function functionName(phrase: Phrase) {
     (kind === 'response' ? 'Then_' : 'When_') +
     ([...phrase.content, phrase.docstring ? [phrase.docstring] : []]
       .flatMap((c) =>
-        c instanceof Word ? words(c.text) : c instanceof Arg ? ['_'] : []
+        c instanceof Word
+          ? words(c.text).filter((x) => x)
+          : c instanceof Arg
+          ? ['']
+          : []
       )
-      .filter((x) => x)
-      .join('_') || '_')
+      .join('_') || '')
   )
 }

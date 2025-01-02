@@ -3,11 +3,11 @@ import { makeGroups, makeTests } from '../../model/model'
 import { parse } from '../../parser/parser'
 
 export default class GroupingsPhrases {
-  async When__(x: string) {
+  async When_(x: string) {
     const root = parse(x)
     return makeGroups(makeTests(root)).join('\n')
   }
-  async Then__(x: string, result: string) {
+  async Then_(x: string, result: string) {
     expect(result).toEqual(x)
   }
 }

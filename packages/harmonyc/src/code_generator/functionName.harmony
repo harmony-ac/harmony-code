@@ -2,25 +2,31 @@
   + | hello Wörld
     => | When_hello_Wörld
 
-+ args are underscores:
++ args are counted as empty units:
   + | hello "x"
-    => | When_hello__
+    => | When_hello_
   + | hello `123`
-    => | When_hello__
+    => | When_hello_
   + | hello `123` x
-    => | When_hello___x
+    => | When_hello__x
   + | hello `123` `123` x
-    => | When_hello_____x
+    => | When_hello___x
+  + | "life" is good
+    => | When__is_good
 
 + empty words are not counted:
   + | hello - - - - , a
     => | When_hello_a
   + | hello `123` : `123` x
-    => | When_hello_____x
+    => | When_hello___x
 
 + leading and trailing punctuation are not counted:
   + | hello,, *a
     => | When_hello_a
+  + | %hello
+    => | When_hello
+  + | % hello
+    => | When_hello
 
 + underscore is not counted:
   + | hello _ a

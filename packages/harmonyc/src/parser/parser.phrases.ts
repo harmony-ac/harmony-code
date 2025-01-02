@@ -6,13 +6,13 @@ import { inspect } from 'util'
 
 export default class ParserPhrases {
   production: any
-  async When_production__(value: string) {
+  async When_production_(value: string) {
     this.production = P[value]
   }
-  async When__(value: string): Promise<Section> {
+  async When_(value: string): Promise<Section> {
     return parse(value, this.production)
   }
-  async Then__(value: string, tree: Section) {
+  async Then_(value: string, tree: Section) {
     expect(tree.toString()).toBe(value)
   }
 }
