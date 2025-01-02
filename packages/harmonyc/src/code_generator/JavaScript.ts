@@ -73,6 +73,7 @@ export class NodeTest implements CodeGenerator {
   }
 
   errorStep(action: Action, errorMessage?: StringLiteral) {
+    this.declareFeatureVariables([action])
     this.tf.print(`expect(async () => {`)
     this.tf.indent(() => {
       action.toCode(this)
@@ -82,14 +83,7 @@ export class NodeTest implements CodeGenerator {
 
   extraArgs: string[] = []
   step(action: Action, responses: Response[]): void {
-    for (const p of [action, ...responses]) {
-      const feature = p.feature.name
-      let f = this.featureVars.get(feature)
-      if (!f) {
-        f = toId(feature, abbrev, this.featureVars)
-        this.tf.print(`const ${f} = new ${pascalCase(feature)}Phrases();`)
-      }
-    }
+    this.declareFeatureVariables([action, ...responses])
     if (responses.length === 0) {
       action.toCode(this)
       return
@@ -107,6 +101,17 @@ export class NodeTest implements CodeGenerator {
         this.extraArgs = []
       }
     })
+  }
+
+  private declareFeatureVariables(phrases: (Response | Action)[]) {
+    for (const p of phrases) {
+      const feature = p.feature.name
+      let f = this.featureVars.get(feature)
+      if (!f) {
+        f = toId(feature, abbrev, this.featureVars)
+        this.tf.print(`const ${f} = new ${pascalCase(feature)}Phrases();`)
+      }
+    }
   }
 
   phrase(p: Phrase) {
