@@ -112,6 +112,7 @@
 
 + colon:
   + "hello:" => "words :"
+  + "hello: " => "words : space"
 
 + strings:
   + double-quote string:

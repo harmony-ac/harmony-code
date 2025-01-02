@@ -100,7 +100,7 @@ export const STEP = apply(
 )
 
 export const LABEL = apply(
-  kleft(list_sc(PART, SPACES), tok(T.Colon)),
+  kleft(list_sc(PART, SPACES), seq(tok(T.Colon), SPACES)),
   (words) => new Label(words.map((w) => w.toString()).join(' '))
 )
 

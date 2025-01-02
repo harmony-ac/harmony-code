@@ -21,7 +21,7 @@ export async function compileFiles(pattern: string | string[]) {
   const generated = features.filter((f) => f.phrasesFileAction === 'generated')
   if (generated.length) {
     console.log(
-      `Generated ${generated.length} steps file${
+      `Generated ${generated.length} phrases file${
         generated.length === 1 ? '' : 's'
       }.`
     )

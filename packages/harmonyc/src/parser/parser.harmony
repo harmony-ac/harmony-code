@@ -161,5 +161,10 @@
         =>
         | + label:
         |   + world
+      + | + label: 
+        |   + world
+        =>
+        | + label:
+        |   + world
     
   
