@@ -56,11 +56,11 @@ The lines of a file are nodes of a tree. The tree is specified with the indentat
 
 `+` means a fork: the node directly follows its parent node. All siblings with `+` are separate branches, they will generate separate scenarios.
 
-### Actions and responses (phrases)
+### Phrases (actions and responses)
 
-After the mark, every node can contain an action and zero or more responses. The action is the text before the `=>`, and the responses are the text after the `=>`. Actions will become `When_*` functions, and responses will become `Then_*` functions.
+After the mark, every node can contain an **action** and zero or more **responses**, together called **phrases**. The action is the text before the `=>`, and the responses are the text after the `=>`.
 
-Both actions and responses get compiled to simple function calls - in JavaScript, awaited function calls. The return value of the action is passed to the responses of the same step as the last argument.
+Both actions and responses get compiled to simple function calls - in JavaScript, awaited function calls. Actions will become `When_*` functions, and responses will become `Then_*` functions. The return value of the action is passed to the responses of the same step as the last argument.
 
 ### Arguments
 
