@@ -1,6 +1,5 @@
 import type { ViteDevServer, Plugin } from 'vite'
-import { compileFile } from '../compiler/compiler'
-import { watchFiles } from '../cli/watch'
+import { watchFiles } from '../cli/watch.ts'
 
 export interface HarmonyPluginOptions {
   watchDir: string
