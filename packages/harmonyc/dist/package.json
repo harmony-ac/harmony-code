@@ -26,6 +26,9 @@
     "typescript-parsec": "0.3.4",
     "watcher": "^2.3.1"
   },
+  "peerDependencies": {
+    "vitest": "^2.1.0"
+  },
   "license": "MIT",
   "keywords": [
     "unit test",

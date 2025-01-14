@@ -25,7 +25,7 @@
         => phrases file is "./src/hello.phrases.ts"
     + not ts:
       - a file "./src/hello.phrases.tsx" exists
-        => phrases file is "./src/hello.phrases.tsx"
+        => phrases file is "./src/hello.phrases.tx"
 
   + multiple existing files:
     + tsx wins over ts:

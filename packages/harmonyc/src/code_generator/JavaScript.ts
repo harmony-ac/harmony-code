@@ -65,6 +65,7 @@ export class NodeTest implements CodeGenerator {
     this.featureVars.set(new Object() as any, this.currentFeatureName)
     this.tf.print(`test(${str(t.name)}, async (context) => {`)
     this.tf.indent(() => {
+      this.tf.print(`context.task.meta.phrases ??= [];`)
       for (const step of t.steps) {
         step.toCode(this)
       }
@@ -89,12 +90,18 @@ export class NodeTest implements CodeGenerator {
       return
     }
     const res = `r${this.resultCount++ || ''}`
+    this.tf.print(`context.task.meta.phrases.push(${str(action.toString())});`)
     this.tf.print(`const ${res} =`)
     this.tf.indent(() => {
       action.toCode(this)
       try {
         this.extraArgs = [res]
         for (const response of responses) {
+          this.tf.print(
+            `context.task.meta.phrases.push(${str(
+              `=> ${response.toString()}`
+            )});`
+          )
           response.toCode(this)
         }
       } finally {
