@@ -72,6 +72,12 @@
   + "a b\nc\n" => "words newline words newline"
   + "a b\nc \n" => "words newline words newline"
 
++ ending spaces:
+  + "hello " => "words"
+  + "hello: " => "words : space"
+  + "hello: \n" => "words : space newline"
+  + "hello: \n " => "words : space newline space"
+
 + newline:
   + "\n" => "newline"
   + "\n\n"  => "newline newline"
@@ -156,3 +162,17 @@
       |   =>
       |   | hello
       => "+ space multiline string newline space space => newline space space multiline string"
+    + empty line may have no space:
+      + | | hello
+        | |
+        => "multiline string newline multiline string"
+      + | | hello
+        | |
+        | 
+        => "multiline string newline multiline string newline"
+      + or one space:
+        + | | hello
+          | | 
+          | 
+          => "multiline string newline multiline string newline"
+

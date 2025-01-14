@@ -59,7 +59,8 @@ function addPhrases(task: Task, depth = 2) {
   } else if (
     task.type === 'test' &&
     task.result?.state === 'fail' &&
-    task.meta?.hasOwnProperty('phrases')
+    task.meta?.hasOwnProperty('phrases') &&
+    task.meta.phrases!.length > 0
   ) {
     const x = task as any as Suite
     x.name +=

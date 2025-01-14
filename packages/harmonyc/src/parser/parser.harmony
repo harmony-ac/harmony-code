@@ -107,6 +107,22 @@
   + "hello => world"    => | + hello => world
   + "hello\n  => world" => | + hello => world
 
+  + ending spaces:
+    + 1 space at end:
+      + | + hello"John" 
+    + 2 spaces at end:
+      + | + hello"John"  
+    + empty line at end:
+      + | + hello"John"
+        | 
+    + empty line with spaces at end:
+      + | + hello"John"
+        |   
+    + space after response:
+      + | + hello"John" => world 
+    + space after label:
+      + | + story: 
+
   + string:
     + | hello"John"
       =>| + hello "John"

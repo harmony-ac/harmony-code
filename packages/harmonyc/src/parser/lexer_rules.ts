@@ -57,7 +57,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /^`[^`]+`/g, T.BacktickString],
   [true, /^`[^`]*/g, T.UnclosedBacktickString],
   [true, /^\|(?: .*|(?=\n|$))/g, T.MultilineString],
-  [true, /^\|[^ ]/g, T.InvalidMultilineStringMark],
+  [true, /^\|[^ \n]/g, T.InvalidMultilineStringMark],
 ]
 
 export default rules

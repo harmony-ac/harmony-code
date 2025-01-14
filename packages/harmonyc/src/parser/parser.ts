@@ -43,8 +43,8 @@ export function parse<T>(
   return expectSingleResult(expectEOF(production.parse(tokens)))
 }
 
-export const SPACES = rep_sc(tok(T.Space))
-export const NEWLINES = list_sc(tok(T.Newline), SPACES) // empty lines can have spaces
+export const S = rep_sc(tok(T.Space))
+export const NEWLINES = list_sc(tok(T.Newline), S) // empty lines can have spaces
 export const WORDS = apply(
   tok(T.Words),
   ({ text }) => new Word(text.trimEnd().split(/\s+/).join(' '))
@@ -66,7 +66,7 @@ export const BACKTICK_STRING = apply(
   ({ text }) => new CodeLiteral(text.slice(1, -1))
 )
 export const DOCSTRING = apply(
-  list_sc(tok(T.MultilineString), seq(tok(T.Newline), SPACES)),
+  list_sc(tok(T.MultilineString), seq(tok(T.Newline), S)),
   (lines) => lines.map(({ text }) => text.slice(2)).join('\n')
 )
 
@@ -78,8 +78,8 @@ export const PART = alt_sc(
   BACKTICK_STRING
 )
 export const PHRASE = seq(
-  opt_sc(list_sc(PART, SPACES)),
-  opt_sc(kright(opt_sc(NEWLINES), kright(SPACES, DOCSTRING)))
+  opt_sc(list_sc(PART, S)),
+  opt_sc(kright(opt_sc(NEWLINES), kright(S, DOCSTRING)))
 )
 export const ACTION = apply(
   PHRASE,
@@ -92,11 +92,7 @@ export const RESPONSE = apply(PHRASE, ([parts, docstring]) => {
   return new Response(parts, docstring)
 })
 
-export const ARROW = kmid(
-  seq(opt_sc(NEWLINES), SPACES),
-  tok(T.ResponseArrow),
-  SPACES
-)
+export const ARROW = kmid(seq(opt_sc(NEWLINES), S), tok(T.ResponseArrow), S)
 
 export const RESPONSE_ITEM = kright(ARROW, RESPONSE)
 export const STEP = apply(
@@ -105,7 +101,7 @@ export const STEP = apply(
 )
 
 export const LABEL = apply(
-  kleft(list_sc(PART, SPACES), seq(tok(T.Colon), SPACES)),
+  kleft(list_sc(PART, S), seq(tok(T.Colon), S)),
   (words) => new Label(words.map((w) => w.toString()).join(' '))
 )
 
@@ -113,7 +109,7 @@ export const SECTION = apply(LABEL, (text) => new Section(text))
 export const BRANCH = alt_sc(SECTION, STEP) // section first, to make sure there is no colon after step
 
 export const DENTS = apply(
-  opt_sc(seq(SPACES, alt_sc(tok(T.Plus), tok(T.Minus)), tok(T.Space))),
+  opt_sc(seq(S, alt_sc(tok(T.Plus), tok(T.Minus)), tok(T.Space))),
   (lineHead) => {
     if (!lineHead) return { dent: 0, isFork: true }
     const [dents, seqOrFork] = lineHead
@@ -166,7 +162,7 @@ export const TEST_DESIGN = kmid(
       return root
     }
   ),
-  rep_sc(NEWLINES)
+  seq(rep_sc(NEWLINES), S)
 )
 
 function inputText(start: Token<T>, end: Token<T> | undefined) {
