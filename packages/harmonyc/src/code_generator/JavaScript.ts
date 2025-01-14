@@ -85,12 +85,12 @@ export class NodeTest implements CodeGenerator {
   extraArgs: string[] = []
   step(action: Action, responses: Response[]): void {
     this.declareFeatureVariables([action, ...responses])
+    this.tf.print(`context.task.meta.phrases.push(${str(action.toString())});`)
     if (responses.length === 0) {
       action.toCode(this)
       return
     }
     const res = `r${this.resultCount++ || ''}`
-    this.tf.print(`context.task.meta.phrases.push(${str(action.toString())});`)
     this.tf.print(`const ${res} =`)
     this.tf.indent(() => {
       action.toCode(this)
