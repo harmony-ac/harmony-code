@@ -5,7 +5,7 @@ import type { Task, Suite, File } from '@vitest/runner'
 import { Reporter } from 'vitest/reporters'
 import { watchFiles } from '../cli/watch.ts'
 import { RunnerTaskResultPack } from 'vitest'
-import { b } from 'vitest/dist/chunks/environment.LoooBwUu.js'
+import c from 'tinyrainbow'
 
 export interface HarmonyPluginOptions {
   watchDir: string
@@ -53,26 +53,25 @@ class HarmonyReporter implements Reporter {
   }
 }
 
-function addPhrases(task: Task) {
-  if ('tasks' in task) for (const child of task.tasks) addPhrases(child)
-  else if (
+function addPhrases(task: Task, depth = 2) {
+  if ('tasks' in task) {
+    for (const child of task.tasks) addPhrases(child, depth + 1)
+  } else if (
     task.type === 'test' &&
     task.result?.state === 'fail' &&
     task.meta?.hasOwnProperty('phrases')
   ) {
     const x = task as any as Suite
-    x.type = 'suite'
-    x.tasks = task.meta.phrases!.map((step, i, a) => ({
-      type: 'custom',
-      id: x.id + '.' + i,
-      mode: 'run',
-      file: task.file,
-      meta: {},
-      context: {} as any,
-      name: step,
-      result: {
-        state: i < a.length - 1 ? 'pass' : 'fail',
-      },
-    }))
+    x.name +=
+      '\n' +
+      task.meta
+        .phrases!.map((step, i, a) => {
+          const indent = '  '.repeat(depth)
+          const failed = i === a.length - 1
+          const figure = failed ? c.red('×') : c.green('✓')
+          return `${indent}${figure} ${step}`
+        })
+        .join('\n')
+    delete task.meta.phrases // to make sure not to add them again
   }
 }
