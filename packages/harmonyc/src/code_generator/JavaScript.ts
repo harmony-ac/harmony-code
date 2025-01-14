@@ -75,6 +75,12 @@ export class NodeTest implements CodeGenerator {
 
   errorStep(action: Action, errorMessage?: StringLiteral) {
     this.declareFeatureVariables([action])
+    this.tf.print(`context.task.meta.phrases.push(${str(action.toString())});`)
+    this.tf.print(
+      `context.task.meta.phrases.push(${str(
+        errorMessage ? '!! => ' + JSON.stringify(errorMessage.text) : '!!'
+      )});`
+    )
     this.tf.print(`await expect(async () => {`)
     this.tf.indent(() => {
       action.toCode(this)
