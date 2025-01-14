@@ -118,7 +118,7 @@ export const DENTS = apply(
 )
 
 export const LINE = apply(
-  seq(DENTS, BRANCH),
+  seq(DENTS, BRANCH, S),
   ([{ dent, isFork }, branch], [start, end]) => ({
     dent,
     branch: branch.setFork(isFork),

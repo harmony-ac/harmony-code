@@ -110,8 +110,11 @@
   + ending spaces:
     + 1 space at end:
       + | + hello"John" 
+      + | + hello"John" 
+        | + hello"Björk"
     + 2 spaces at end:
       + | + hello"John"  
+      + | + hello"Jeanne"  
     + empty line at end:
       + | + hello"John"
         | 
