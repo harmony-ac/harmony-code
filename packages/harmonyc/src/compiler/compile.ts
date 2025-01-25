@@ -1,4 +1,4 @@
-import { NodeTest } from '../code_generator/JavaScript.ts'
+import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
 import { OutFile } from '../code_generator/outFile.ts'
 import { parse } from '../parser/parser.ts'
 import { base, phrasesFileName, testFileName } from '../filenames/filenames.ts'
@@ -30,7 +30,7 @@ export function compileFeature(fileName: string, src: string) {
   const testFile = new OutFile(testFn)
   const phrasesFn = phrasesFileName(fileName)
   const phrasesFile = new OutFile(phrasesFn)
-  const cg = new NodeTest(testFile, phrasesFile)
+  const cg = new VitestGenerator(testFile, phrasesFile)
   feature.toCode(cg)
   return { outFile: testFile, phrasesFile }
 }

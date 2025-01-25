@@ -13,7 +13,7 @@ import {
 } from '../model/model.ts'
 import { OutFile } from './outFile.ts'
 
-export class NodeTest implements CodeGenerator {
+export class VitestGenerator implements CodeGenerator {
   framework = 'vitest'
   phraseFns = new Map<string, Phrase>()
   currentFeatureName = ''
