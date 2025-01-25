@@ -83,7 +83,7 @@ class LexerImpl<T> implements Lexer<T> {
 
     // changed here: instead of slicing the input string, we use a running index
     const lastIndex = indexStart
-    let result: TokenImpl<T> | undefined
+    // let result: TokenImpl<T> | undefined
     for (const [keep, regexp, kind] of this.rules) {
       // changed here: instead of slicing the input string, we use a running index
       regexp.lastIndex = lastIndex
@@ -113,29 +113,31 @@ class LexerImpl<T> implements Lexer<T> {
           { index: indexStart, rowBegin, columnBegin, rowEnd, columnEnd },
           keep
         )
-        if (
-          result === undefined ||
-          result.text.length < newResult.text.length
-        ) {
-          result = newResult
-        }
+        // changed here: instead of keeping the longest token, we keep the first one
+        return newResult
+        // if (
+        //   result === undefined ||
+        //   result.text.length < newResult.text.length
+        // ) {
+        //   result = newResult
+        // }
       }
     }
 
-    if (result === undefined) {
-      throw new TokenError(
-        {
-          index: indexStart,
-          rowBegin,
-          columnBegin,
-          rowEnd: rowBegin,
-          columnEnd: columnBegin,
-        },
-        `Unable to tokenize the rest of the input: ${input.substr(indexStart)}`
-      )
-    } else {
-      return result
-    }
+    // if (result === undefined) {
+    throw new TokenError(
+      {
+        index: indexStart,
+        rowBegin,
+        columnBegin,
+        rowEnd: rowBegin,
+        columnEnd: columnBegin,
+      },
+      `Unable to tokenize the rest of the input: ${input.substr(indexStart)}`
+    )
+    // } else {
+    //   return result
+    // }
   }
 
   public parseNextAvailable(
