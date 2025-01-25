@@ -43,7 +43,7 @@ const tm = {
         ? [
             {
               name: names[t] + '.harmony',
-              match: re.source.replace(/^\^/, ''),
+              match: re.source,
             },
           ]
         : []

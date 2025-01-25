@@ -2,7 +2,29 @@
   + "" => ""
 
 + space:
+  + " " => "space"
+  + "  " => "space space"
   + "   " => "space space space"
+
++ newline:
+  + "\n" => "newline"
+  + "\n\n" => "newline newline"
+  + "\n\n\n" => "newline newline newline"
+
++ colon:
+  + ":" => ":"
+  + " :" => "space :"
+  + ": " => ": space"
+  + " : " => "space : space"
+  + "\n:" => "newline :"
+  + ":\n" => ": newline"
+  + "\n:\n" => "newline : newline"
+
++ words:
+  + "a" => "words"
+  + "aa" => "words"
+  + "a-" => "words"
+  + "a- a" => "words"
 
 + comment:
   + hash:

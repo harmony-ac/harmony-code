@@ -24,40 +24,40 @@ export enum T {
 
 const rules: [boolean, RegExp, T][] = [
   // false = ignore token
-  // if multiple patterns match, the longest one wins, if same, the former
-  // patterns must start with ^ and be /g
-  [true, /^\n/g, T.Newline],
-  [true, /^\t/g, T.InvalidTab],
-  [true, /^[\x00-\x1f]/g, T.InvalidWhitespace],
-  [true, /^ /g, T.Space],
-  [false, /^(#|>|\/\/).*?(?=\n|$)/g, T.Comment],
-  [true, /^:(?=\s*(?:\n|$))/g, T.Colon],
+  // if multiple patterns match, the longest one wins, if same length, the former
+  // patterns must be y (sticky)
+  [true, /\n/y, T.Newline],
+  [true, /\t/y, T.InvalidTab],
+  [true, /[\x00-\x1f]/y, T.InvalidWhitespace],
+  [true, / /y, T.Space],
+  [false, /(#|>|\/\/).*?(?=\n|$)/y, T.Comment],
+  [true, /:(?=\s*(?:\n|$))/y, T.Colon],
   [
     true,
-    /^(?!\s|=>|!!|- |\+ |[\[\]"`|]|:\s*(?:\n|$)).+?(?=[\[\]"`|]|\n|$|=>|!!|:\s*(?:\n|$)|$)/g,
+    /(?!\s|=>|!!|- |\+ |[\[\]"`|]|:\s*(?:\n|$)).+?(?=[\[\]"`|]|\n|$|=>|!!|:\s*(?:\n|$)|$)/y,
     T.Words,
   ],
-  [true, /^-/g, T.Minus],
-  [true, /^\+/g, T.Plus],
-  [true, /^\[/g, T.OpeningBracket],
-  [true, /^\]/g, T.ClosingBracket],
-  [true, /^!!/g, T.ErrorMark],
-  [true, /^=>/g, T.ResponseArrow],
+  [true, /-/y, T.Minus],
+  [true, /\+/y, T.Plus],
+  [true, /\[/y, T.OpeningBracket],
+  [true, /\]/y, T.ClosingBracket],
+  [true, /!!/y, T.ErrorMark],
+  [true, /=>/y, T.ResponseArrow],
   [
     true,
-    /^"(?:[^"\\\n]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/g,
+    /"(?:[^"\\\n]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*"/y,
     T.DoubleQuoteString,
   ],
   [
     true,
-    /^"(?:[^"\\\n]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*/g,
+    /"(?:[^"\\\n]|\\(?:[bfnrtv"\\/]|u[0-9a-fA-F]{4}))*/y,
     T.UnclosedDoubleQuoteString,
   ],
-  [true, /^``/g, T.InvalidEmptyBacktickString],
-  [true, /^`[^`]+`/g, T.BacktickString],
-  [true, /^`[^`]*/g, T.UnclosedBacktickString],
-  [true, /^\|(?: .*|(?=\n|$))/g, T.MultilineString],
-  [true, /^\|[^ \n]/g, T.InvalidMultilineStringMark],
+  [true, /``/y, T.InvalidEmptyBacktickString],
+  [true, /`[^`]+`/y, T.BacktickString],
+  [true, /`[^`]*/y, T.UnclosedBacktickString],
+  [true, /\|(?: .*|(?=\n|$))/y, T.MultilineString],
+  [true, /\|[^ \n]/y, T.InvalidMultilineStringMark],
 ]
 
 export default rules
