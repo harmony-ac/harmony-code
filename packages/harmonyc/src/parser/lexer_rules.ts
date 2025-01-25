@@ -18,20 +18,21 @@ export enum T {
   InvalidEmptyBacktickString = 'invalid empty backtick string',
   InvalidWhitespace = 'invalid whitespace',
   InvalidTab = 'invalid tab',
+  Indentation = 'indentation',
   MultilineString = 'multiline string',
   InvalidMultilineStringMark = 'invalid multiline string mark',
 }
 
 const rules: [boolean, RegExp, T][] = [
   // false = ignore token
-  // if multiple patterns match, the longest one wins, if same length, the former
+  // if multiple patterns match, the former wins
   // patterns must be y (sticky)
   [true, /\n/y, T.Newline],
   [true, /\t/y, T.InvalidTab],
   [true, /[\x00-\x1f]/y, T.InvalidWhitespace],
-  [true, /^[ ]*[+] /my, T.Plus],
-  [true, /^[ ]*[-] /my, T.Minus],
-  [true, / /y, T.Space],
+  [true, /^(  )*[+] /my, T.Plus],
+  [true, /^(  )*[-] /my, T.Minus],
+  [false, / /y, T.Space],
   [false, /(#|\/\/).*?(?=\n|$)/y, T.Comment],
   [true, /:(?=\s*(?:\n|$))/y, T.Colon],
   [true, /\[/y, T.OpeningBracket],

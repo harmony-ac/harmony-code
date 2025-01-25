@@ -14,6 +14,8 @@ import {
   kleft,
   kmid,
   fail,
+  nil,
+  rep_n,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
 import type { Branch } from '../model/model.ts'
@@ -39,8 +41,7 @@ export function parse<T>(
   return expectSingleResult(expectEOF(production.parse(tokens)))
 }
 
-export const S = rep_sc(tok(T.Space))
-export const NEWLINES = list_sc(tok(T.Newline), S) // empty lines can have spaces
+export const NEWLINES = list_sc(tok(T.Newline), nil())
 export const WORDS = apply(
   tok(T.Words),
   ({ text }) => new Word(text.trimEnd().split(/\s+/).join(' '))
@@ -62,7 +63,7 @@ export const BACKTICK_STRING = apply(
   ({ text }) => new CodeLiteral(text.slice(1, -1))
 )
 export const DOCSTRING = apply(
-  list_sc(tok(T.MultilineString), seq(tok(T.Newline), S)),
+  list_sc(tok(T.MultilineString), tok(T.Newline)),
   (lines) => lines.map(({ text }) => text.slice(2)).join('\n')
 )
 
@@ -74,8 +75,8 @@ export const PART = alt_sc(
   BACKTICK_STRING
 )
 export const PHRASE = seq(
-  opt_sc(list_sc(PART, S)),
-  opt_sc(kright(opt_sc(NEWLINES), kright(S, DOCSTRING)))
+  rep_sc(PART),
+  opt_sc(kright(opt_sc(NEWLINES), DOCSTRING))
 )
 export const ACTION = apply(
   PHRASE,
@@ -88,7 +89,7 @@ export const RESPONSE = apply(PHRASE, ([parts, docstring]) => {
   return new Response(parts, docstring)
 })
 
-export const ARROW = kmid(seq(opt_sc(NEWLINES), S), tok(T.ResponseArrow), S)
+export const ARROW = kright(opt_sc(NEWLINES), tok(T.ResponseArrow))
 
 export const RESPONSE_ITEM = kright(ARROW, RESPONSE)
 export const STEP = apply(
@@ -97,7 +98,7 @@ export const STEP = apply(
 )
 
 export const LABEL = apply(
-  kleft(list_sc(PART, S), seq(tok(T.Colon), S)),
+  kleft(list_sc(PART, nil()), tok(T.Colon)),
   (words) => new Label(words.map((w) => w.toString()).join(' '))
 )
 
@@ -112,7 +113,7 @@ export const DENTS = apply(alt_sc(tok(T.Plus), tok(T.Minus)), (seqOrFork) => {
 })
 
 export const LINE = apply(
-  seq(DENTS, BRANCH, S),
+  seq(DENTS, BRANCH),
   ([{ dent, isFork }, branch], [start, end]) => ({
     dent,
     branch: branch.setFork(isFork),
@@ -158,7 +159,7 @@ export const TEST_DESIGN = kmid(
       return root
     }
   ),
-  seq(rep_sc(NEWLINES), S)
+  rep_sc(NEWLINES)
 )
 
 function inputText(start: Token<T>, end: Token<T> | undefined) {

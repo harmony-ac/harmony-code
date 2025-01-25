@@ -1,11 +1,6 @@
 + empty:
   + "" => ""
 
-+ space:
-  + " " => "space"
-  + "  " => "space space"
-  + "   " => "space space space"
-
 + newline:
   + "\n" => "newline"
   + "\n\n" => "newline newline"
@@ -13,9 +8,9 @@
 
 + colon:
   + ":" => ":"
-  + " :" => "space :"
-  + ": " => ": space"
-  + " : " => "space : space"
+  + " :" => ":"
+  + ": " => ":"
+  + " : " => ":"
   + "\n:" => "newline :"
   + ":\n" => ": newline"
   + "\n:\n" => "newline : newline"
@@ -46,12 +41,12 @@
 
 + response mark:
   + "=>" => "=>"
-  + " =>" => "space =>"
-  + "=> " => "=> space"
-  + " => " => "space => space"
+  + " =>" => "=>"
+  + "=> " => "=>"
+  + " => " => "=>"
   + with words:
     + "a =>" => "words =>"
-    + "a=> " => "words => space"
+    + "a=> " => "words =>"
     + "=>a" => "=> words"
     + "a=>b" => "words => words"
   + with newlines:
@@ -59,19 +54,19 @@
 
 + error mark:
   + "!!" => "!!"
-  + " !!" => "space !!"
-  + "!! " => "!! space"
-  + " !! " => "space !! space"
+  + " !!" => "!!"
+  + "!! " => "!!"
+  + " !! " => "!!"
   + with words:
     + "a !!" => "words !!"
-    + "a!! " => "words !! space"
+    + "a!! " => "words !!"
     + "!!a" => "!! words"
     + "a!!b" => "words !! words"
   + with response mark:
-    + "!! =>" => "!! space =>"
-    + "!!=> " => "!! => space"
+    + "!! =>" => "!! =>"
+    + "!!=> " => "!! =>"
     + "=>!!" => "=> !!"
-    + "=> !!" => "=> space !!"
+    + "=> !!" => "=> !!"
 
 
 + bracket:
@@ -91,9 +86,9 @@
 
 + ending spaces:
   + "hello " => "words"
-  + "hello: " => "words : space"
-  + "hello: \n" => "words : space newline"
-  + "hello: \n " => "words : space newline space"
+  + "hello: " => "words :"
+  + "hello: \n" => "words : newline"
+  + "hello: \n " => "words : newline"
 
 + newline:
   + "\n" => "newline"
@@ -114,11 +109,11 @@
   + "+a" => "words"
   + "a +" => "words"
 
-+ dent:
-  + invalid dent:
-    + "  " => "space space"
-    + "  a" => "space space words"
-    + "  [x ] " => "space space [ words ] space"
++ indentation:
+  + invalid indentation:
+    + "  " => ""
+    + "  a" => "words"
+    + "  [x ] " => "[ words ]"
   + multiple dent:
     + "    + " => "+"
     + "    + a" => "+ words"
@@ -130,16 +125,16 @@
     + "  + a" => "+ words"
   + plus and minus in words:
     + | a "" - b
-      => | words double-quote string space words
+      => | words double-quote string words
 
 + state:
   + "[]" => "[ ]"
   + "[x]" => "[ words ]"
-  + "[ x ]" => "[ space words ]"
+  + "[ x ]" => "[ words ]"
 
 + colon:
   + "hello:" => "words :"
-  + "hello: " => "words : space"
+  + "hello: " => "words :"
 
 + strings:
   + double-quote string:
@@ -178,11 +173,11 @@
 
     + | + | hello
       |   => | hello
-      => "+ multiline string newline space space => space multiline string"
+      => "+ multiline string newline => multiline string"
     + | + | hello
       |   =>
       |   | hello
-      => "+ multiline string newline space space => newline space space multiline string"
+      => "+ multiline string newline => newline multiline string"
     + empty line may have no space:
       + | | hello
         | |
