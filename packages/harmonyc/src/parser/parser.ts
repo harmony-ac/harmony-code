@@ -46,11 +46,6 @@ export const WORDS = apply(
   tok(T.Words),
   ({ text }) => new Word(text.trimEnd().split(/\s+/).join(' '))
 )
-export const ERROR_MARK = apply(tok(T.ErrorMark), ({ text }) => new Word(text))
-export const BULLET_POINT_LIKE_WORD = apply(
-  alt_sc(tok(T.Plus), tok(T.Minus)),
-  ({ text }) => new Word(text)
-)
 export const DOUBLE_QUOTE_STRING = alt_sc(
   apply(
     tok(T.DoubleQuoteString),
@@ -66,32 +61,28 @@ export const DOCSTRING = apply(
   list_sc(tok(T.MultilineString), tok(T.Newline)),
   (lines) => lines.map(({ text }) => text.slice(2)).join('\n')
 )
+export const ERROR_MARK = tok(T.ErrorMark)
+export const VARIABLE = apply(tok(T.Variable), ({ text }) => new Word(text))
 
-export const PART = alt_sc(
-  WORDS,
-  ERROR_MARK,
-  BULLET_POINT_LIKE_WORD,
-  DOUBLE_QUOTE_STRING,
-  BACKTICK_STRING
-)
+export const PART = alt_sc(WORDS, DOUBLE_QUOTE_STRING, BACKTICK_STRING)
 export const PHRASE = seq(
   rep_sc(PART),
   opt_sc(kright(opt_sc(NEWLINES), DOCSTRING))
 )
-export const ACTION = apply(
-  PHRASE,
-  ([parts, docstring]) => new Action(parts, docstring)
-)
+export const ACTION = apply(PHRASE, ([parts, docstring]) => {
+  return new Action(parts, docstring)
+})
 export const RESPONSE = apply(PHRASE, ([parts, docstring]) => {
-  if (parts?.[0] instanceof Word && parts[0].text === '!!') {
-    return new ErrorResponse(parts.slice(1), docstring)
-  }
   return new Response(parts, docstring)
 })
+export const ERROR_RESPONSE = apply(
+  seq(ERROR_MARK, PHRASE),
+  ([, [parts, docstring]]) => new ErrorResponse(parts, docstring)
+)
 
 export const ARROW = kright(opt_sc(NEWLINES), tok(T.ResponseArrow))
 
-export const RESPONSE_ITEM = kright(ARROW, RESPONSE)
+export const RESPONSE_ITEM = kright(ARROW, alt_sc(RESPONSE, ERROR_RESPONSE))
 export const STEP = apply(
   seq(ACTION, rep_sc(RESPONSE_ITEM)),
   ([action, responses]) => new Step(action, responses).setFork(true)

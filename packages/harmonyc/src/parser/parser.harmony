@@ -69,13 +69,6 @@
       =>
       | a = b
 
-    + | !! x
-      =>
-      | !! x
-
-    + | !! "error"
-      =>
-      | !! "error"
 
 + production "RESPONSE_ITEM"
   + | => hello
@@ -100,6 +93,20 @@
       | | asdf
       =>
       | | asdf
+  
++ production "ERROR_RESPONSE"
+  + error response:
+    + | !!
+      =>
+      | !!
+
+    + | !! "invalid"
+      =>
+      | !! "invalid"
+
+    + | !! | Could not
+      =>
+      | !! | Could not
 
 + production "TEST_DESIGN"
   + | + hello
