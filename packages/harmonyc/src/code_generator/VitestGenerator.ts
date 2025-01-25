@@ -149,8 +149,11 @@ export class VitestGenerator implements CodeGenerator {
     )
   }
 
-  stringLiteral(text: string): string {
-    if (text.match(/\$\{/)) {
+  stringLiteral(
+    text: string,
+    { withVariables }: { withVariables: boolean }
+  ): string {
+    if (withVariables && text.match(/\$\{/)) {
       return templateStr(text).replace(
         /\\\$\{([^\s}]+)\}/g,
         (_, x) => `\${context.task.meta.variables?.[${str(x)}]}`

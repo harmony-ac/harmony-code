@@ -215,8 +215,10 @@
       => "=> variable"
 
   + inside strings:
-    + "\"${d}\"" => "double-quote string"
-    + "`${d}`" => "backtick string"
+    + | "${d}"
+      => "double-quote string"
+    + | `${d}`
+      => "backtick string"
     + | hello "${d}"
       => | words double-quote string
     + | | hello ${d}

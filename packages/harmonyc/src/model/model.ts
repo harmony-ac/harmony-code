@@ -8,7 +8,7 @@ export interface CodeGenerator {
   step(action: Action, responses: Response[]): void
   errorStep(action: Action, errorMessage?: StringLiteral): void
   saveToVariable(response: SaveToVariable): void
-  stringLiteral(text: string): string
+  stringLiteral(text: string, opts: { withVariables: boolean }): string
   codeLiteral(src: string): string
   stringParamDeclaration(index: number): string
   variantParamDeclaration(index: number): string
@@ -201,10 +201,16 @@ export class StringLiteral extends Arg {
     return JSON.stringify(this.text)
   }
   toCode(cg: CodeGenerator) {
-    return cg.stringLiteral(this.text)
+    return cg.stringLiteral(this.text, { withVariables: true })
   }
   toDeclaration(cg: CodeGenerator, index: number) {
     return cg.stringParamDeclaration(index)
+  }
+}
+
+export class Docstring extends StringLiteral {
+  toCode(cg: CodeGenerator) {
+    return cg.stringLiteral(this.text, { withVariables: false })
   }
 }
 export class CodeLiteral extends Arg {
@@ -233,7 +239,7 @@ export abstract class Phrase {
   constructor(content: Part[] = [], docstring?: string) {
     this.content = content
     this.docstring =
-      docstring === undefined ? undefined : new StringLiteral(docstring)
+      docstring === undefined ? undefined : new Docstring(docstring)
   }
   setFeature(feature: Feature) {
     this.feature = feature
