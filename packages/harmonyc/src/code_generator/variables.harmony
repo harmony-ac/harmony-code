@@ -1,0 +1,4 @@
++ result:
+  + `12` => ${result}
+    => `${result}+1` is `13`
+    => "${result}+1" is "12+1"

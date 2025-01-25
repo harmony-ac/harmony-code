@@ -18,9 +18,11 @@ export enum T {
   InvalidEmptyBacktickString = 'invalid empty backtick string',
   InvalidWhitespace = 'invalid whitespace',
   InvalidTab = 'invalid tab',
-  Indentation = 'indentation',
   MultilineString = 'multiline string',
   InvalidMultilineStringMark = 'invalid multiline string mark',
+  Variable = 'variable',
+  InvalidEmptyVariable = 'invalid empty variable',
+  UnclosedVariable = 'unclosed variable',
 }
 
 const rules: [boolean, RegExp, T][] = [
@@ -30,8 +32,8 @@ const rules: [boolean, RegExp, T][] = [
   [true, /\n/y, T.Newline],
   [true, /\t/y, T.InvalidTab],
   [true, /[\x00-\x1f]/y, T.InvalidWhitespace],
-  [true, /^(  )*[+] /my, T.Plus],
-  [true, /^(  )*[-] /my, T.Minus],
+  [true, /^(  )*[+]( )/my, T.Plus],
+  [true, /^(  )*[-]( )/my, T.Minus],
   [false, / /y, T.Space],
   [false, /(#|\/\/).*?(?=\n|$)/y, T.Comment],
   [true, /:(?=\s*(?:\n|$))/y, T.Colon],
@@ -52,9 +54,12 @@ const rules: [boolean, RegExp, T][] = [
   [true, /``/y, T.InvalidEmptyBacktickString],
   [true, /`[^`]+`/y, T.BacktickString],
   [true, /`[^`]*/y, T.UnclosedBacktickString],
+  [true, /\$\{[^}\n]+\}/y, T.Variable],
+  [true, /\$\{\}/y, T.InvalidEmptyVariable],
+  [true, /\$\{[^}\n]*/y, T.UnclosedVariable],
   [true, /\|(?: .*|(?=\n|$))/y, T.MultilineString],
   [true, /\|[^ \n]/y, T.InvalidMultilineStringMark],
-  [true, /.+?(?=[\[\]"`|#]|\/\/|$|=>|!!|:\s*$)/my, T.Words],
+  [true, /.+?(?=[\[\]"`|#]|\/\/|\$\{|$|=>|!!|:\s*$)/my, T.Words],
 ]
 
 export default rules

@@ -126,6 +126,11 @@
   + plus and minus in words:
     + | a "" - b
       => | words double-quote string words
+  + empty step:
+    + "  + " => "+"
+    + "  +" => "+"
+    + "  + \n" => "+ newline"
+    + "  +\n" => "+ newline"
 
 + state:
   + "[]" => "[ ]"
@@ -192,3 +197,27 @@
           | 
           => "multiline string newline multiline string newline"
 
++ variables:
+  + outside strings:
+    + | ${d}
+      => "variable"
+    + | a${d}
+      => "words variable"
+    + | a ${d}
+      => "words variable"
+    + | ${d}a
+      => "variable words"
+    + | ${d} a
+      => "variable words"
+    + | =>${hello world}
+      => "=> variable"
+    + | => ${hello world}
+      => "=> variable"
+
+  + inside strings:
+    + "\"${d}\"" => "double-quote string"
+    + "`${d}`" => "backtick string"
+    + | hello "${d}"
+      => | words double-quote string
+    + | | hello ${d}
+      => "multiline string"

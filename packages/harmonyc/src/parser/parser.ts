@@ -16,6 +16,7 @@ import {
   fail,
   nil,
   rep_n,
+  alt,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
 import type { Branch } from '../model/model.ts'
@@ -29,6 +30,7 @@ import {
   Word,
   Label,
   ErrorResponse,
+  SaveToVariable,
 } from '../model/model.ts'
 
 export function parse(input: string): Section
@@ -79,10 +81,17 @@ export const ERROR_RESPONSE = apply(
   seq(ERROR_MARK, PHRASE),
   ([, [parts, docstring]]) => new ErrorResponse(parts, docstring)
 )
+export const SAVE_TO_VARIABLE = apply(
+  VARIABLE,
+  (variable) => new SaveToVariable(variable.text.slice(2, -1))
+)
 
 export const ARROW = kright(opt_sc(NEWLINES), tok(T.ResponseArrow))
 
-export const RESPONSE_ITEM = kright(ARROW, alt_sc(RESPONSE, ERROR_RESPONSE))
+export const RESPONSE_ITEM = kright(
+  ARROW,
+  alt(RESPONSE, ERROR_RESPONSE, SAVE_TO_VARIABLE)
+)
 export const STEP = apply(
   seq(ACTION, rep_sc(RESPONSE_ITEM)),
   ([action, responses]) => new Step(action, responses).setFork(true)

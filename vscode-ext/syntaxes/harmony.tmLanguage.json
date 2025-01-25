@@ -7,17 +7,21 @@
       "match": "^(?:  )*[ ][+-].*?$"
     },
     {
-      "name": "comment.harmony",
+      "name": "invalid.line.harmony",
+      "match": "^(?:  )*(?![+-]( |$)|\\/\\/|=>|[#|])\\S.*?$"
+    },
+    {
+      "name": "comment.line.harmony",
       "match": "(#|\\/\\/).*?(?=\\n|$)"
     },
     {
       "match": "^\\s*(?:([+] )|([-] ))(.*)(:)\\s*$",
       "captures": {
         "1": {
-          "name": "keyword.fork.harmony"
+          "name": "keyword.control.fork.harmony"
         },
         "2": {
-          "name": "keyword.sequence.harmony"
+          "name": "keyword.control.sequence.harmony"
         },
         "3": {
           "name": "markup.heading.harmony"
@@ -36,12 +40,12 @@
       "match": "[\\x00-\\x1f]"
     },
     {
-      "name": "keyword.fork.harmony",
-      "match": "^[ ]*[+] "
+      "name": "keyword.control.fork.harmony",
+      "match": "^(  )*[+]( |$)"
     },
     {
-      "name": "keyword.sequence.harmony",
-      "match": "^[ ]*[-] "
+      "name": "keyword.control.sequence.harmony",
+      "match": "^(  )*[-]( |$)"
     },
     {
       "name": "markup.heading.marker.harmony",
@@ -56,16 +60,43 @@
       "match": "\\]"
     },
     {
-      "name": "keyword.error.harmony",
+      "name": "keyword.control.error.harmony",
       "match": "!!"
     },
     {
-      "name": "keyword.response.harmony",
+      "name": "keyword.control.response.harmony",
       "match": "=>"
     },
     {
-      "name": "string.harmony",
-      "match": "\"(?:[^\"\\\\\\n]|\\\\(?:[bfnrtv\"\\\\/]|u[0-9a-fA-F]{4}))*\""
+      "name": "string.quoted.double.harmony",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.harmony",
+          "match": "\\\\(?:[bfnrtv\"\\\\/]|u[0-9a-fA-F]{4})"
+        },
+        {
+          "name": "invalid.character.escape.harmony",
+          "match": "\\\\."
+        },
+        {
+          "name": "invalid.newline.escape.harmony",
+          "match": "\\\\\\n"
+        },
+        {
+          "name": "variable.other.normal.harmony",
+          "match": "\\$\\{[^\\n}]+\\}"
+        },
+        {
+          "name": "invalid.variable.empty.harmony",
+          "match": "\\$\\{\\}"
+        },
+        {
+          "name": "invalid.variable.unclosed.harmony",
+          "match": "\\$\\{[^}\\n]*"
+        }
+      ]
     },
     {
       "name": "string.harmony",
@@ -76,15 +107,46 @@
       "match": "``"
     },
     {
-      "name": "constant.numeric.code.harmony",
-      "match": "`[^`]+`"
+      "name": "constant.language.code.harmony",
+      "begin": "`",
+      "end": "`",
+      "patterns": [
+        {
+          "name": "invalid.newline.escape.harmony",
+          "match": "\\\\\\n"
+        },
+        {
+          "name": "variable.other.normal.harmony",
+          "match": "\\$\\{[^\\n}]+\\}"
+        },
+        {
+          "name": "invalid.variable.empty.harmony",
+          "match": "\\$\\{\\}"
+        },
+        {
+          "name": "invalid.variable.unclosed.harmony",
+          "match": "\\$\\{[^}\\n]*"
+        }
+      ]
     },
     {
-      "name": "constant.numeric.code.harmony",
+      "name": "invalid.string.backtick.harmony",
       "match": "`[^`]*"
     },
     {
-      "name": "string.harmony",
+      "name": "variable.other.normal.harmony",
+      "match": "\\$\\{[^}\\n]+\\}"
+    },
+    {
+      "name": "invalid.variable.harmony",
+      "match": "\\$\\{\\}"
+    },
+    {
+      "name": "invalid.variable.harmony",
+      "match": "\\$\\{[^}\\n]*"
+    },
+    {
+      "name": "string.unquoted.harmony",
       "match": "\\|(?: .*|(?=\\n|$))"
     },
     {
@@ -93,7 +155,7 @@
     },
     {
       "name": "source.word.harmony",
-      "match": ".+?(?=[\\[\\]\"`|#]|\\/\\/|$|=>|!!|:\\s*$)"
+      "match": ".+?(?=[\\[\\]\"`|#]|\\/\\/|\\$\\{|$|=>|!!|:\\s*$)"
     }
   ],
   "scopeName": "source.harmony"

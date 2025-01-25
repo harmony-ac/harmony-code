@@ -1,5 +1,5 @@
 import { ExpectStatic } from 'vitest'
-import { functionName } from './JavaScript'
+import { functionName } from './VitestGenerator'
 import { parse, ACTION } from '../parser/parser'
 
 export default class FunctionNamePhrases {

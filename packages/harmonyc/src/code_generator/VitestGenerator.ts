@@ -6,6 +6,7 @@ import {
   Feature,
   Phrase,
   Response,
+  SaveToVariable,
   StringLiteral,
   Test,
   TestGroup,
@@ -103,11 +104,12 @@ export class VitestGenerator implements CodeGenerator {
       try {
         this.extraArgs = [res]
         for (const response of responses) {
-          this.tf.print(
-            `context.task.meta.phrases.push(${str(
-              `=> ${response.toString()}`
-            )});`
-          )
+          if (!(response instanceof SaveToVariable))
+            this.tf.print(
+              `context.task.meta.phrases.push(${str(
+                `=> ${response.toString()}`
+              )});`
+            )
           response.toCode(this)
         }
       } finally {
@@ -138,12 +140,30 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print(`await ${f}.${functionName(p)}(${args.join(', ')});`)
   }
 
+  saveToVariable(s: SaveToVariable) {
+    if (this.extraArgs.length !== 1) return
+    this.tf.print(
+      `(context.task.meta.variables ??= {})[${str(s.variableName)}] = ${
+        this.extraArgs[0]
+      };`
+    )
+  }
+
   stringLiteral(text: string): string {
+    if (text.match(/\$\{/)) {
+      return templateStr(text).replace(
+        /\\\$\{([^\s}]+)\}/g,
+        (_, x) => `\${context.task.meta.variables?.[${str(x)}]}`
+      )
+    }
     return str(text)
   }
 
   codeLiteral(src: string): string {
-    return src
+    return src.replace(
+      /\$\{([^\s}]+)\}/g,
+      (_, x) => `context.task.meta.variables?.[${str(x)}]`
+    )
   }
 
   private paramName(index: number) {

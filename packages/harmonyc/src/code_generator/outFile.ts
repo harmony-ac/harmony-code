@@ -48,9 +48,11 @@ export class OutFile {
   get value() {
     let res = this.lines.join('\n')
     if (this.currentLoc) {
-      res += `\n\n//# sourceMappingURL=data:application/json,${encodeURIComponent(
-        this.sm.toString()
-      )}`
+      res +=
+        `\n\n//# sour` + // not for this file ;)
+        `ceMappingURL=data:application/json,${encodeURIComponent(
+          this.sm.toString()
+        )}`
     }
     return res
   }

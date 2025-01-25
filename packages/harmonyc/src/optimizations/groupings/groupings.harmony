@@ -1,4 +1,4 @@
-> After the tests are generated, they are re-grouped by the test name fragments
+# After the tests are generated, they are re-grouped by the test name fragments
 
 + empty:
   + "" => ""

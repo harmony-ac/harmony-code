@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "fast-glob": "^3.3.2",
-    "tinyrainbow": "*",
+    "tinyrainbow": "1",
     "typescript-parsec": "0.3.4",
     "watcher": "^2.3.1"
   },

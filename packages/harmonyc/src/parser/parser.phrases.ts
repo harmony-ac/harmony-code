@@ -12,7 +12,10 @@ export default class ParserPhrases {
   async When_(value: string): Promise<Section> {
     return parse(value, this.production)
   }
-  async Then_(value: string, tree: Section) {
+  async Then_(value: string, tree: any) {
     expect(tree.toString()).toBe(value)
+  }
+  async Then_instance_of_(clazz: string, tree: any) {
+    expect(tree.constructor.name).toBe(clazz)
   }
 }

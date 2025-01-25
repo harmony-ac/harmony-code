@@ -83,6 +83,12 @@
     =>
     | | asdf
 
+  + variable:
+    + | => ${var}
+      => instance of "SaveToVariable"
+      =>
+      | ${var}
+
   + newline after "=>":
     + | => 
       | | asdf
@@ -94,17 +100,17 @@
       =>
       | | asdf
   
-+ production "ERROR_RESPONSE"
   + error response:
-    + | !!
+    + | => !!
+      => instance of "ErrorResponse"
       =>
       | !!
 
-    + | !! "invalid"
+    + | => !! "invalid"
       =>
       | !! "invalid"
 
-    + | !! | Could not
+    + | => !! | Could not
       =>
       | !! | Could not
 

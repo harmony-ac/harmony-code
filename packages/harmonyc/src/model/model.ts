@@ -7,6 +7,7 @@ export interface CodeGenerator {
   phrase(phrase: Phrase): void
   step(action: Action, responses: Response[]): void
   errorStep(action: Action, errorMessage?: StringLiteral): void
+  saveToVariable(response: SaveToVariable): void
   stringLiteral(text: string): string
   codeLiteral(src: string): string
   stringParamDeclaration(index: number): string
@@ -236,6 +237,7 @@ export abstract class Phrase {
   }
   setFeature(feature: Feature) {
     this.feature = feature
+    return this
   }
   get keyword() {
     return this.kind === 'action' ? 'When' : 'Then'
@@ -301,6 +303,38 @@ export class Response extends Phrase {
 export class ErrorResponse extends Response {
   get message() {
     return (this.content[0] as StringLiteral | undefined) ?? this.docstring
+  }
+  toString(): string {
+    const s = super.toString()
+    return s ? `!! ${s}` : '!!'
+  }
+  toSingleLineString(): string {
+    const s = super.toSingleLineString()
+    return s ? `!! ${s}` : '!!'
+  }
+}
+
+export class SaveToVariable extends Response {
+  constructor(public variableName: string) {
+    super()
+  }
+  toString(): string {
+    return `\${${this.variableName}}`
+  }
+  toSingleLineString(): string {
+    return `\${${this.variableName}}`
+  }
+  toCode(cg: CodeGenerator): void {
+    cg.saveToVariable(this)
+  }
+}
+
+export class SetVariable extends Action {
+  get variableName() {
+    return (this.content[0] as Word).text.slice(2, -1)
+  }
+  get value() {
+    return (this.content[1] as Arg | undefined) ?? this.docstring
   }
 }
 
