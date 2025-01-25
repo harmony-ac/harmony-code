@@ -7,12 +7,25 @@
       "match": "^(?:  )*[ ][+-].*?$"
     },
     {
-      "name": "invalid.line.start.harmony",
-      "match": "^[ ]*(?![#>|+-]|=>|\\/\\/)."
+      "name": "comment.harmony",
+      "match": "(#|>|\\/\\/).*?(?=\\n|$)"
     },
     {
-      "name": "markup.heading.label.harmony",
-      "match": "(?<=^ *[+-] )[^\\s].*:\\s*$"
+      "match": "^\\s*(?:([+] )|([-] ))(.*)(:)\\s*$",
+      "captures": {
+        "1": {
+          "name": "keyword.fork.harmony"
+        },
+        "2": {
+          "name": "keyword.sequence.harmony"
+        },
+        "3": {
+          "name": "markup.heading.harmony"
+        },
+        "4": {
+          "name": "markup.heading.marker.harmony"
+        }
+      }
     },
     {
       "name": "invalid.whitespace.tab.harmony",
@@ -23,24 +36,16 @@
       "match": "[\\x00-\\x1f]"
     },
     {
-      "name": "comment.harmony",
-      "match": "(#|>|\\/\\/).*?(?=\\n|$)"
+      "name": "keyword.fork.harmony",
+      "match": "^[ ]*[+] "
+    },
+    {
+      "name": "keyword.sequence.harmony",
+      "match": "^[ ]*[-] "
     },
     {
       "name": "markup.heading.marker.harmony",
       "match": ":(?=\\s*(?:\\n|$))"
-    },
-    {
-      "name": "source.word.harmony",
-      "match": "(?!\\s|=>|!!|- |\\+ |[\\[\\]\"`|]).+?(?=[\\[\\]\"`|]|\\n|$|=>|!!|:\\s*(?:\\n|$)|$)"
-    },
-    {
-      "name": "keyword.operator.wordlike.sequence.harmony",
-      "match": "-"
-    },
-    {
-      "name": "keyword.operator.wordlike.fork.harmony",
-      "match": "\\+"
     },
     {
       "name": "punctuation.section.embedded.state.harmony",
@@ -51,11 +56,11 @@
       "match": "\\]"
     },
     {
-      "name": "keyword.operator.wordlike.error.harmony",
+      "name": "keyword.error.harmony",
       "match": "!!"
     },
     {
-      "name": "keyword.operator.wordlike.response.harmony",
+      "name": "keyword.response.harmony",
       "match": "=>"
     },
     {
@@ -84,7 +89,11 @@
     },
     {
       "name": "invalid.string.multiline.harmony",
-      "match": "\\|[^ ]"
+      "match": "\\|[^ \\n]"
+    },
+    {
+      "name": "source.word.harmony",
+      "match": ".+?(?=[\\[\\]\"`|]|$|=>|!!|:\\s*$)"
     }
   ],
   "scopeName": "source.harmony"

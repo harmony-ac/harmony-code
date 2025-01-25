@@ -2,11 +2,11 @@ import { writeFileSync } from 'fs'
 import rules, { T } from '../../packages/harmonyc/src/parser/lexer_rules'
 
 const names: { [k in T]: string | null } = {
-  '+': 'keyword.operator.wordlike.fork',
-  '-': 'keyword.operator.wordlike.sequence',
+  '+': 'keyword.fork',
+  '-': 'keyword.sequence',
   ':': 'markup.heading.marker',
-  '=>': 'keyword.operator.wordlike.response',
-  '!!': 'keyword.operator.wordlike.error',
+  '=>': 'keyword.response',
+  '!!': 'keyword.error',
   '[': 'punctuation.section.embedded.state',
   ']': 'punctuation.section.embedded.state',
   'backtick string': 'constant.numeric.code',
@@ -23,6 +23,16 @@ const names: { [k in T]: string | null } = {
   'unclosed double-quote string': 'string',
   words: 'source.word',
 }
+const patterns = rules.flatMap(([, re, t]) =>
+  names[t]
+    ? [
+        {
+          name: names[t] + '.harmony',
+          match: re.source,
+        },
+      ]
+    : []
+)
 
 const tm = {
   $schema:
@@ -30,24 +40,17 @@ const tm = {
   name: 'Harmony',
   patterns: [
     { name: 'invalid.indent.harmony', match: /^(?:  )*[ ][+-].*?$/.source },
+    ...patterns.filter((p) => p.name.startsWith('comment')),
     {
-      name: 'invalid.line.start.harmony',
-      match: /^[ ]*(?![#>|+-]|=>|\/\/)./.source,
+      match: /^\s*(?:([+] )|([-] ))(.*)(:)\s*$/.source,
+      captures: {
+        1: { name: 'keyword.fork.harmony' },
+        2: { name: 'keyword.sequence.harmony' },
+        3: { name: 'markup.heading.harmony' },
+        4: { name: 'markup.heading.marker.harmony' },
+      },
     },
-    {
-      name: 'markup.heading.label.harmony',
-      match: /(?<=^ *[+-] )[^\s].*:\s*$/.source,
-    },
-    ...rules.flatMap(([, re, t]) =>
-      names[t]
-        ? [
-            {
-              name: names[t] + '.harmony',
-              match: re.source,
-            },
-          ]
-        : []
-    ),
+    ...patterns.filter((p) => !p.name.startsWith('comment')),
   ],
   scopeName: 'source.harmony',
 }

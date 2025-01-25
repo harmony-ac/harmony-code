@@ -29,16 +29,11 @@ const rules: [boolean, RegExp, T][] = [
   [true, /\n/y, T.Newline],
   [true, /\t/y, T.InvalidTab],
   [true, /[\x00-\x1f]/y, T.InvalidWhitespace],
+  [true, /^[ ]*[+] /my, T.Plus],
+  [true, /^[ ]*[-] /my, T.Minus],
   [true, / /y, T.Space],
   [false, /(#|>|\/\/).*?(?=\n|$)/y, T.Comment],
   [true, /:(?=\s*(?:\n|$))/y, T.Colon],
-  [
-    true,
-    /(?!\s|=>|!!|- |\+ |[\[\]"`|]|:\s*(?:\n|$)).+?(?=[\[\]"`|]|\n|$|=>|!!|:\s*(?:\n|$)|$)/y,
-    T.Words,
-  ],
-  [true, /-/y, T.Minus],
-  [true, /\+/y, T.Plus],
   [true, /\[/y, T.OpeningBracket],
   [true, /\]/y, T.ClosingBracket],
   [true, /!!/y, T.ErrorMark],
@@ -58,6 +53,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /`[^`]*/y, T.UnclosedBacktickString],
   [true, /\|(?: .*|(?=\n|$))/y, T.MultilineString],
   [true, /\|[^ \n]/y, T.InvalidMultilineStringMark],
+  [true, /.+?(?=[\[\]"`|]|$|=>|!!|:\s*$)/my, T.Words],
 ]
 
 export default rules

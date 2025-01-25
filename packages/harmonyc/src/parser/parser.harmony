@@ -102,10 +102,11 @@
       | | asdf
 
 + production "TEST_DESIGN"
-  + | hello
+  + | + hello
     => | + hello
-  + "hello => world"    => | + hello => world
-  + "hello\n  => world" => | + hello => world
+  + "+ hello => world"    => | + hello => world
+  + "+ hello\n  => world" => | + hello => world
+  + "hello => world"    => !! | Unable to consume token: hello
 
   + ending spaces:
     + 1 space at end:
@@ -127,19 +128,19 @@
       + | + story: 
 
   + string:
-    + | hello"John"
+    + | + hello"John"
       =>| + hello "John"
 
   + multiline string:
-    + | | asdf
+    + | + | asdf
       => | + | asdf
-    + | | asdf
+    + | + | asdf
       | | bsdf
       => | + | asdf
          | | bsdf
-    + "hello\n| John" => "+ hello\n| John"
-    + "hello\n| John\n| Jim" => "+ hello\n| John\n| Jim"
-    + "hello\n| John\n    | Jim" => "+ hello\n| John\n| Jim"
+    + "+ hello\n| John" => "+ hello\n| John"
+    + "+ hello\n| John\n| Jim" => "+ hello\n| John\n| Jim"
+    + "- hello\n| John\n    | Jim" => "- hello\n| John\n| Jim"
 
   + structure:
     + sequence:

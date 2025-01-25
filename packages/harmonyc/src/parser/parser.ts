@@ -108,14 +108,12 @@ export const LABEL = apply(
 export const SECTION = apply(LABEL, (text) => new Section(text))
 export const BRANCH = alt_sc(SECTION, STEP) // section first, to make sure there is no colon after step
 
-export const DENTS = apply(
-  opt_sc(seq(S, alt_sc(tok(T.Plus), tok(T.Minus)), tok(T.Space))),
-  (lineHead) => {
-    if (!lineHead) return { dent: 0, isFork: true }
-    const [dents, seqOrFork] = lineHead
-    return { dent: dents.length / 2, isFork: seqOrFork.kind === T.Plus }
+export const DENTS = apply(alt_sc(tok(T.Plus), tok(T.Minus)), (seqOrFork) => {
+  return {
+    dent: (seqOrFork.text.length - 2) / 2,
+    isFork: seqOrFork.kind === T.Plus,
   }
-)
+})
 
 export const LINE = apply(
   seq(DENTS, BRANCH, S),
@@ -128,9 +126,11 @@ export const LINE = apply(
 export const TEST_DESIGN = kmid(
   rep_sc(NEWLINES),
   apply(
-    list_sc(
-      apply(LINE, (line, [start, end]) => ({ line, start, end })),
-      NEWLINES
+    opt_sc(
+      list_sc(
+        apply(LINE, (line, [start, end]) => ({ line, start, end })),
+        NEWLINES
+      )
     ),
     (lines) => {
       const startDent = 0
@@ -138,7 +138,7 @@ export const TEST_DESIGN = kmid(
       const root = new Section(new Label(''))
       let parent: Branch = root
 
-      for (const { line, start } of lines) {
+      for (const { line, start } of lines ?? []) {
         const { dent: d, branch } = line
         if (Math.round(d) !== d) {
           throw new Error(

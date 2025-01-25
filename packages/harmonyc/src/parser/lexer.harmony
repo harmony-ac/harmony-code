@@ -110,28 +110,32 @@
   + "a\nb\n" => "words newline words newline"
 
 + list items:
-  + "- " => "- space"
-  + "- a" => "- space words"
+  + "- " => "-"
+  + "- a" => "- words"
   + "-a" => "words"
 
-  + "+ " => "+ space"
-  + "+ a" => "+ space words"
+  + "+ " => "+"
+  + "+ a" => "+ words"
   + "+a" => "words"
+  + "a +" => "words"
 
 + dent:
-  + single dent:
+  + invalid dent:
     + "  " => "space space"
     + "  a" => "space space words"
     + "  [x ] " => "space space [ words ] space"
   + multiple dent:
-    + "    + " => "space space space space + space"
-    + "    + a" => "space space space space + space words"
+    + "    + " => "+"
+    + "    + a" => "+ words"
   + dent with seq:
-    + "  - " => "space space - space"
-    + "  - a" => "space space - space words"
+    + "  - " => "-"
+    + "  - a" => "- words"
   + dent with fork:
-    + "  + " => "space space + space"
-    + "  + a" => "space space + space words"
+    + "  + " => "+"
+    + "  + a" => "+ words"
+  + plus and minus in words:
+    + | a "" - b
+      => | words double-quote string space words
 
 + state:
   + "[]" => "[ ]"
@@ -179,11 +183,11 @@
 
     + | + | hello
       |   => | hello
-      => "+ space multiline string newline space space => space multiline string"
+      => "+ multiline string newline space space => space multiline string"
     + | + | hello
       |   =>
       |   | hello
-      => "+ space multiline string newline space space => newline space space multiline string"
+      => "+ multiline string newline space space => newline space space multiline string"
     + empty line may have no space:
       + | | hello
         | |
