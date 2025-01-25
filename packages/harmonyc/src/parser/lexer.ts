@@ -124,6 +124,7 @@ class LexerImpl<T> implements Lexer<T> {
       }
     }
 
+    // changed here: instead of keeping the longest token, we keep the first one
     // if (result === undefined) {
     throw new TokenError(
       {

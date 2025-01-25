@@ -32,7 +32,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /^[ ]*[+] /my, T.Plus],
   [true, /^[ ]*[-] /my, T.Minus],
   [true, / /y, T.Space],
-  [false, /(#|>|\/\/).*?(?=\n|$)/y, T.Comment],
+  [false, /(#|\/\/).*?(?=\n|$)/y, T.Comment],
   [true, /:(?=\s*(?:\n|$))/y, T.Colon],
   [true, /\[/y, T.OpeningBracket],
   [true, /\]/y, T.ClosingBracket],
@@ -53,7 +53,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /`[^`]*/y, T.UnclosedBacktickString],
   [true, /\|(?: .*|(?=\n|$))/y, T.MultilineString],
   [true, /\|[^ \n]/y, T.InvalidMultilineStringMark],
-  [true, /.+?(?=[\[\]"`|]|$|=>|!!|:\s*$)/my, T.Words],
+  [true, /.+?(?=[\[\]"`|#]|\/\/|$|=>|!!|:\s*$)/my, T.Words],
 ]
 
 export default rules

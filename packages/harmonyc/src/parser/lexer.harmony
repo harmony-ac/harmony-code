@@ -34,6 +34,7 @@
     + "#hello\nworld" => "newline words"
     + "# hello\nworld\n" => "newline words newline"
     + "#hello\nworld\n#goodbye" => "newline words newline"
+    + "hello#`x`" => "words"
   + double slash:
     + "//" => ""
     + "//hello" => ""
@@ -41,13 +42,7 @@
     + "//hello\nworld" => "newline words"
     + "// hello\nworld\n" => "newline words newline"
     + "//hello\nworld\n//goodbye" => "newline words newline"
-  + blockquote:
-    + ">" => ""
-    + ">hello" => ""
-    + "> hello\n" => "newline"
-    + ">hello\nworld" => "newline words"
-    + "> hello\nworld\n" => "newline words newline"
-    + ">hello\nworld\n>goodbye" => "newline words newline"
+    + "hello//`x`" => "words"
 
 + response mark:
   + "=>" => "=>"

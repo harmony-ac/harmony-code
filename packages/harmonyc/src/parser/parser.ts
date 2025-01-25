@@ -13,11 +13,7 @@ import {
   list_sc,
   kleft,
   kmid,
-  err,
   fail,
-  nil,
-  rep,
-  alt,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
 import type { Branch } from '../model/model.ts'
