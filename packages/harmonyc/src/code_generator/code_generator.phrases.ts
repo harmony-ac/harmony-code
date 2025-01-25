@@ -15,7 +15,7 @@ export default class CodeGeneratorPhrases {
     this.generator.test(new Test(new Section(), []))
     this.tf.lines = []
   }
-  async When_step(x: string) {
+  async When_step_(x: string) {
     parse(x, STEP).setFeature(this.feature).toCode(this.generator)
   }
   async Then_(x: string) {

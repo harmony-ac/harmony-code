@@ -6,7 +6,8 @@ export interface CodeGenerator {
   test(test: Test): void
   phrase(phrase: Phrase): void
   step(action: Action, responses: Response[]): void
-  errorStep(action: Action, errorMessage?: StringLiteral): void
+  errorStep(action: Action, errorResponse: ErrorResponse): void
+  setVariable(action: SetVariable): void
   saveToVariable(response: SaveToVariable): void
   stringLiteral(text: string, opts: { withVariables: boolean }): string
   codeLiteral(src: string): string
@@ -120,7 +121,7 @@ export class Step extends Branch {
   }
   toCode(cg: CodeGenerator) {
     if (this.responses[0] instanceof ErrorResponse) {
-      cg.errorStep(this.action, this.responses[0].message)
+      cg.errorStep(this.action, this.responses[0])
     } else {
       cg.step(this.action, this.responses)
     }
@@ -131,7 +132,7 @@ export class Step extends Branch {
     return super.setFeature(feature)
   }
   headToString() {
-    return `${this.action}` + this.responses.map((r) => ` => ${r}`).join('')
+    return this.phrases.join(' ')
   }
   toString() {
     return this.headToString() + indent(super.toString())
@@ -175,8 +176,22 @@ export class Section extends Branch {
   }
 }
 
-export abstract class Part {}
+export abstract class Part {
+  toSingleLineString() {
+    return this.toString()
+  }
+}
 
+export class DummyKeyword extends Part {
+  text: string
+  constructor(text = '') {
+    super()
+    this.text = text
+  }
+  toString() {
+    return this.text
+  }
+}
 export class Word extends Part {
   text: string
   constructor(text = '') {
@@ -200,6 +215,9 @@ export class StringLiteral extends Arg {
   toString() {
     return JSON.stringify(this.text)
   }
+  toSingleLineString() {
+    return this.toString()
+  }
   toCode(cg: CodeGenerator) {
     return cg.stringLiteral(this.text, { withVariables: true })
   }
@@ -211,6 +229,15 @@ export class StringLiteral extends Arg {
 export class Docstring extends StringLiteral {
   toCode(cg: CodeGenerator) {
     return cg.stringLiteral(this.text, { withVariables: false })
+  }
+  toString() {
+    return this.text
+      .split('\n')
+      .map((l) => '| ' + l)
+      .join('\n')
+  }
+  toSingleLineString() {
+    return super.toString()
   }
 }
 export class CodeLiteral extends Arg {
@@ -231,16 +258,10 @@ export class CodeLiteral extends Arg {
 }
 
 export abstract class Phrase {
-  content: Part[]
   feature!: Feature
-  docstring?: StringLiteral
   location?: Location
   abstract get kind(): string
-  constructor(content: Part[] = [], docstring?: string) {
-    this.content = content
-    this.docstring =
-      docstring === undefined ? undefined : new Docstring(docstring)
-  }
+  constructor(public parts: Part[]) {}
   setFeature(feature: Feature) {
     this.feature = feature
     return this
@@ -249,26 +270,23 @@ export abstract class Phrase {
     return this.kind === 'action' ? 'When' : 'Then'
   }
   get args() {
-    return [...this.content, this.docstring].filter((c) => c instanceof Arg)
+    return this.parts.filter((c) => c instanceof Arg)
   }
   get isEmpty() {
-    return this.content.length === 0 && this.docstring === undefined
+    return this.parts.length === 0
   }
   abstract toCode(cg: CodeGenerator): void
   toString() {
-    return [
-      ...(this.content.length > 0
-        ? [this.content.map((c) => c.toString()).join(' ')]
-        : []),
-      ...(this.docstring !== undefined
-        ? this.docstring.text.split('\n').map((l) => '| ' + l)
-        : []),
-    ].join('\n')
+    const parts = this.parts.map((p) => p.toString())
+    const isMultiline = parts.map((p) => p.includes('\n'))
+    return parts
+      .map((p, i) =>
+        i === 0 ? p : isMultiline[i - 1] || isMultiline[i] ? '\n' + p : ' ' + p
+      )
+      .join('')
   }
   toSingleLineString() {
-    return [...this.content, ...(this.docstring ? [this.docstring] : [])]
-      .map((c) => c.toString())
-      .join(' ')
+    return this.parts.map((p) => p.toSingleLineString()).join(' ')
   }
 }
 
@@ -276,7 +294,7 @@ export class Action extends Phrase {
   kind = 'action'
 
   toCode(cg: CodeGenerator) {
-    if (!this.content.length && this.docstring === undefined) return
+    if (this.isEmpty) return
     cg.phrase(this)
   }
 }
@@ -284,63 +302,41 @@ export class Action extends Phrase {
 export class Response extends Phrase {
   kind = 'response'
 
-  get isErrorResponse() {
-    if (
-      this.content.length === 1 &&
-      this.content[0] instanceof Word &&
-      this.content[0].text === '!!'
-    )
-      return true
-    if (
-      this.content.length === 2 &&
-      this.content[0] instanceof Word &&
-      this.content[0].text === '!!' &&
-      this.content[1] instanceof StringLiteral
-    )
-      return true
+  toString(): string {
+    return `=> ${super.toString()}`
   }
-
+  toSingleLineString(): string {
+    return `=> ${super.toSingleLineString()}`
+  }
   toCode(cg: CodeGenerator) {
-    if (!this.content.length && this.docstring === undefined) return
+    if (this.isEmpty) return
     cg.phrase(this)
   }
 }
 
 export class ErrorResponse extends Response {
-  get message() {
-    return (this.content[0] as StringLiteral | undefined) ?? this.docstring
+  constructor(public message: StringLiteral | undefined) {
+    super(
+      message ? [new DummyKeyword('!!'), message] : [new DummyKeyword('!!')]
+    )
   }
-  toString(): string {
-    const s = super.toString()
-    return s ? `!! ${s}` : '!!'
+}
+
+export class SetVariable extends Action {
+  constructor(public variableName: string, public value: Arg) {
+    super([new DummyKeyword(`\${${variableName}}`), value])
   }
-  toSingleLineString(): string {
-    const s = super.toSingleLineString()
-    return s ? `!! ${s}` : '!!'
+  toCode(cg: CodeGenerator): void {
+    cg.setVariable(this)
   }
 }
 
 export class SaveToVariable extends Response {
   constructor(public variableName: string) {
-    super()
-  }
-  toString(): string {
-    return `\${${this.variableName}}`
-  }
-  toSingleLineString(): string {
-    return `\${${this.variableName}}`
+    super([new DummyKeyword(`\${${variableName}}`)])
   }
   toCode(cg: CodeGenerator): void {
     cg.saveToVariable(this)
-  }
-}
-
-export class SetVariable extends Action {
-  get variableName() {
-    return (this.content[0] as Word).text.slice(2, -1)
-  }
-  get value() {
-    return (this.content[1] as Arg | undefined) ?? this.docstring
   }
 }
 

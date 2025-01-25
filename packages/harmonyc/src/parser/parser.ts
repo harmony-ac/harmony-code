@@ -7,7 +7,6 @@ import {
   kright,
   opt_sc,
   rep_sc,
-  rule,
   seq,
   tok,
   list_sc,
@@ -27,10 +26,12 @@ import {
   StringLiteral,
   Section,
   Step,
+  Docstring,
   Word,
   Label,
   ErrorResponse,
   SaveToVariable,
+  SetVariable,
 } from '../model/model.ts'
 
 export function parse(input: string): Section
@@ -59,26 +60,35 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
     tok(T.BacktickString),
     ({ text }) => new CodeLiteral(text.slice(1, -1))
   ),
-  DOCSTRING = apply(list_sc(tok(T.MultilineString), tok(T.Newline)), (lines) =>
-    lines.map(({ text }) => text.slice(2)).join('\n')
+  DOCSTRING = kright(
+    opt_sc(NEWLINES),
+    apply(
+      list_sc(tok(T.MultilineString), tok(T.Newline)),
+      (lines) =>
+        new Docstring(lines.map(({ text }) => text.slice(2)).join('\n'))
+    )
   ),
   ERROR_MARK = tok(T.ErrorMark),
-  VARIABLE = apply(tok(T.Variable), ({ text }) => new Word(text)),
-  PART = alt_sc(WORDS, DOUBLE_QUOTE_STRING, BACKTICK_STRING),
-  PHRASE = seq(rep_sc(PART), opt_sc(kright(opt_sc(NEWLINES), DOCSTRING))),
-  ACTION = apply(PHRASE, ([parts, docstring]) => {
-    return new Action(parts, docstring)
-  }),
-  RESPONSE = apply(PHRASE, ([parts, docstring]) => {
-    return new Response(parts, docstring)
-  }),
+  VARIABLE = apply(tok(T.Variable), ({ text }) => text.slice(2, -1)),
+  PART = alt_sc(WORDS, DOUBLE_QUOTE_STRING, BACKTICK_STRING, DOCSTRING),
+  PHRASE = rep_sc(PART),
+  ARG = alt_sc(DOUBLE_QUOTE_STRING, BACKTICK_STRING, DOCSTRING),
+  SET_VARIABLE = apply(
+    seq(VARIABLE, ARG),
+    ([variable, value]) => new SetVariable(variable, value)
+  ),
+  ACTION = alt(
+    apply(PHRASE, (parts) => new Action(parts)),
+    SET_VARIABLE
+  ),
+  RESPONSE = apply(PHRASE, (parts) => new Response(parts)),
   ERROR_RESPONSE = apply(
-    seq(ERROR_MARK, PHRASE),
-    ([, [parts, docstring]]) => new ErrorResponse(parts, docstring)
+    seq(ERROR_MARK, opt_sc(alt_sc(DOUBLE_QUOTE_STRING, DOCSTRING))),
+    ([, parts]) => new ErrorResponse(parts)
   ),
   SAVE_TO_VARIABLE = apply(
     VARIABLE,
-    (variable) => new SaveToVariable(variable.text.slice(2, -1))
+    (variable) => new SaveToVariable(variable)
   ),
   ARROW = kright(opt_sc(NEWLINES), tok(T.ResponseArrow)),
   RESPONSE_ITEM = kright(

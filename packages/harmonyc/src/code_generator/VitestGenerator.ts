@@ -3,10 +3,12 @@ import {
   Action,
   Arg,
   CodeGenerator,
+  ErrorResponse,
   Feature,
   Phrase,
   Response,
   SaveToVariable,
+  SetVariable,
   StringLiteral,
   Test,
   TestGroup,
@@ -74,27 +76,31 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print('});')
   }
 
-  errorStep(action: Action, errorMessage?: StringLiteral) {
+  errorStep(action: Action, errorResponse: ErrorResponse) {
     this.declareFeatureVariables([action])
-    this.tf.print(`context.task.meta.phrases.push(${str(action.toString())});`)
     this.tf.print(
       `context.task.meta.phrases.push(${str(
-        errorMessage ? '!! => ' + JSON.stringify(errorMessage.text) : '!!'
+        errorResponse.toSingleLineString()
       )});`
     )
     this.tf.print(`await expect(async () => {`)
     this.tf.indent(() => {
       action.toCode(this)
     })
-    this.tf.print(`}).rejects.toThrow(${errorMessage?.toCode(this) ?? ''});`)
+    this.tf.print(`}).rejects.toThrow(${errorResponse?.toCode(this) ?? ''});`)
   }
 
   extraArgs: string[] = []
   step(action: Action, responses: Response[]): void {
     this.declareFeatureVariables([action, ...responses])
-    this.tf.print(`context.task.meta.phrases.push(${str(action.toString())});`)
     if (responses.length === 0) {
       action.toCode(this)
+      return
+    }
+    if (action.isEmpty) {
+      for (const response of responses) {
+        response.toCode(this)
+      }
       return
     }
     const res = `r${this.resultCount++ || ''}`
@@ -104,12 +110,6 @@ export class VitestGenerator implements CodeGenerator {
       try {
         this.extraArgs = [res]
         for (const response of responses) {
-          if (!(response instanceof SaveToVariable))
-            this.tf.print(
-              `context.task.meta.phrases.push(${str(
-                `=> ${response.toString()}`
-              )});`
-            )
           response.toCode(this)
         }
       } finally {
@@ -137,7 +137,16 @@ export class VitestGenerator implements CodeGenerator {
     const f = this.featureVars.get(p.feature.name)
     const args = p.args.map((a) => (a as Arg).toCode(this))
     args.push(...this.extraArgs)
-    this.tf.print(`await ${f}.${functionName(p)}(${args.join(', ')});`)
+    this.tf.print(`(context.task.meta.phrases.push(${str(p.toString())}),`)
+    this.tf.print(`await ${f}.${functionName(p)}(${args.join(', ')}));`)
+  }
+
+  setVariable(action: SetVariable): void {
+    this.tf.print(
+      `(context.task.meta.variables ??= {})[${str(
+        action.variableName
+      )}] = ${action.value.toCode(this)};`
+    )
   }
 
   saveToVariable(s: SaveToVariable) {
@@ -235,7 +244,7 @@ export function functionName(phrase: Phrase) {
   const { kind } = phrase
   return (
     (kind === 'response' ? 'Then_' : 'When_') +
-    ([...phrase.content, phrase.docstring ? [phrase.docstring] : []]
+    (phrase.parts
       .flatMap((c) =>
         c instanceof Word
           ? words(c.text).filter((x) => x)

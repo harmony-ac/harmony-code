@@ -2,3 +2,15 @@
   + `12` => ${result}
     => `${result}+1` is `13`
     => "${result}+1" is "12+1"
++ set:
+  + string:
+    + ${name} "Joe"
+      + => "${name}" is "Joe"
+  + code:
+    + ${age} `12`
+      + => `${age}` is `12`
+  + multiline string:
+    + ${address}
+      | 1234
+      | Main St
+      + => `${address}` is "1234\nMain St"

@@ -3,38 +3,38 @@
     + step | hello
       =>
       | const T = new TestPhrases(context);
-      | context.task.meta.phrases.push("hello");
-      | await T.When_hello();
+      | (context.task.meta.phrases.push("hello"),
+      | await T.When_hello());
 
   + action and response:
     + step | hello => "Hello, World!"
       =>
       | const T = new TestPhrases(context);
-      | context.task.meta.phrases.push("hello");
       | const r =
-      |   await T.When_hello();
-      |   context.task.meta.phrases.push("=> \"Hello, World!\"");
-      |   await T.Then_("Hello, World!", r);
+      |   (context.task.meta.phrases.push("hello"),
+      |   await T.When_hello());
+      |   (context.task.meta.phrases.push("=> \"Hello, World!\""),
+      |   await T.Then_("Hello, World!", r));
 
   + save to variable:
     + step | hello => ${greeting}
       =>
       | const T = new TestPhrases(context);
-      | context.task.meta.phrases.push("hello");
       | const r =
-      |   await T.When_hello();
+      |   (context.task.meta.phrases.push("hello"),
+      |   await T.When_hello());
       |   (context.task.meta.variables ??= {})["greeting"] = r;
 
   + retrieve variable in string:
     + step | greet "${name}"
       =>
       | const T = new TestPhrases(context);
-      | context.task.meta.phrases.push("greet \"${name}\"");
-      | await T.When_greet_(`${context.task.meta.variables?.["name"]}`);
+      | (context.task.meta.phrases.push("greet \"${name}\""),
+      | await T.When_greet_(`${context.task.meta.variables?.["name"]}`));
 
   + retrieve variable in code:
     + step | greet `${name}`
       =>
       | const T = new TestPhrases(context);
-      | context.task.meta.phrases.push("greet `${name}`");
-      | await T.When_greet_(context.task.meta.variables?.["name"]);
+      | (context.task.meta.phrases.push("greet `${name}`"),
+      | await T.When_greet_(context.task.meta.variables?.["name"]));

@@ -68,51 +68,56 @@
     + | a = b
       =>
       | a = b
+    
+    + set variable:
+      + | ${var} "hello"
+        =>
+        | ${var} "hello"
 
 
 + production "RESPONSE_ITEM"
   + | => hello
     =>
-    | hello
+    | => hello
 
   + | => "Jon"
     =>
-    | "Jon"
+    | => "Jon"
 
   + | => | asdf
     =>
-    | | asdf
+    | => | asdf
 
   + variable:
     + | => ${var}
       => instance of "SaveToVariable"
       =>
-      | ${var}
+      | => ${var}
 
   + newline after "=>":
     + | => 
       | | asdf
       =>
-      | | asdf
+      | => | asdf
 
     + | =>
       | | asdf
       =>
-      | | asdf
+      | => | asdf
   
   + error response:
     + | => !!
       => instance of "ErrorResponse"
       =>
-      | !!
+      | => !!
 
     + | => !! "invalid"
       =>
-      | !! "invalid"
+      | => !! "invalid"
 
     + | => !! | Could not
       =>
-      | !! | Could not
+      | => !! | Could not
 
 + production "TEST_DESIGN"
   + | + hello
@@ -151,7 +156,7 @@
       | | bsdf
       => | + | asdf
          | | bsdf
-    + "+ hello\n| John" => "+ hello\n| John"
+    + "+ hello\n| John" => "+ hello | John"
     + "+ hello\n| John\n| Jim" => "+ hello\n| John\n| Jim"
     + "- hello\n| John\n    | Jim" => "- hello\n| John\n| Jim"
 

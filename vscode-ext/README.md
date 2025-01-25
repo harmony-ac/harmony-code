@@ -1,6 +1,6 @@
 # Harmony Code Language Support
 
-Syntax highlighting for [Harmony Code](https://harmony.ac/code) files.
+Syntax highlighting for [Harmony Code](https://github.com/harmony-ac/code) files.
 
 ## Features
 

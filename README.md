@@ -64,11 +64,31 @@ Both actions and responses get compiled to simple function calls - in JavaScript
 
 ### Arguments
 
-Phrases can have arguments which are passed to the implementation function. There are two types of arguments: double-quoted strings are passed to the code as strings, and backtick-quoted strings are passed as is. You can use backticks to pass numbers, booleans, null, or objects.
+Phrases (actions and responses) can have arguments which are passed to the implementation function. There are two types of arguments: strings and code fragments:
+
+```harmony
++ strings:
+  + hello "John"
++ code fragment:
+  + greet `3` times
+```
+
+becomes
+
+```javascript
+test('T1 - strings', async () => {
+  const P = new Phrases();
+  await P.When_hello_("John");
+})
+test('T2 - code fragment', async () => {
+  const P = new Phrases();
+  await P.When_greet__times(3);
+})
+```
 
 ### Labels
 
-Label are nodes that end with `:`. You can use them to structure your test design.
+Labels are lines that start with `-` or `+` and end with `:`. You can use them to structure your test design.
 They are not included in the test case, but the test case name is generated from the labels.
 
 ### Comments
@@ -78,6 +98,35 @@ Lines starting with `#` or `//` are comments and are ignored.
 ### Error matching
 
 You can use `!!` to denote an error response. This will verify that the action throws an error. You can specify the error message after the `!!`.
+
+### Variables
+
+You can set variables in the tests and use them in strings and code fragments:
+
+```
++ set variable:
+  + ${name} "John"
+    + greet "${name}" => "hello John"
++ store result into variable:
+  + run process => ${result}
+    + "${result}" is "success"
+```
+
+becomes
+
+```javascript
+test('T1 - set variable', (context) => {
+  const P = new Phrases();
+  (context.task.meta.variables ??= {})['name'] = "John";
+  await P.When_greet_(context.task.meta.variables?.['name']);
+})
+test('T2 - store result in variable', (context) => {
+  const P = new Phrases();
+  const r = await P.When_run_process();
+  (context.task.meta.variables ??= {})['result'] = r;
+  await P.Then__is_(`${context.task.meta.variables?.['result']});
+})
+```
 
 ## Running the tests
 
