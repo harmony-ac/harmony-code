@@ -204,5 +204,13 @@
         =>
         | + label:
         |   + world
-    
+
+  + regression:
+    + infinite recursion:
+      + | + a
+        |   + c
+        |     => !! "x"
+        =>
+        | + a
+        |   + c => !! "x"
   

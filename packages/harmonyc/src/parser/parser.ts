@@ -14,8 +14,6 @@ import {
   kmid,
   fail,
   nil,
-  rep_n,
-  alt,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
 import type { Branch } from '../model/model.ts'
@@ -77,9 +75,9 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
     seq(VARIABLE, ARG),
     ([variable, value]) => new SetVariable(variable, value)
   ),
-  ACTION = alt(
-    apply(PHRASE, (parts) => new Action(parts)),
-    SET_VARIABLE
+  ACTION = alt_sc(
+    SET_VARIABLE,
+    apply(PHRASE, (parts) => new Action(parts))
   ),
   RESPONSE = apply(PHRASE, (parts) => new Response(parts)),
   ERROR_RESPONSE = apply(
@@ -93,7 +91,7 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
   ARROW = kright(opt_sc(NEWLINES), tok(T.ResponseArrow)),
   RESPONSE_ITEM = kright(
     ARROW,
-    alt(RESPONSE, ERROR_RESPONSE, SAVE_TO_VARIABLE)
+    alt_sc(SAVE_TO_VARIABLE, ERROR_RESPONSE, RESPONSE)
   ),
   STEP = apply(seq(ACTION, rep_sc(RESPONSE_ITEM)), ([action, responses]) =>
     new Step(action, responses).setFork(true)
