@@ -3,7 +3,7 @@ import rules, { T } from '../../packages/harmonyc/src/parser/lexer_rules'
 
 const names: { [k in T]: string | null } = {
   '+': 'keyword.control.fork',
-  '-': 'keyword.control.sequence',
+  '-': 'keyword.sequence',
   ':': 'markup.heading.marker',
   '=>': 'keyword.control.response',
   '!!': 'keyword.control.error',
@@ -84,7 +84,7 @@ patterns[T.BacktickString] = {
     },
     {
       name: 'variable.other.normal.harmony',
-      match: /\$\{[^\n}]+\}/.source,
+      match: /\$\{[^`}\n]+\}/.source,
     },
     {
       name: 'invalid.variable.empty.harmony',
@@ -92,7 +92,7 @@ patterns[T.BacktickString] = {
     },
     {
       name: 'invalid.variable.unclosed.harmony',
-      match: /\$\{[^}\n]*/.source,
+      match: /\$\{[^`}\n]*/.source,
     },
   ],
 }

@@ -44,7 +44,7 @@
       "match": "^(  )*[+]( |$)"
     },
     {
-      "name": "keyword.control.sequence.harmony",
+      "name": "keyword.sequence.harmony",
       "match": "^(  )*[-]( |$)"
     },
     {
@@ -117,7 +117,7 @@
         },
         {
           "name": "variable.other.normal.harmony",
-          "match": "\\$\\{[^\\n}]+\\}"
+          "match": "\\$\\{[^`}\\n]+\\}"
         },
         {
           "name": "invalid.variable.empty.harmony",
@@ -125,7 +125,7 @@
         },
         {
           "name": "invalid.variable.unclosed.harmony",
-          "match": "\\$\\{[^}\\n]*"
+          "match": "\\$\\{[^`}\\n]*"
         }
       ]
     },
