@@ -154,7 +154,7 @@
       "match": "\\|[^ \\n]"
     },
     {
-      "name": "source.word.harmony",
+      "name": "entity.name.function.call.harmony",
       "match": ".+?(?=[\\[\\]\"`|#]|\\/\\/|\\$\\{|$|=>|!!|:\\s*$)"
     }
   ],

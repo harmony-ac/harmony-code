@@ -24,7 +24,7 @@ const names: { [k in T]: string | null } = {
   variable: 'variable.other.normal',
   'invalid empty variable': 'invalid.variable',
   'unclosed variable': 'invalid.variable',
-  words: 'source.word',
+  words: 'entity.name.function.call',
 }
 const patterns = Object.fromEntries(
   rules.flatMap(([, re, t]) =>
