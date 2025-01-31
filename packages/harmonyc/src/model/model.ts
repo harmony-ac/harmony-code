@@ -301,6 +301,12 @@ export class Action extends Phrase {
 
 export class Response extends Phrase {
   kind = 'response'
+  constructor(parts: Part[], public saveToVariable?: SaveToVariable) {
+    super([...parts, ...(saveToVariable ? [saveToVariable] : [])])
+  }
+  get isEmpty() {
+    return this.parts.length === 0 && !this.saveToVariable
+  }
 
   toString(): string {
     return `=> ${super.toString()}`
@@ -331,12 +337,15 @@ export class SetVariable extends Action {
   }
 }
 
-export class SaveToVariable extends Response {
+export class SaveToVariable extends Part {
   constructor(public variableName: string) {
-    super([new DummyKeyword(`\${${variableName}}`)])
+    super()
   }
   toCode(cg: CodeGenerator): void {
     cg.saveToVariable(this)
+  }
+  toString() {
+    return `\${${this.variableName}}`
   }
 }
 

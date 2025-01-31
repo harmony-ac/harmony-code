@@ -79,14 +79,21 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
     SET_VARIABLE,
     apply(PHRASE, (parts) => new Action(parts))
   ),
-  RESPONSE = apply(PHRASE, (parts) => new Response(parts)),
+  RESPONSE = apply(
+    seq(PHRASE, opt_sc(VARIABLE)),
+    ([parts, variable]) =>
+      new Response(
+        parts,
+        variable !== undefined ? new SaveToVariable(variable) : undefined
+      )
+  ),
   ERROR_RESPONSE = apply(
     seq(ERROR_MARK, opt_sc(alt_sc(DOUBLE_QUOTE_STRING, DOCSTRING))),
     ([, parts]) => new ErrorResponse(parts)
   ),
   SAVE_TO_VARIABLE = apply(
     VARIABLE,
-    (variable) => new SaveToVariable(variable)
+    (variable) => new Response([], new SaveToVariable(variable))
   ),
   ARROW = kright(opt_sc(NEWLINES), tok(T.ResponseArrow)),
   RESPONSE_ITEM = kright(

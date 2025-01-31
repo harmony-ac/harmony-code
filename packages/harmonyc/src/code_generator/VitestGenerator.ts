@@ -137,7 +137,13 @@ export class VitestGenerator implements CodeGenerator {
     const f = this.featureVars.get(p.feature.name)
     const args = p.args.map((a) => (a as Arg).toCode(this))
     args.push(...this.extraArgs)
+    if (p instanceof Response && p.parts.length === 1 && p.saveToVariable) {
+      return this.saveToVariable(p.saveToVariable)
+    }
     this.tf.print(`(context.task.meta.phrases.push(${str(p.toString())}),`)
+    if (p instanceof Response && p.saveToVariable) {
+      this.saveToVariable(p.saveToVariable, '')
+    }
     this.tf.print(`await ${f}.${functionName(p)}(${args.join(', ')}));`)
   }
 
@@ -149,12 +155,12 @@ export class VitestGenerator implements CodeGenerator {
     )
   }
 
-  saveToVariable(s: SaveToVariable) {
+  saveToVariable(s: SaveToVariable, what = this.extraArgs[0] + ';') {
     if (this.extraArgs.length !== 1) return
     this.tf.print(
-      `(context.task.meta.variables ??= {})[${str(s.variableName)}] = ${
-        this.extraArgs[0]
-      };`
+      `(context.task.meta.variables ??= {})[${str(
+        s.variableName
+      )}] = ${what}`.trimEnd()
     )
   }
 

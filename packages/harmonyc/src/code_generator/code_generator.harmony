@@ -25,6 +25,17 @@
       |   await T.When_hello());
       |   (context.task.meta.variables ??= {})["greeting"] = r;
 
+  + save response to variable:
+    + step | hello => last char ${ch}
+      =>
+      | const T = new TestPhrases(context);
+      | const r =
+      |   (context.task.meta.phrases.push("hello"),
+      |   await T.When_hello());
+      |   (context.task.meta.phrases.push("=> last char ${ch}"),
+      |   (context.task.meta.variables ??= {})["ch"] =
+      |   await T.Then_last_char(r));
+
   + retrieve variable in string:
     + step | greet "${name}"
       =>

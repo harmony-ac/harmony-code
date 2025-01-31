@@ -18,4 +18,11 @@ export default class ParserPhrases {
   async Then_instance_of_(clazz: string, tree: any) {
     expect(tree.constructor.name).toBe(clazz)
   }
+  async Then_has_(prop: string, result: any) {
+    expect(result).toHaveProperty(prop)
+    return result[prop]
+  }
+  async Then__is_(a: any, b: any) {
+    expect(a).toBe(b)
+  }
 }

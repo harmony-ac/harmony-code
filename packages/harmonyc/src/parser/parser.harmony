@@ -90,9 +90,17 @@
 
   + variable:
     + | => ${var}
-      => instance of "SaveToVariable"
+      => instance of "Response"
+      => has "saveToVariable" ${x}
+      => "${x}" is | ${var}
       =>
       | => ${var}
+    + | => score ${var}
+      => instance of "Response"
+      => has "saveToVariable" ${x}
+      => "${x}" is | ${var}
+      =>
+      | => score ${var}
 
   + newline after "=>":
     + | => 
