@@ -1,7 +1,7 @@
 {
   "name": "harmonyc",
   "description": "Harmony Code - model-driven BDD for Vitest",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "author": "Bernát Kalló",
   "type": "module",
   "bin": {
@@ -23,11 +23,9 @@
   },
   "dependencies": {
     "fast-glob": "^3.3.2",
+    "tinyrainbow": "1",
     "typescript-parsec": "0.3.4",
     "watcher": "^2.3.1"
-  },
-  "peerDependencies": {
-    "vitest": "^2.1.0"
   },
   "license": "MIT",
   "keywords": [
