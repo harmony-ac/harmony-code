@@ -326,6 +326,9 @@ export class ErrorResponse extends Response {
       message ? [new DummyKeyword('!!'), message] : [new DummyKeyword('!!')]
     )
   }
+  toCode(cg: CodeGenerator) {
+    cg.errorStep
+  }
 }
 
 export class SetVariable extends Action {

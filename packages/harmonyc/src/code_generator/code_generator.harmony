@@ -36,6 +36,26 @@
       |   (context.task.meta.variables ??= {})["ch"] =
       |   await T.Then_last_char(r));
 
+  + error response:
+    + step | hello => !!
+      =>
+        | const T = new TestPhrases(context);
+        | context.task.meta.phrases.push("=> !!");
+        | await expect(async () => {
+        |   (context.task.meta.phrases.push("hello"),
+        |   await T.When_hello());
+        | }).rejects.toThrow();
+
+  + error response:
+    + step | hello => !! | error message
+      =>
+        | const T = new TestPhrases(context);
+        | context.task.meta.phrases.push("=> !! \"error message\"");
+        | await expect(async () => {
+        |   (context.task.meta.phrases.push("hello"),
+        |   await T.When_hello());
+        | }).rejects.toThrow("error message");
+
   + retrieve variable in string:
     + step | greet "${name}"
       =>

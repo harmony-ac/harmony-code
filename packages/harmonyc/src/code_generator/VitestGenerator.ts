@@ -87,7 +87,13 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.indent(() => {
       action.toCode(this)
     })
-    this.tf.print(`}).rejects.toThrow(${errorResponse?.toCode(this) ?? ''});`)
+    this.tf.print(
+      `}).rejects.toThrow(${
+        errorResponse?.message !== undefined
+          ? str(errorResponse.message.text)
+          : ''
+      });`
+    )
   }
 
   extraArgs: string[] = []
