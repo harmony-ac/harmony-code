@@ -133,6 +133,9 @@
   + "+ hello => world"    => | + hello => world
   + "+ hello\n  => world" => | + hello => world
   + "hello => world"    => !! | Unable to consume token: hello
+  + empty action:
+    | + => response only
+    => | + => response only
 
   + ending spaces:
     + 1 space at end:
