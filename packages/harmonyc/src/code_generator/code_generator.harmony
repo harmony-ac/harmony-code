@@ -7,14 +7,14 @@
       | await T.When_hello());
 
   + action and response:
-    + step | hello => "Hello, World!"
+    + step | hello => "Hello!"
       =>
       | const T = new TestPhrases(context);
       | const r =
       |   (context.task.meta.phrases.push("hello"),
       |   await T.When_hello());
-      |   (context.task.meta.phrases.push("=> \"Hello, World!\""),
-      |   await T.Then_("Hello, World!", r));
+      |   (context.task.meta.phrases.push("=> \"Hello!\""),
+      |   await T.Then_("Hello!", r));
 
   + save to variable:
     + step | hello => ${greeting}
@@ -24,6 +24,7 @@
       |   (context.task.meta.phrases.push("hello"),
       |   await T.When_hello());
       |   (context.task.meta.variables ??= {})["greeting"] = r;
+      => "${greeting}" is "Hello!"
 
   + save response to variable:
     + step | hello => last char ${ch}
@@ -35,33 +36,51 @@
       |   (context.task.meta.phrases.push("=> last char ${ch}"),
       |   (context.task.meta.variables ??= {})["ch"] =
       |   await T.Then_last_char(r));
+      => "${ch}" is "!"
+    + with empty action:
+      - step | hello
+      - step | => last char of greeting ${ch}
+        =>
+        | const T = new TestPhrases(context);
+        | (context.task.meta.phrases.push("hello"),
+        | await T.When_hello());
+        | (context.task.meta.phrases.push("=> last char of greeting ${ch}"),
+        | (context.task.meta.variables ??= {})["ch"] =
+        | await T.Then_last_char_of_greeting());
+        => "${ch}" is "!"
 
   + error response:
-    + step | hello => !!
+    + step | goodbye => !!
       =>
         | const T = new TestPhrases(context);
         | context.task.meta.phrases.push("=> !!");
         | await expect(async () => {
-        |   (context.task.meta.phrases.push("hello"),
-        |   await T.When_hello());
+        |   (context.task.meta.phrases.push("goodbye"),
+        |   await T.When_goodbye());
         | }).rejects.toThrow();
 
   + error response:
-    + step | hello => !! | error message
+    + step | goodbye => !! | World
       =>
         | const T = new TestPhrases(context);
-        | context.task.meta.phrases.push("=> !! \"error message\"");
+        | context.task.meta.phrases.push("=> !! \"World\"");
         | await expect(async () => {
-        |   (context.task.meta.phrases.push("hello"),
-        |   await T.When_hello());
-        | }).rejects.toThrow("error message");
+        |   (context.task.meta.phrases.push("goodbye"),
+        |   await T.When_goodbye());
+        | }).rejects.toThrow("World");
 
   + retrieve variable in string:
-    + step | greet "${name}"
+    - step | ${name} "Jon" => "${name}" is "Jon"
+    - step | greet "${name}"
       =>
       | const T = new TestPhrases(context);
+      | const r =
+      |   (context.task.meta.variables ??= {})["name"] = "Jon";
+      |   (context.task.meta.phrases.push("=> \"${name}\" is \"Jon\""),
+      |   await T.Then__is_(`${context.task.meta.variables?.["name"]}`, "Jon", r));
       | (context.task.meta.phrases.push("greet \"${name}\""),
       | await T.When_greet_(`${context.task.meta.variables?.["name"]}`));
+      => greeting is "Hello, Jon!"
 
   + retrieve variable in code:
     + step | greet `${name}`

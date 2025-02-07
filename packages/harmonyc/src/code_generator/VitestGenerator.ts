@@ -162,7 +162,6 @@ export class VitestGenerator implements CodeGenerator {
   }
 
   saveToVariable(s: SaveToVariable, what = this.extraArgs[0] + ';') {
-    if (this.extraArgs.length !== 1) return
     this.tf.print(
       `(context.task.meta.variables ??= {})[${str(
         s.variableName
