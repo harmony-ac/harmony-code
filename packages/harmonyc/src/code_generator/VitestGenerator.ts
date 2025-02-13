@@ -27,7 +27,12 @@ export class VitestGenerator implements CodeGenerator {
     const fn = (this.currentFeatureName = pascalCase(feature.name))
     this.phraseFns = new Map<string, Phrase>()
     if (this.framework === 'vitest') {
-      this.tf.print(`import { describe, test, expect } from 'vitest';`)
+      this.tf.print(`import { describe, test, expect } from "vitest";`)
+    }
+    if (feature.tests.length === 0) {
+      this.tf.print('')
+      this.tf.print(`describe.todo(${str(feature.name)});`)
+      return
     }
     this.tf.print(`import ${fn}Phrases from ${str(phrasesModule)};`)
     this.tf.print(``)
