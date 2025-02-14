@@ -2,22 +2,27 @@ import glob from 'fast-glob'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { basename, resolve } from 'path'
 import { compileFeature } from './compile.ts'
+import { testFileName } from '../filenames/filenames.ts'
+import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
 
 export async function compileFiles(pattern: string | string[]) {
   const fns = await glob(pattern)
   if (!fns.length)
     throw new Error(`No files found for pattern: ${String(pattern)}`)
   const results = await Promise.allSettled(fns.map((fn) => compileFile(fn)))
-  const features = results.flatMap((r) =>
+  const compiled = results.flatMap((r) =>
     r.status === 'fulfilled' ? [r.value] : []
   )
-  const errors = results.flatMap((r) =>
-    r.status === 'rejected' ? [r.reason] : []
+  const errored = results.flatMap((r) =>
+    r.status === 'rejected' && r.reason ? [r.reason] : []
   )
-  for (const error of errors) {
-    console.log(error.message ?? error)
+  for (const error of errored) {
+    console.error(error.message ?? error)
   }
-  console.log(`Compiled ${fns.length} file${fns.length === 1 ? '' : 's'}.`)
+  console.log(
+    `Compiled ${compiled.length} file${compiled.length === 1 ? '' : 's'}.`
+  )
+  const features = compiled.filter((f) => f !== undefined)
   const generated = features.filter((f) => f.phrasesFileAction === 'generated')
   if (generated.length) {
     console.log(
@@ -35,12 +40,18 @@ export async function compileFile(fn: string) {
     .toString()
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
-  const { outFile, phrasesFile } = compileFeature(fn, src)
-  writeFileSync(outFile.name, outFile.value)
-  let phrasesFileAction = 'ignored'
-  if (!existsSync(phrasesFile.name)) {
-    phrasesFileAction = 'generated'
-    writeFileSync(phrasesFile.name, phrasesFile.value)
+  try {
+    const { outFile, phrasesFile } = compileFeature(fn, src)
+    writeFileSync(outFile.name, outFile.value)
+    let phrasesFileAction = 'ignored'
+    if (!existsSync(phrasesFile.name)) {
+      phrasesFileAction = 'generated'
+      writeFileSync(phrasesFile.name, phrasesFile.value)
+    }
+    return { phrasesFileAction, outFile, phrasesFile }
+  } catch (e: any) {
+    const outFileName = testFileName(fn)
+    writeFileSync(outFileName, VitestGenerator.error(e.message ?? `${e}`))
+    return undefined
   }
-  return { phrasesFileAction, outFile, phrasesFile }
 }

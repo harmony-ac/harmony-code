@@ -134,8 +134,8 @@
   + "+ hello\n  => world" => | + hello => world
   + "hello => world"    => !! | Unable to consume token: hello
   + empty action:
-    | + => response only
-    => | + => response only
+    + | + => response only
+      => | +  => response only
 
   + ending spaces:
     + 1 space at end:
@@ -216,12 +216,12 @@
         | + label:
         |   + world
 
-  + regression:
-    + infinite recursion:
-      + | + a
-        |   + c
-        |     => !! "x"
-        =>
-        | + a
-        |   + c => !! "x"
-  
++ regressions:
+  + infinite recursion:
+    - production "TEST_DESIGN"
+    - | + a
+      |   + c
+      |     => !! "x"
+      =>
+      | + a
+      |   + c => !! "x"

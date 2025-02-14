@@ -17,6 +17,12 @@ import {
 import { OutFile } from './outFile.ts'
 
 export class VitestGenerator implements CodeGenerator {
+  static error(message: string) {
+    return `const e = new SyntaxError(${str(message)});
+    e.stack = undefined;
+    throw e;`
+  }
+
   framework = 'vitest'
   phraseFns = new Map<string, Phrase>()
   currentFeatureName = ''

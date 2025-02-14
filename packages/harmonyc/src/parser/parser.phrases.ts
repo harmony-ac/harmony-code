@@ -13,7 +13,11 @@ export default class ParserPhrases {
     return parse(value, this.production)
   }
   async Then_(value: string, tree: any) {
-    expect(tree.toString()).toBe(value)
+    if (typeof value === 'string') {
+      expect(tree.toString()).toBe(value)
+    } else {
+      expect(tree).toMatchObject(value)
+    }
   }
   async Then_instance_of_(clazz: string, tree: any) {
     expect(tree.constructor.name).toBe(clazz)
