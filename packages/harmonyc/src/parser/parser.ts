@@ -1,4 +1,4 @@
-import type { Parser, Token } from 'typescript-parsec'
+import type { Parser, ParserOutput, Token } from 'typescript-parsec'
 import {
   alt_sc,
   apply,
@@ -14,6 +14,7 @@ import {
   kmid,
   fail,
   nil,
+  unableToConsumeToken,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
 import type { Branch } from '../model/model.ts'
@@ -40,6 +41,28 @@ export function parse<T>(
 ) {
   const tokens = lexer.parse(input)
   return expectSingleResult(expectEOF(production.parse(tokens)))
+}
+
+function anythingBut(kind: T) {
+  return {
+    parse(token: Token<T> | undefined): ParserOutput<T, Token<T>> {
+      if (token === undefined)
+        return { successful: false, error: unableToConsumeToken(token) }
+      if (token.kind === kind)
+        return { successful: false, error: unableToConsumeToken(token) }
+      return {
+        candidates: [
+          {
+            firstToken: token,
+            nextToken: token.next,
+            result: token,
+          },
+        ],
+        successful: true,
+        error: undefined,
+      }
+    },
+  }
 }
 
 export const NEWLINES = list_sc(tok(T.Newline), nil()),
@@ -115,13 +138,19 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
       isFork: seqOrFork.kind === T.Plus,
     }
   }),
-  LINE = apply(
+  NODE = apply(
     seq(DENTS, BRANCH),
     ([{ dent, isFork }, branch], [start, end]) => ({
       dent,
       branch: branch.setFork(isFork),
     })
   ),
+  ANYTHING_BUT_NEWLINE = anythingBut(T.Newline),
+  TEXT = apply(
+    seq(tok(T.Words), rep_sc(ANYTHING_BUT_NEWLINE)),
+    () => undefined
+  ),
+  LINE = alt_sc(NODE, TEXT),
   TEST_DESIGN = kmid(
     rep_sc(NEWLINES),
     apply(
@@ -138,6 +167,7 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
         let parent: Branch = root
 
         for (const { line, start } of lines ?? []) {
+          if (line === undefined) continue
           const { dent: d, branch } = line
           if (Math.round(d) !== d) {
             throw new Error(

@@ -132,10 +132,33 @@
     => | + hello
   + "+ hello => world"    => | + hello => world
   + "+ hello\n  => world" => | + hello => world
-  + "hello => world"    => !! | Unable to consume token: hello
   + empty action:
     + | + => response only
       => | +  => response only
+
+  + requirements:
+    + starts with letter:
+      + | We need to say hello
+        | + hello
+        => | + hello
+    + starts with international letter:
+      + | + Érdekes funkció:
+        |   Így kell működjön
+        =>
+        | + Érdekes funkció:
+    + starts with number:
+      + | 1 Saying hello
+        =>
+        | 
+    + starts with number and period:
+      + | 1. Say hello
+        =>
+        | 
+    + starts with emoji:
+      + | 😊 Welcome
+        =>
+        | 
+
 
   + ending spaces:
     + 1 space at end:
