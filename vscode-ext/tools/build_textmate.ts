@@ -104,9 +104,9 @@ const tm = {
   patterns: [
     { name: 'invalid.indent.harmony', match: /^(?:  )*[ ][+-].*?$/.source }, // odd number of spaces
     {
-      name: 'invalid.line.harmony',
+      name: 'comment.block.documentation.harmony',
       match: /^(?:  )*(?![+-]( |$)|\/\/|=>|[#|])\S.*?$/.source,
-    }, // odd number of spaces
+    },
     ...Object.values(patterns).filter((p) => p.name.startsWith('comment')),
     {
       match: /^\s*(?:([+] )|([-] ))(.*)(:)\s*$/.source,
