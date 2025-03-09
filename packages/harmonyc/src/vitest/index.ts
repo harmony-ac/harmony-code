@@ -6,6 +6,7 @@ import { Reporter } from 'vitest/reporters'
 import { watchFiles } from '../cli/watch.ts'
 import { RunnerTaskResultPack } from 'vitest'
 import c from 'tinyrainbow'
+import { compileFiles } from '../compiler/compiler.ts'
 
 export interface HarmonyPluginOptions {
   watchDir: string
@@ -16,9 +17,6 @@ export default function harmonyPlugin({
 }: HarmonyPluginOptions): Plugin {
   return {
     name: 'harmony',
-    async configureServer(server) {
-      await watchFiles([`${watchDir}/**/*.harmony`])
-    },
     config(config) {
       config.test ??= {}
       config.test.reporters ??= ['default']
@@ -26,6 +24,15 @@ export default function harmonyPlugin({
         config.test.reporters = [config.test.reporters]
       }
       config.test.reporters.splice(0, 0, new HarmonyReporter())
+    },
+    async configureServer(server) {
+      const isWatchMode = server.config.server.watch !== null
+      const patterns = [`${watchDir}/**/*.harmony`]
+      if (isWatchMode) {
+        await watchFiles(patterns)
+      } else {
+        await compileFiles(patterns)
+      }
     },
   }
 }
