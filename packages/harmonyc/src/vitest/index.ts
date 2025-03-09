@@ -16,8 +16,8 @@ export default function harmonyPlugin({
 }: HarmonyPluginOptions): Plugin {
   return {
     name: 'harmony',
-    configureServer(server) {
-      watchFiles([`${watchDir}/**/*.harmony`])
+    async configureServer(server) {
+      await watchFiles([`${watchDir}/**/*.harmony`])
     },
     config(config) {
       config.test ??= {}
