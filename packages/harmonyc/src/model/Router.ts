@@ -1,4 +1,5 @@
 import { xmur3 } from '../util/xmur3.ts'
+import type { Branch, Router as RouterPart } from './model.ts'
 
 export class Router<N> {
   index = 0
@@ -21,11 +22,8 @@ export class Router<N> {
   }
 }
 
-interface Node {
-  successors: this[]
-}
-
-export class Routers<N extends Node> {
+type N = Branch
+export class Routers {
   routers = new Map<N, Router<N>>()
 
   constructor(private root: N) {

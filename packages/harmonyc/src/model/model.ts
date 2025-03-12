@@ -180,6 +180,7 @@ export abstract class Part {
   toSingleLineString() {
     return this.toString()
   }
+  abstract get words(): string[]
 }
 
 export class DummyKeyword extends Part {
@@ -191,6 +192,9 @@ export class DummyKeyword extends Part {
   toString() {
     return this.text
   }
+  get words() {
+    return []
+  }
 }
 export class Word extends Part {
   text: string
@@ -200,6 +204,46 @@ export class Word extends Part {
   }
   toString() {
     return this.text
+  }
+  get words() {
+    return this.text.split(/[^0-9\p{L}]+/gu).filter((x) => x)
+  }
+}
+
+export class Repeater extends Part {
+  constructor(public choices: Part[][]) {
+    super()
+  }
+  toString() {
+    return `{${this.choices.map((ps) => ps.join(' ')).join(' & ')}}`
+  }
+  toSingleLineString(): string {
+    return `{${this.choices
+      .map((ps) => ps.map((p) => p.toSingleLineString()).join(' '))
+      .join(' & ')}}`
+  }
+  get parts() {
+    return this.choices[0] // TODO
+  }
+  get words() {
+    return this.parts.flatMap((c) => c.words)
+  }
+}
+export class Router extends Part {
+  constructor(public choices: Repeater[]) {
+    super()
+  }
+  toString() {
+    return `{ ${this.choices.join(' ; ')} }`
+  }
+  toSingleLineString(): string {
+    return `{ ${this.choices.map((c) => c.toSingleLineString()).join(' ; ')} }`
+  }
+  get parts() {
+    return this.choices[0].parts // TODO
+  }
+  get words() {
+    return this.parts.flatMap((c) => c.words)
   }
 }
 export abstract class Arg extends Part {
@@ -224,6 +268,9 @@ export class StringLiteral extends Arg {
   toDeclaration(cg: CodeGenerator, index: number) {
     return cg.stringParamDeclaration(index)
   }
+  get words() {
+    return ['']
+  }
 }
 
 export class Docstring extends StringLiteral {
@@ -238,6 +285,9 @@ export class Docstring extends StringLiteral {
   }
   toSingleLineString() {
     return super.toString()
+  }
+  get words() {
+    return ['']
   }
 }
 export class CodeLiteral extends Arg {
@@ -254,6 +304,9 @@ export class CodeLiteral extends Arg {
   }
   toDeclaration(cg: CodeGenerator, index: number) {
     return cg.variantParamDeclaration(index)
+  }
+  get words() {
+    return ['']
   }
 }
 
@@ -349,6 +402,9 @@ export class SaveToVariable extends Part {
   }
   toString() {
     return `\${${this.variableName}}`
+  }
+  get words(): string[] {
+    return []
   }
 }
 
