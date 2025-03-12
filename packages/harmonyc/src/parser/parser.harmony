@@ -248,3 +248,8 @@
       =>
       | + a
       |   + c => !! "x"
+
+  + undefined child:
+    - production "TEST_DESIGN"
+    - |   + a:
+      => !! | first step must not be indented

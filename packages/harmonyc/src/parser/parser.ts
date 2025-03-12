@@ -161,15 +161,22 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
         )
       ),
       (lines) => {
-        const startDent = 0
-        let dent = startDent
+        let dent: number | undefined
         const root = new Section(new Label(''))
         let parent: Branch = root
 
         for (const { line, start } of lines ?? []) {
           if (line === undefined) continue
           const { dent: d, branch } = line
-          if (Math.round(d) !== d) {
+          if (dent === undefined) {
+            if (d !== 0)
+              throw new Error(
+                `invalid indent ${d} at line ${
+                  start!.pos.rowBegin
+                }: first step must not be indented`
+              )
+            dent = 0
+          } else if (Math.round(d) !== d) {
             throw new Error(
               `invalid odd indent of ${d * 2} at line ${start!.pos.rowBegin}`
             )
@@ -180,10 +187,6 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
           } else if (d === dent + 1) {
             parent = parent.children[parent.children.length - 1]
             ++dent
-          } else if (d < startDent) {
-            throw new Error(
-              `invalid indent ${d} at line ${start!.pos.rowBegin}`
-            )
           } else
             while (d < dent) {
               parent = parent.parent!
