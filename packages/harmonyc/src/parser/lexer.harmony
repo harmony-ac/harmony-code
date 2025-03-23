@@ -75,6 +75,16 @@
   + "[a" => "[ words"
   + "a]" => "words ]"
 
++ brace:
+  + "a{" => "words {"
+  + "a {" => "words {"
+  + "{" => "{"
+  + "}" => "}"
+  + "{a}" => "{ words }"
+  + "{a;b}" => "{ words ; words }"
+  + "{a ;b;}" => "{ words ; words ; }"
+  + "{& a &b}" => "{ & words & words }"
+
 + text:
   + "a" => "words"
   + "a " => "words"
