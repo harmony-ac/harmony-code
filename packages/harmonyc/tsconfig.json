@@ -11,6 +11,6 @@
     "strict": true,
     "rewriteRelativeImportExtensions": true
   },
-  "include": ["src", "dist/test.d.ts"],
+  "include": ["src"],
   "exclude": ["**/*.test.*", "**/*.spec.*", "**/*.phrases.*"]
 }
