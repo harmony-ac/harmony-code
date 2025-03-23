@@ -54,6 +54,7 @@
     |   - greet John => "Hello John!"
     | + T2:
     |   - greet Jim => "Hello Jim!"
+
   + different number of choices:
     + | + i like { a / b } => i have { a / b / c }
       => !! | all switches in a test case must have the same number of choices

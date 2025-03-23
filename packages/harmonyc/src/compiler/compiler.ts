@@ -51,7 +51,7 @@ export async function compileFile(fn: string) {
     return { phrasesFileAction, outFile, phrasesFile }
   } catch (e: any) {
     const outFileName = testFileName(fn)
-    writeFileSync(outFileName, VitestGenerator.error(e.message ?? `${e}`))
+    writeFileSync(outFileName, VitestGenerator.error(e.message ?? `${e}`, e.stack))
     return undefined
   }
 }

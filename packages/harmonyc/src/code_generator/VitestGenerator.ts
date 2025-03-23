@@ -17,10 +17,11 @@ import {
 import { OutFile } from './outFile.ts'
 
 export class VitestGenerator implements CodeGenerator {
-  static error(message: string) {
+  static error(message: string, stack: string) {
     return `const e = new SyntaxError(${str(message)});
     e.stack = undefined;
-    throw e;`
+    throw e;
+    ${stack ? `/* ${stack} */` : ''}`
   }
 
   framework = 'vitest'

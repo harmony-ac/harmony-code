@@ -337,7 +337,7 @@ export abstract class Phrase {
   switch(i: number): Phrase {
     return new (this.constructor as new (parts: Part[]) => Phrase)(
       this.parts.map((p) => (p instanceof Switch ? p.choices[i] : p))
-    )
+    ).setFeature(this.feature)
   }
 }
 
