@@ -14,6 +14,7 @@ export enum T {
   OpeningBrace = '{',
   ClosingBrace = '}',
   And = '&',
+  Slash = '/',
   Semicolon = ';',
   DoubleQuoteString = 'double-quote string',
   UnclosedDoubleQuoteString = 'unclosed double-quote string',
@@ -45,6 +46,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /\]/y, T.ClosingBracket],
   [true, /\{/y, T.OpeningBrace],
   [true, /\}/y, T.ClosingBrace],
+  [true, /\//y, T.Slash],
   [true, /&/y, T.And],
   [true, /;/y, T.Semicolon],
   [true, /!!/y, T.ErrorMark],
@@ -67,7 +69,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /\$\{[^}\n]*/y, T.UnclosedVariable],
   [true, /\|(?: .*|(?=\n|$))/y, T.MultilineString],
   [true, /\|[^ \n]/y, T.InvalidMultilineStringMark],
-  [true, /.+?(?=[\[\]"`|#{}&;]|\/\/|\$\{|$|=>|!!|:\s*$)/my, T.Words],
+  [true, /.+?(?=[\[\]"`|#{}&/;]|\$\{|$|=>|!!|:\s*$)/my, T.Words],
 ]
 
 export default rules

@@ -75,17 +75,9 @@
         | ${var} "hello"
 
     + router and repeater:
-      + | login with {admin; normal user}
+      + | login with {admin/ normal user}
         =>
-        | login with { {admin} ; {normal user} }
-
-      + | { login&logout}
-        =>
-        | { {login & logout} }
-
-      + | { log in with { admin; user } & log out }
-        =>
-        | { {log in with { {admin} ; {user} } & log out} }
+        | login with { admin / normal user }
 
 
 + production "RESPONSE_ITEM"

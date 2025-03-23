@@ -15,7 +15,7 @@ export default class CodeGeneratorPhrases {
   async When_Vitest() {
     this.generator = new VitestGenerator(this.tf, this.sf)
     this.generator.feature(this.feature)
-    this.generator.test(new Test(new Section(), []))
+    this.generator.test(new Test([]))
     this.tf.lines = []
   }
   async When_step_(x: string) {

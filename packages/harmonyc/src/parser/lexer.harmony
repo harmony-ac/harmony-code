@@ -82,6 +82,7 @@
   + "}" => "}"
   + "{a}" => "{ words }"
   + "{a;b}" => "{ words ; words }"
+  + "{a/b}" => "{ words / words }"
   + "{a ;b;}" => "{ words ; words ; }"
   + "{& a &b}" => "{ & words & words }"
 

@@ -98,6 +98,9 @@ export abstract class Branch {
     this.parent = undefined
     return this
   }
+  switch(_i: number) {
+    return this
+  }
 }
 
 export class Step extends Branch {
@@ -141,6 +144,12 @@ export class Step extends Branch {
   get isEmpty(): boolean {
     return this.phrases.every((phrase) => phrase.isEmpty)
   }
+  switch(i: number) {
+    return new Step(
+      this.action.switch(i),
+      this.responses.map((r) => r.switch(i))
+    )
+  }
 }
 export class State {
   text: string
@@ -180,7 +189,6 @@ export abstract class Part {
   toSingleLineString() {
     return this.toString()
   }
-  abstract get words(): string[]
 }
 
 export class DummyKeyword extends Part {
@@ -192,9 +200,6 @@ export class DummyKeyword extends Part {
   toString() {
     return this.text
   }
-  get words() {
-    return []
-  }
 }
 export class Word extends Part {
   text: string
@@ -204,9 +209,6 @@ export class Word extends Part {
   }
   toString() {
     return this.text
-  }
-  get words() {
-    return this.text.split(/[^0-9\p{L}]+/gu).filter((x) => x)
   }
 }
 
@@ -222,11 +224,17 @@ export class Repeater extends Part {
       .map((ps) => ps.map((p) => p.toSingleLineString()).join(' '))
       .join(' & ')}}`
   }
-  get parts() {
-    return this.choices[0] // TODO
+}
+
+export class Switch extends Part {
+  constructor(public choices: Part[]) {
+    super()
   }
-  get words() {
-    return this.parts.flatMap((c) => c.words)
+  toString() {
+    return `{ ${this.choices.join(' / ')} }`
+  }
+  toSingleLineString(): string {
+    return `{ ${this.choices.map((c) => c.toSingleLineString()).join(' / ')} }`
   }
 }
 export class Router extends Part {
@@ -238,12 +246,6 @@ export class Router extends Part {
   }
   toSingleLineString(): string {
     return `{ ${this.choices.map((c) => c.toSingleLineString()).join(' ; ')} }`
-  }
-  get parts() {
-    return this.choices[0].parts // TODO
-  }
-  get words() {
-    return this.parts.flatMap((c) => c.words)
   }
 }
 export abstract class Arg extends Part {
@@ -268,9 +270,6 @@ export class StringLiteral extends Arg {
   toDeclaration(cg: CodeGenerator, index: number) {
     return cg.stringParamDeclaration(index)
   }
-  get words() {
-    return ['']
-  }
 }
 
 export class Docstring extends StringLiteral {
@@ -285,9 +284,6 @@ export class Docstring extends StringLiteral {
   }
   toSingleLineString() {
     return super.toString()
-  }
-  get words() {
-    return ['']
   }
 }
 export class CodeLiteral extends Arg {
@@ -304,9 +300,6 @@ export class CodeLiteral extends Arg {
   }
   toDeclaration(cg: CodeGenerator, index: number) {
     return cg.variantParamDeclaration(index)
-  }
-  get words() {
-    return ['']
   }
 }
 
@@ -340,6 +333,11 @@ export abstract class Phrase {
   }
   toSingleLineString() {
     return this.parts.map((p) => p.toSingleLineString()).join(' ')
+  }
+  switch(i: number): Phrase {
+    return new (this.constructor as new (parts: Part[]) => Phrase)(
+      this.parts.map((p) => (p instanceof Switch ? p.choices[i] : p))
+    )
   }
 }
 
@@ -425,7 +423,7 @@ export function makeTests(root: Branch): Test[] {
   let ic = routers.getIncompleteCount()
   let newIc: number
   do {
-    const newTest = new Test(root, routers.nextWalk())
+    const newTest = new Test(routers.nextWalk())
     newIc = routers.getIncompleteCount()
     if (newIc < ic) tests.push(newTest)
     ic = newIc
@@ -440,15 +438,37 @@ export function makeTests(root: Branch): Test[] {
   walk(root)
   tests = tests.filter((t) => t.steps.length > 0)
   tests.sort((a, b) => branchIndex.get(a.last)! - branchIndex.get(b.last)!)
-
+  resolveSwitches(tests)
   tests.forEach((test, i) => (test.testNumber = `T${i + 1}`))
   return tests
+}
+
+function resolveSwitches(tests: Test[]) {
+  for (let i = 0; i < tests.length; ++i) {
+    const test = tests[i]
+    const phrases = test.steps.flatMap((s) => s.phrases)
+    const switches = phrases.flatMap((p) =>
+      p.parts.filter((p) => p instanceof Switch)
+    )
+    if (switches.length === 0) continue
+    const count = switches[0].choices.length
+    if (switches.some((s) => s.choices.length !== count)) {
+      throw new Error(
+        `all switches in a test case must have the same number of choices: ${
+          test.name
+        } has ${switches.map((s) => s.choices.length)} choices`
+      )
+    }
+    const newTests = switches[0].choices.map((_, j) => test.switch(j))
+    tests.splice(i, 1, ...newTests)
+    i += count - 1
+  }
 }
 
 export class Test {
   testNumber?: string
   labels
-  constructor(public root: Branch, public branches: Branch[]) {
+  constructor(public branches: Branch[]) {
     this.branches = this.branches.filter((b) => !b.isEmpty)
     this.labels = this.branches
       .filter((b) => b instanceof Section)
@@ -476,6 +496,9 @@ export class Test {
     return `+ ${this.name}:\n${this.steps
       .map((s) => `  - ${s.headToString()}`)
       .join('\n')}`
+  }
+  switch(j: number) {
+    return new Test(this.branches.map((b) => b.switch(j)))
   }
 }
 

@@ -16,6 +16,7 @@ import {
   nil,
   unableToConsumeToken,
   rule,
+  alt,
 } from 'typescript-parsec'
 import { T, lexer } from './lexer.ts'
 import type { Branch, Part } from '../model/model.ts'
@@ -34,6 +35,7 @@ import {
   SetVariable,
   Repeater,
   Router,
+  Switch,
 } from '../model/model.ts'
 
 export function parse(input: string): Section
@@ -94,13 +96,15 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
   ),
   ERROR_MARK = tok(T.ErrorMark),
   VARIABLE = apply(tok(T.Variable), ({ text }) => text.slice(2, -1)),
-  PART = rule<T, Part>(),
-  REPEATER = apply(list_sc(rep_sc(PART), tok(T.And)), cs => new Repeater(cs)),
-  ROUTER = apply(list_sc(REPEATER, tok(T.Semicolon)), cs => new Router(cs)),
-  BRACES = kmid(tok(T.OpeningBrace), ROUTER, tok(T.ClosingBrace)),
-  _PART = PART.setPattern(
-    alt_sc(WORDS, DOUBLE_QUOTE_STRING, BACKTICK_STRING, DOCSTRING, BRACES)
-  ),
+  SIMPLE_PART = alt_sc(WORDS, DOUBLE_QUOTE_STRING, BACKTICK_STRING, DOCSTRING),
+  //REPEATER = apply(
+  //list_sc(rep_sc(SIMPLE_PART), tok(T.And)),
+  //(cs) => new Repeater(cs)
+  //),
+  SWITCH = apply(list_sc(SIMPLE_PART, tok(T.Slash)), (cs) => new Switch(cs)),
+  //ROUTER = apply(list_sc(REPEATER, tok(T.Semicolon)), (cs) => new Router(cs)),
+  BRACES = kmid(tok(T.OpeningBrace), SWITCH, tok(T.ClosingBrace)),
+  PART = alt_sc(SIMPLE_PART, BRACES),
   PHRASE = rep_sc(PART),
   ARG = alt_sc(DOUBLE_QUOTE_STRING, BACKTICK_STRING, DOCSTRING),
   SET_VARIABLE = apply(

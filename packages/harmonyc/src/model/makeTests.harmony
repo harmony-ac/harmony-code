@@ -38,3 +38,23 @@
       | + T1 - greeting - formal:
       |   - good morning
   + nested:
+
++ switch:
+  + | + i like { a / b / c } => good
+    =>
+    | + T1:
+    |   - i like a => good
+    | + T2:
+    |   - i like b => good
+    | + T3:
+    |   - i like c => good
+  + | + greet { John / Jim } => { "Hello John!" / "Hello Jim!" }
+    =>
+    | + T1:
+    |   - greet John => "Hello John!"
+    | + T2:
+    |   - greet Jim => "Hello Jim!"
+  + different number of choices:
+    + | + i like { a / b } => i have { a / b / c }
+      => !! | all switches in a test case must have the same number of choices
+      
