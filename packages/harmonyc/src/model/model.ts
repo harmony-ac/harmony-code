@@ -144,11 +144,11 @@ export class Step extends Branch {
   get isEmpty(): boolean {
     return this.phrases.every((phrase) => phrase.isEmpty)
   }
-  switch(i: number) {
+  switch(i: number): this {
     return new Step(
       this.action.switch(i),
       this.responses.map((r) => r.switch(i))
-    )
+    ) as this
   }
 }
 export class State {
