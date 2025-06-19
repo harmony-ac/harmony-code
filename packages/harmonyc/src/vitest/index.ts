@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import type { Plugin } from 'vite'
-import type { Vitest } from 'vitest/node'
+import type { Vitest, UserWorkspaceConfig } from 'vitest/node'
 import type { Task, Suite, File } from '@vitest/runner'
 import { Reporter } from 'vitest/reporters'
 import { watchFiles } from '../cli/watch.ts'
@@ -17,7 +17,7 @@ export default function harmonyPlugin({
 }: HarmonyPluginOptions): Plugin {
   return {
     name: 'harmony',
-    config(config) {
+    config(config: any) {
       config.test ??= {}
       config.test.reporters ??= ['default']
       if (!Array.isArray(config.test.reporters)) {
