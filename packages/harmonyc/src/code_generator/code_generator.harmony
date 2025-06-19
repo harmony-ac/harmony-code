@@ -53,20 +53,20 @@
     + step | goodbye => !!
       =>
         | const T = new TestPhrases(context);
-        | context.task.meta.phrases.push("=> !!");
         | await expect(async () => {
         |   (context.task.meta.phrases.push("goodbye"),
         |   await T.When_goodbye());
+        |   context.task.meta.phrases.push("=> !!");
         | }).rejects.toThrow();
 
   + error response:
     + step | goodbye => !! | World
       =>
         | const T = new TestPhrases(context);
-        | context.task.meta.phrases.push("=> !! \"World\"");
         | await expect(async () => {
         |   (context.task.meta.phrases.push("goodbye"),
         |   await T.When_goodbye());
+        |   context.task.meta.phrases.push("=> !! \"World\"");
         | }).rejects.toThrow("World");
 
   + retrieve variable in string:

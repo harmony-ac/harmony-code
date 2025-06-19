@@ -90,14 +90,14 @@ export class VitestGenerator implements CodeGenerator {
 
   errorStep(action: Action, errorResponse: ErrorResponse) {
     this.declareFeatureVariables([action])
-    this.tf.print(
-      `context.task.meta.phrases.push(${str(
-        errorResponse.toSingleLineString()
-      )});`
-    )
     this.tf.print(`await expect(async () => {`)
     this.tf.indent(() => {
       action.toCode(this)
+      this.tf.print(
+        `context.task.meta.phrases.push(${str(
+          errorResponse.toSingleLineString()
+        )});`
+      )
     })
     this.tf.print(
       `}).rejects.toThrow(${
