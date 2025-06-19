@@ -97,7 +97,11 @@ Lines starting with `#` or `//` are comments and are ignored.
 
 ### Switches
 
+You can generate multiple test cases by adding a `{ A / B / C }` syntax into action(s) and possibly response(s).
 
+```harmony
++ password is { "A" / "asdf" / "password123" } => !! "password is too weak"
+```
 
 ### Error matching
 
