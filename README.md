@@ -95,6 +95,10 @@ They are not included in the test case, but the test case name is generated from
 
 Lines starting with `#` or `//` are comments and are ignored.
 
+### Switches
+
+
+
 ### Error matching
 
 You can use `!!` to denote an error response. This will verify that the action throws an error. You can specify the error message after the `!!`.
@@ -128,7 +132,6 @@ test('T2 - store result in variable', (context) => {
 })
 ```
 
-## Running the tests
 
 ## License
 
