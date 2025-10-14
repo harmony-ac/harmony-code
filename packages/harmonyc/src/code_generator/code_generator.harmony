@@ -56,8 +56,10 @@
         | await expect(async () => {
         |   (context.task.meta.phrases.push("goodbye"),
         |   await T.When_goodbye());
+        | }).rejects._harmony_that((e) => {
         |   context.task.meta.phrases.push("=> !!");
-        | }).rejects.toThrow();
+        |   expect(e).toThrow();
+        | });
 
   + error response:
     + step | goodbye => !! | World
@@ -66,9 +68,26 @@
         | await expect(async () => {
         |   (context.task.meta.phrases.push("goodbye"),
         |   await T.When_goodbye());
+        | }).rejects._harmony_that((e) => {
         |   context.task.meta.phrases.push("=> !! \"World\"");
-        | }).rejects.toThrow("World");
+        |   expect(e).toThrow("World");
+        | });
 
+  + named error response:
+    + step | goodbye => !! problem
+      => | const T = new TestPhrases(context);
+         | await expect(async () => {
+         |   (context.task.meta.phrases.push("goodbye"),
+         |   await T.When_goodbye());
+         | }).rejects._harmony_that((e) => {
+         |   context.task.meta.phrases.push("=> !! problem");
+         |   expect(e)._harmony_that(async (e) => {
+         |         try {
+         |           (context.task.meta.phrases.push("=> !! problem"),
+         |           await T.Error_problem(e))
+         |         } catch {}
+         |        });
+         | });
   + retrieve variable in string:
     - step | ${name} "Jon" => "${name}" is "Jon"
     - step | greet "${name}"

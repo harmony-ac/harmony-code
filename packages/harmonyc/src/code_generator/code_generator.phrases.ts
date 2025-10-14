@@ -1,9 +1,12 @@
 import { expect } from 'vitest'
-import { CodeGenerator, Feature, Section, Test } from '../model/model'
-import { ACTION, parse, STEP, TEST_DESIGN } from '../parser/parser'
+import { CodeGenerator, Feature, Test } from '../model/model'
+import { parse, STEP, TEST_DESIGN } from '../parser/parser'
 import { OutFile } from './outFile'
-import { VitestGenerator } from './VitestGenerator'
 import { TestPhrases } from './test_phrases'
+import { ALL_VITEST_DECLARATIONS, VitestGenerator } from './VitestGenerator'
+
+// execute vitest extensions
+new Function('expect', ALL_VITEST_DECLARATIONS)(expect)
 
 export default class CodeGeneratorPhrases {
   tf = new OutFile('tf')

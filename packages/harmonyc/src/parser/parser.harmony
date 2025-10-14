@@ -25,6 +25,7 @@
   + special characters:
     + | :
       => !! | Unable to consume token: :
+      => !! at location `0`
     + | a-b
       =>
       | a-b
@@ -119,18 +120,36 @@
       | => | asdf
   
   + error response:
-    + | => !!
-      => instance of "ErrorResponse"
-      =>
-      | => !!
+    + throws:
+      + | => !!
+        => instance of "ThrowsResponse"
+        =>
+        | => !!
 
-    + | => !! "invalid"
-      =>
-      | => !! "invalid"
+    + error message:
+      + | => !! "invalid"
+        => instance of "ErrorMessageResponse"
+        =>
+        | => !! "invalid"
 
-    + | => !! | Could not
-      =>
-      | => !! | Could not
+      + | => !! | Could not
+        =>
+        | => !! | Could not
+    + named:
+      + | => !! problem
+        => instance of "NamedErrorResponse"
+        =>
+        | => !! problem
+
+      + | => !! problem "difficult"
+        => instance of "NamedErrorResponse"
+        =>
+        | => !! problem "difficult"
+
+      + | => !! "difficult" problem
+        => instance of "NamedErrorResponse"
+        =>
+        | => !! "difficult" problem
 
 + production "TEST_DESIGN"
   + | + hello
@@ -258,3 +277,4 @@
     - production "TEST_DESIGN"
     - |   + a:
       => !! | first step must not be indented
+      => !! at location `2`

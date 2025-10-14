@@ -5,11 +5,11 @@ import {
   CodeGenerator,
   ErrorResponse,
   Feature,
+  NamedErrorResponse,
   Phrase,
   Response,
   SaveToVariable,
   SetVariable,
-  StringLiteral,
   Test,
   TestGroup,
   Word,
@@ -27,6 +27,8 @@ export class VitestGenerator implements CodeGenerator {
   framework = 'vitest'
   phraseFns = new Map<string, Phrase>()
   currentFeatureName = ''
+  declarations = new Set<string>()
+
   constructor(private tf: OutFile, private sf: OutFile) {}
 
   feature(feature: Feature) {
@@ -45,6 +47,9 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print(``)
     for (const item of feature.testGroups) {
       item.toCode(this)
+    }
+    for (const decl of this.declarations) {
+      this.tf.print(decl)
     }
     this.sf.print(`export default class ${pascalCase(feature.name)}Phrases {`)
     this.sf.indent(() => {
@@ -88,24 +93,40 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print('});')
   }
 
-  errorStep(action: Action, errorResponse: ErrorResponse) {
+  errorStep(action: Action, errorResponses: ErrorResponse[]) {
     this.declareFeatureVariables([action])
     this.tf.print(`await expect(async () => {`)
     this.tf.indent(() => {
       action.toCode(this)
-      this.tf.print(
-        `context.task.meta.phrases.push(${str(
-          errorResponse.toSingleLineString()
-        )});`
-      )
     })
-    this.tf.print(
-      `}).rejects.toThrow(${
-        errorResponse?.message !== undefined
-          ? str(errorResponse.message.text)
-          : ''
-      });`
-    )
+    this.tf.print(`}).rejects._harmony_that(async (e) => {`)
+    this.tf.indent(() => {
+      errorResponses.forEach((r, i) => {
+        this.tf.print(
+          `context.task.meta.phrases.push(${str(r.toSingleLineString())});`
+        )
+        this.tf.print(`${r.errorMatcher(this)};`)
+      })
+    })
+    this.tf.print(`});`)
+  }
+
+  throwsMatcher() {
+    return 'expect(e).toEqual(expect.any(Error))'
+  }
+
+  errorMessageMatcher(message: Word) {
+    return `expect(() => { throw e }).toThrow(${str(message.text)});`
+  }
+
+  namedErrorMatcher(p: NamedErrorResponse) {
+    this.declarations.add(TO_THROW_ERROR_THAT)
+    const phrasefn = functionName(p)
+    if (!this.phraseFns.has(phrasefn)) this.phraseFns.set(phrasefn, p)
+    const f = this.featureVars.get(p.feature.name)
+    const args = p.args.map((a) => (a as Arg).toCode(this))
+    args.push('e')
+    return `await ${f}.${functionName(p)}(${args.join(', ')});`
   }
 
   extraArgs: string[] = []
@@ -266,7 +287,11 @@ function abbrev(s: string) {
 export function functionName(phrase: Phrase) {
   const { kind } = phrase
   return (
-    (kind === 'response' ? 'Then_' : 'When_') +
+    (kind === 'response'
+      ? 'Then_'
+      : kind === 'errorResponse'
+      ? 'Error_'
+      : 'When_') +
     (phrase.parts
       .flatMap((c) =>
         c instanceof Word
@@ -278,3 +303,24 @@ export function functionName(phrase: Phrase) {
       .join('_') || '')
   )
 }
+
+const TO_THROW_ERROR_THAT = `
+expect.extend({
+  async _harmony_that(received, assertor) {
+    try {
+      await assertor(received)
+      return {
+        pass: true,
+        message: () => \`expected function not to throw satisfying error\`,
+      }
+    } catch (assertErr) {
+      return {
+        pass: false,
+        message: () =>
+          \`error was thrown:\n\${received instanceof Error ? received.message : received}\nbut:\n\${assertErr instanceof Error ? assertErr.message : assertErr}\`,
+      }
+    }
+  },
+});
+`
+export const ALL_VITEST_DECLARATIONS = TO_THROW_ERROR_THAT

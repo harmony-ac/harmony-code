@@ -4,39 +4,37 @@ import {
   apply,
   expectEOF,
   expectSingleResult,
+  fail,
+  kleft,
+  kmid,
   kright,
+  list_sc,
+  nil,
   opt_sc,
   rep_sc,
   seq,
   tok,
-  list_sc,
-  kleft,
-  kmid,
-  fail,
-  nil,
   unableToConsumeToken,
-  rule,
-  alt,
 } from 'typescript-parsec'
-import { T, lexer } from './lexer.ts'
-import type { Branch, Part } from '../model/model.ts'
+import type { Branch } from '../model/model.ts'
 import {
   Action,
-  Response,
   CodeLiteral,
-  StringLiteral,
-  Section,
-  Step,
   Docstring,
-  Word,
+  ErrorMessageResponse,
   Label,
-  ErrorResponse,
+  NamedErrorResponse,
+  Response,
   SaveToVariable,
+  Section,
   SetVariable,
-  Repeater,
-  Router,
+  Step,
+  StringLiteral,
   Switch,
+  ThrowsResponse,
+  Word,
 } from '../model/model.ts'
+import { T, lexer } from './lexer.ts'
 
 export function parse(input: string): Section
 export function parse<T>(input: string, production: Parser<any, T>): T
@@ -123,9 +121,12 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
         variable !== undefined ? new SaveToVariable(variable) : undefined
       )
   ),
-  ERROR_RESPONSE = apply(
-    seq(ERROR_MARK, opt_sc(alt_sc(DOUBLE_QUOTE_STRING, DOCSTRING))),
-    ([, parts]) => new ErrorResponse(parts)
+  ERROR_RESPONSE = apply(seq(ERROR_MARK, PHRASE), ([, parts]) =>
+    parts.length === 0
+      ? new ThrowsResponse()
+      : parts.length === 1 && parts[0] instanceof StringLiteral
+      ? new ErrorMessageResponse(parts[0])
+      : new NamedErrorResponse(parts)
   ),
   SAVE_TO_VARIABLE = apply(
     VARIABLE,

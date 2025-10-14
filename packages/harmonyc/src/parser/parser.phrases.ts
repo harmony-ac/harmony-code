@@ -2,7 +2,6 @@ import { expect } from 'vitest'
 import { Section } from '../model/model'
 import * as P from './parser'
 import { parse } from './parser'
-import { inspect } from 'util'
 
 export default class ParserPhrases {
   production: any
@@ -28,5 +27,8 @@ export default class ParserPhrases {
   }
   async Then__is_(a: any, b: any) {
     expect(a).toBe(b)
+  }
+  async Error_at_location_(loc: number, err: any) {
+    expect(err).toHaveProperty('pos.index', loc)
   }
 }

@@ -6,7 +6,10 @@ export interface CodeGenerator {
   test(test: Test): void
   phrase(phrase: Phrase): void
   step(action: Action, responses: Response[]): void
-  errorStep(action: Action, errorResponse: ErrorResponse): void
+  errorStep(action: Action, errorResponse: ErrorResponse[]): void
+  throwsMatcher(): string
+  errorMessageMatcher(message: Word): string
+  namedErrorMatcher(r: NamedErrorResponse): string
   setVariable(action: SetVariable): void
   saveToVariable(response: SaveToVariable): void
   stringLiteral(text: string, opts: { withVariables: boolean }): string
@@ -124,7 +127,10 @@ export class Step extends Branch {
   }
   toCode(cg: CodeGenerator) {
     if (this.responses[0] instanceof ErrorResponse) {
-      cg.errorStep(this.action, this.responses[0])
+      cg.errorStep(
+        this.action,
+        this.responses.filter((r) => r instanceof ErrorResponse)
+      )
     } else {
       cg.step(this.action, this.responses)
     }
@@ -312,9 +318,6 @@ export abstract class Phrase {
     this.feature = feature
     return this
   }
-  get keyword() {
-    return this.kind === 'action' ? 'When' : 'Then'
-  }
   get args() {
     return this.parts.filter((c) => c instanceof Arg)
   }
@@ -371,14 +374,46 @@ export class Response extends Phrase {
   }
 }
 
-export class ErrorResponse extends Response {
-  constructor(public message: StringLiteral | undefined) {
-    super(
-      message ? [new DummyKeyword('!!'), message] : [new DummyKeyword('!!')]
-    )
+export abstract class ErrorResponse extends Response {
+  kind = 'errorResponse'
+  constructor(private _parts: Part[]) {
+    super(_parts)
   }
-  toCode(cg: CodeGenerator) {
-    cg.errorStep
+  toString(): string {
+    if (this._parts.length === 0) return '=> !!'
+    return `=> !! ${super.toString().slice(3)}`
+  }
+  toSingleLineString(): string {
+    if (this._parts.length === 0) return '=> !!'
+    return `=> !! ${super.toSingleLineString().slice(3)}`
+  }
+  abstract errorMatcher(cg: CodeGenerator): string
+}
+
+export class ThrowsResponse extends ErrorResponse {
+  constructor() {
+    super([])
+  }
+  errorMatcher(cg: CodeGenerator): string {
+    return cg.throwsMatcher()
+  }
+}
+
+export class ErrorMessageResponse extends ErrorResponse {
+  constructor(public message: StringLiteral) {
+    super([message])
+  }
+  errorMatcher(cg: CodeGenerator): string {
+    return cg.errorMessageMatcher(this.message)
+  }
+}
+
+export class NamedErrorResponse extends ErrorResponse {
+  constructor(parts: Part[]) {
+    super(parts)
+  }
+  errorMatcher(cg: CodeGenerator): string {
+    return cg.namedErrorMatcher(this)
   }
 }
 
