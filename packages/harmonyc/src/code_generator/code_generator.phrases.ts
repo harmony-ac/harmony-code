@@ -1,22 +1,24 @@
+import { SourceMapConsumer } from 'source-map-js'
 import { expect } from 'vitest'
-import { CodeGenerator, Feature, Section, Test } from '../model/model'
-import { ACTION, parse, STEP, TEST_DESIGN } from '../parser/parser'
+import * as vlq from 'vlq'
+import { CodeGenerator, Feature, Test } from '../model/model'
+import { parse, STEP, TEST_DESIGN } from '../parser/parser'
 import { OutFile } from './outFile'
-import { VitestGenerator } from './VitestGenerator'
 import { TestPhrases } from './test_phrases'
+import { VitestGenerator } from './VitestGenerator'
 
 export default class CodeGeneratorPhrases {
-  tf = new OutFile('tf')
-  sf = new OutFile('sf')
+  tf = new OutFile('tf', 'test.harmony')
+  sf = new OutFile('sf', 'test.harmony')
   generator: CodeGenerator
   feature = new Feature('test')
   what_was_parsed: unknown
   constructor(private context: any) {}
   async When_Vitest() {
-    this.generator = new VitestGenerator(this.tf, this.sf)
+    this.generator = new VitestGenerator(this.tf, this.sf, 'test.harmony')
     this.generator.feature(this.feature)
     this.generator.test(new Test([]))
-    this.tf.lines = []
+    this.tf.clear()
   }
   async When_step_(x: string) {
     parse(x, STEP).setFeature(this.feature).toCode(this.generator)
@@ -29,14 +31,14 @@ export default class CodeGeneratorPhrases {
     this.what_was_parsed = TEST_DESIGN
   }
   async Then_(x: string) {
-    expect(this.tf.value).toBe(x)
+    expect(this.tf.valueWithoutSourceMap.replace(/\n$/, '')).toBe(x)
     const AsyncFunction: any = async function () {}.constructor
     if (this.what_was_parsed === STEP) {
       await new AsyncFunction(
         'TestPhrases',
         'context',
         'expect',
-        this.tf.value
+        this.tf.valueWithoutSourceMap
       )(TestPhrases, this.context, expect)
     } else if (this.what_was_parsed === TEST_DESIGN) {
       // TODO something like:
@@ -48,5 +50,32 @@ export default class CodeGeneratorPhrases {
   }
   async Then__is_(x: string, y: string) {
     expect(x).toBe(y)
+  }
+  async Then_original_line__column__generated_line__column_(
+    originalLine: number,
+    originalColumn: number,
+    generatedLine: number,
+    generatedColumn: number
+  ) {
+    const smc = new SourceMapConsumer(
+      this.tf.sm.toStringWithSourceMap().map.toJSON()
+    )
+    const generated = smc.generatedPositionFor({
+      source: 'test.harmony',
+      line: originalLine,
+      column: originalColumn,
+    })
+    expect(`${generated.line}:${generated.column}`).toBe(
+      `${generatedLine}:${generatedColumn}`
+    )
+  }
+  async Then_mappings_(m: number[][][]) {
+    expect(
+      this.tf.sm
+        .toStringWithSourceMap().map
+        .toJSON()
+        .mappings.split(';')
+        .map((line: string) => line.split(',').map(vlq.decode))
+    ).toEqual(m)
   }
 }

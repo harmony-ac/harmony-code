@@ -20,6 +20,10 @@
   ],
   "dependencies": {
     "@cucumber/cucumber": "^10.3.1",
-    "harmonyc": "*"
+    "harmonyc": "*",
+    "source-map-js": "^1.2.1"
+  },
+  "devDependencies": {
+    "vlq": "^2.0.4"
   }
 }

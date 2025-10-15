@@ -5,11 +5,11 @@ import {
   CodeGenerator,
   ErrorResponse,
   Feature,
+  Node,
   Phrase,
   Response,
   SaveToVariable,
   SetVariable,
-  StringLiteral,
   Test,
   TestGroup,
   Word,
@@ -27,12 +27,23 @@ export class VitestGenerator implements CodeGenerator {
   framework = 'vitest'
   phraseFns = new Map<string, Phrase>()
   currentFeatureName = ''
-  constructor(private tf: OutFile, private sf: OutFile) {}
+
+  constructor(
+    private tf: OutFile,
+    private sf: OutFile,
+    private _sourceFileName: string
+  ) {}
+
+  add(node: Node) {
+    node.toCode(this)
+  }
 
   feature(feature: Feature) {
     const phrasesModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
     const fn = (this.currentFeatureName = pascalCase(feature.name))
     this.phraseFns = new Map<string, Phrase>()
+
+    // test file
     if (this.framework === 'vitest') {
       this.tf.print(`import { describe, test, expect } from "vitest";`)
     }
@@ -46,6 +57,9 @@ export class VitestGenerator implements CodeGenerator {
     for (const item of feature.testGroups) {
       item.toCode(this)
     }
+    this.tf.print(``)
+
+    // phrases file
     this.sf.print(`export default class ${pascalCase(feature.name)}Phrases {`)
     this.sf.indent(() => {
       for (const ph of this.phraseFns.keys()) {
@@ -92,7 +106,7 @@ export class VitestGenerator implements CodeGenerator {
     this.declareFeatureVariables([action])
     this.tf.print(`await expect(async () => {`)
     this.tf.indent(() => {
-      action.toCode(this)
+      this.add(action)
       this.tf.print(
         `context.task.meta.phrases.push(${str(
           errorResponse.toSingleLineString()
@@ -112,23 +126,23 @@ export class VitestGenerator implements CodeGenerator {
   step(action: Action, responses: Response[]): void {
     this.declareFeatureVariables([action, ...responses])
     if (responses.length === 0) {
-      action.toCode(this)
+      this.add(action)
       return
     }
     if (action.isEmpty) {
       for (const response of responses) {
-        response.toCode(this)
+        this.add(response)
       }
       return
     }
     const res = `r${this.resultCount++ || ''}`
     this.tf.print(`const ${res} =`)
     this.tf.indent(() => {
-      action.toCode(this)
+      this.add(action)
       try {
         this.extraArgs = [res]
         for (const response of responses) {
-          response.toCode(this)
+          this.add(response)
         }
       } finally {
         this.extraArgs = []
@@ -158,11 +172,20 @@ export class VitestGenerator implements CodeGenerator {
     if (p instanceof Response && p.parts.length === 1 && p.saveToVariable) {
       return this.saveToVariable(p.saveToVariable)
     }
-    this.tf.print(`(context.task.meta.phrases.push(${str(p.toString())}),`)
+    const name = p.toSingleLineString()
+    this.tf.print(
+      `(context.task.meta.phrases.push(${str(p.toString())}),`,
+      p.start,
+      name
+    )
     if (p instanceof Response && p.saveToVariable) {
       this.saveToVariable(p.saveToVariable, '')
     }
-    this.tf.print(`await ${f}.${functionName(p)}(${args.join(', ')}));`)
+    this.tf.print(
+      `await ${f}.${functionName(p)}(${args.join(', ')}));`,
+      p.start,
+      name
+    )
   }
 
   setVariable(action: SetVariable): void {

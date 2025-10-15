@@ -4,39 +4,35 @@ import {
   apply,
   expectEOF,
   expectSingleResult,
+  fail,
+  kleft,
+  kmid,
   kright,
+  list_sc,
+  nil,
   opt_sc,
   rep_sc,
   seq,
   tok,
-  list_sc,
-  kleft,
-  kmid,
-  fail,
-  nil,
   unableToConsumeToken,
-  rule,
-  alt,
 } from 'typescript-parsec'
-import { T, lexer } from './lexer.ts'
-import type { Branch, Part } from '../model/model.ts'
+import type { Branch } from '../model/model.ts'
 import {
   Action,
-  Response,
   CodeLiteral,
-  StringLiteral,
-  Section,
-  Step,
   Docstring,
-  Word,
-  Label,
   ErrorResponse,
+  Label,
+  Response,
   SaveToVariable,
+  Section,
   SetVariable,
-  Repeater,
-  Router,
+  Step,
+  StringLiteral,
   Switch,
+  Word,
 } from '../model/model.ts'
+import { T, lexer } from './lexer.ts'
 
 export function parse(input: string): Section
 export function parse<T>(input: string, production: Parser<any, T>): T
@@ -113,15 +109,15 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
   ),
   ACTION = alt_sc(
     SET_VARIABLE,
-    apply(PHRASE, (parts) => new Action(parts))
+    apply(PHRASE, (parts, range) => new Action(parts).at(range))
   ),
   RESPONSE = apply(
     seq(PHRASE, opt_sc(VARIABLE)),
-    ([parts, variable]) =>
+    ([parts, variable], range) =>
       new Response(
         parts,
-        variable !== undefined ? new SaveToVariable(variable) : undefined
-      )
+        variable !== undefined ? new SaveToVariable(variable) : undefined,
+      ).at(range)
   ),
   ERROR_RESPONSE = apply(
     seq(ERROR_MARK, opt_sc(alt_sc(DOUBLE_QUOTE_STRING, DOCSTRING))),

@@ -1,13 +1,14 @@
+import { SourceNode } from 'source-map-js'
 import { Location } from '../model/model.ts'
-import { SourceMapGenerator } from 'source-map-js'
 
 export class OutFile {
   lines: string[] = []
   level = 0
-  sm = new SourceMapGenerator()
+  sm
   indentSpaces: number = 2
-  private currentLoc: Location | undefined
-  constructor(public name: string) {}
+  constructor(public name: string, public sourceFile: string) {
+    this.sm = new SourceNode(0, 0, sourceFile)
+  }
 
   indent(fn: () => void) {
     this.level++
@@ -18,42 +19,77 @@ export class OutFile {
     }
   }
 
-  print(...lines: string[]) {
-    const l = this.lines.length
-    this.lines.push(
-      ...lines.map((line) => ' '.repeat(this.level * this.indentSpaces) + line)
-    )
-    if (this.currentLoc)
-      for (const i of lines.keys()) {
-        this.sm.addMapping({
-          source: this.currentLoc.fileName,
-          original: {
-            line: this.currentLoc.line,
-            column: this.currentLoc.column,
-          },
-          generated: {
-            line: l + i,
-            column: this.level * this.indentSpaces,
-          },
-        })
-      }
+  clear() {
+    this.sm = new SourceNode(0, 0, this.sourceFile)
+  }
+
+  append(s: string) {
+    if (this.lines.length === 0) this.lines.push('')
+    this.lines[this.lines.length - 1] += s
+  }
+
+  print(line: string, start?: Location, name?: string, end?: Location) {
+    const chunk = ' '.repeat(this.level * this.indentSpaces) + line + '\n'
+    this.lines.push(chunk)
+    if (start) {
+      this.sm.add(
+        new SourceNode(
+          start.line,
+          start.column,
+          this.sourceFile,
+          chunk,
+          name
+        ) as any
+      )
+    } else {
+      this.sm.add(
+        new SourceNode(null as any, null as any, null as any, chunk) as any
+      )
+    }
+    if (end) {
+      this.sm.add(new SourceNode(end.line, end.column, this.sourceFile) as any)
+    }
     return this
   }
 
-  loc({ location }: { location?: Location }) {
-    this.currentLoc = location
+  loc(location: Location | undefined, name?: string) {
+    if (!location) return this
     return this
+    this.sm.addMapping({
+      source: this.sourceFile,
+      original: location,
+      generated: {
+        line: this.lines.length || 1,
+        column: this.lines.at(-1)?.length ?? 0,
+      },
+      name,
+    })
+    return this
+  }
+
+  get valueWithoutSourceMap() {
+    return this.sm.toString()
   }
 
   get value() {
-    let res = this.lines.join('\n')
-    if (this.currentLoc) {
-      res +=
-        `\n\n//# sour` + // not for this file ;)
-        `ceMappingURL=data:application/json,${encodeURIComponent(
-          this.sm.toString()
-        )}`
-    }
+    const { code, map } = this.sm.toStringWithSourceMap({ file: this.name })
+    let res = code
+    res +=
+      `\n//# sour` + // not for this file ;)
+      `ceMappingURL=data:application/json,${encodeURIComponent(map.toString())}`
     return res
+  }
+
+  get currentLineEnd() {
+    return {
+      line: this.lines.length,
+      column: this.lines.at(-1)?.length ?? 0,
+    }
+  }
+  get currentLineStart() {
+    return {
+      line: this.lines.length + 1,
+      column: this.lines.at(-1)?.match(/^\s*/)?.[0].length ?? 0,
+    }
   }
 }

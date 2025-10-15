@@ -27,10 +27,10 @@ export function compileFeature(fileName: string, src: string) {
   feature.root.setFeature(feature)
   autoLabel(feature.root)
   const testFn = testFileName(fileName)
-  const testFile = new OutFile(testFn)
+  const testFile = new OutFile(testFn, fileName)
   const phrasesFn = phrasesFileName(fileName)
-  const phrasesFile = new OutFile(phrasesFn)
-  const cg = new VitestGenerator(testFile, phrasesFile)
+  const phrasesFile = new OutFile(phrasesFn, fileName)
+  const cg = new VitestGenerator(testFile, phrasesFile, fileName)
   feature.toCode(cg)
   return { outFile: testFile, phrasesFile }
 }

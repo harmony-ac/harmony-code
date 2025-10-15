@@ -2,7 +2,6 @@ import { expect } from 'vitest'
 import { Section } from '../model/model'
 import * as P from './parser'
 import { parse } from './parser'
-import { inspect } from 'util'
 
 export default class ParserPhrases {
   production: any

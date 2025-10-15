@@ -1,3 +1,4 @@
+import { Token } from 'typescript-parsec'
 import { Routers } from './Router.ts'
 
 export interface CodeGenerator {
@@ -18,7 +19,6 @@ export interface CodeGenerator {
 export interface Location {
   line: number
   column: number
-  fileName: string
 }
 
 export class Feature {
@@ -303,11 +303,44 @@ export class CodeLiteral extends Arg {
   }
 }
 
-export abstract class Phrase {
+export abstract class Node {
+  start?: { line: number; column: number }
+  end?: { line: number; column: number }
+
+  abstract toCode(cg: CodeGenerator): void
+
+  at([startToken, endToken]: [Token<any> | undefined, Token<any> | undefined]) {
+    while (startToken && startToken.kind === 'newline') {
+      startToken = startToken.next
+    }
+    if (startToken) {
+      this.start = {
+        line: startToken.pos.rowBegin,
+        column: startToken.pos.columnBegin - 1,
+      }
+    }
+    if (startToken && endToken) {
+      let t = startToken
+      while (t.next && t.next !== endToken) {
+        t = t.next
+      }
+      this.end = {
+        line: t.pos.rowEnd,
+        column: t.pos.columnEnd - 1,
+      }
+    }
+    return this
+  }
+}
+
+export abstract class Phrase extends Node {
   feature!: Feature
-  location?: Location
   abstract get kind(): string
-  constructor(public parts: Part[]) {}
+
+  constructor(public parts: Part[]) {
+    super()
+  }
+
   setFeature(feature: Feature) {
     this.feature = feature
     return this
