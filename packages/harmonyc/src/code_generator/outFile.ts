@@ -18,12 +18,23 @@ export class OutFile {
     }
   }
 
+  private get currentIndent() {
+    return ' '.repeat(this.level * this.indentSpaces)
+  }
+
   clear() {
     this.sm = new SourceNode(0, 0, this.sourceFile)
   }
 
+  printn(line: string, start?: Location, name?: string, end?: Location) {
+    this.write(this.currentIndent + line, start, name, end)
+  }
   print(line: string, start?: Location, name?: string, end?: Location) {
-    const chunk = ' '.repeat(this.level * this.indentSpaces) + line + '\n'
+    this.write(this.currentIndent + line + '\n', start, name, end)
+  }
+
+  write(line: string, start?: Location, name?: string, end?: Location) {
+    const chunk = line
     if (start) {
       this.sm.add(
         new SourceNode(
@@ -42,12 +53,10 @@ export class OutFile {
     if (end) {
       this.sm.add(new SourceNode(end.line, end.column, this.sourceFile) as any)
     }
-    return this
   }
 
-  loc(location: Location | undefined, name?: string) {
-    if (!location) return this
-    return this
+  nl() {
+    this.write('\n')
   }
 
   get sourceMap() {

@@ -5,7 +5,6 @@ import {
   CodeGenerator,
   ErrorResponse,
   Feature,
-  Node,
   Phrase,
   Response,
   SaveToVariable,
@@ -177,19 +176,14 @@ export class VitestGenerator implements CodeGenerator {
       return this.saveToVariable(p.saveToVariable)
     }
     const name = p.toSingleLineString()
-    this.tf.print(
-      `(context.task.meta.phrases.push(${str(p.toString())}),`,
-      p.start,
-      name
-    )
+    this.tf.print(`(context.task.meta.phrases.push(${str(p.toString())}),`)
     if (p instanceof Response && p.saveToVariable) {
       this.saveToVariable(p.saveToVariable, '')
     }
-    this.tf.print(
-      `await ${f}.${functionName(p)}(${args.join(', ')}));`,
-      p.start,
-      name
-    )
+    this.tf.printn(`await ${f}.`)
+    this.tf.write(`${functionName(p)}(${args.join(', ')})`, p.start, name)
+    this.tf.write(`);`)
+    this.tf.nl()
   }
 
   setVariable(action: SetVariable): void {

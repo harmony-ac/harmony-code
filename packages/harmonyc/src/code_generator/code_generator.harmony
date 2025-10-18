@@ -5,9 +5,9 @@
       | const T = new TestPhrases(context);
       | (context.task.meta.phrases.push("hello"),
       | await T.When_hello());
-      => mappings `[[[]],[[0,0,0,0,0]],[[0,0,0,0,0]]]`
-      => original line `1` column `0` generated line `2`, column `0`
-      => original line `1` column `5` generated line `2`, column `0`
+      => mappings `[[[]],[[]],[[8,0,0,0,0],[12]]]`
+      => original line `1` column `0` generated line `3`, column `8`
+      => original line `1` column `5` generated line `3`, column `8`
 
   + action and response:
     + step | hello => "Hello!"
