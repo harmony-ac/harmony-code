@@ -10,6 +10,17 @@
       "cwd": "${workspaceFolder}/packages/harmonyc",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "name": "Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/vscode-ext",
+        "--profile=ExtDev",
+        "${workspaceFolder}/vscode-ext/test/test-project"
+      ],
+      "preLaunchTask": "Build vscode-ext"
     }
   ]
 }

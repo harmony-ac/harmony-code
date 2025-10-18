@@ -155,7 +155,7 @@
     },
     {
       "name": "entity.name.function.call.harmony",
-      "match": ".+?(?=[\\[\\]\"`|#]|\\/\\/|\\$\\{|$|=>|!!|:\\s*$)"
+      "match": ".+?(?=[\\[\\]\"`|#{}&/;]|\\$\\{|$|=>|!!|:\\s*$)"
     }
   ],
   "scopeName": "source.harmony"

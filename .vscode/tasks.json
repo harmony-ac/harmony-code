@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build",
+      "label": "Build vscode-ext",
       "type": "shell",
-      "command": "tsx ./tools/build_textmate.ts",
+      "command": "tsx ./vscode-ext/tools/build_textmate.ts",
       "problemMatcher": [],
       "group": {
         "kind": "build",
