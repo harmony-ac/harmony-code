@@ -4,6 +4,7 @@ Syntax highlighting for [Harmony Code](https://github.com/harmony-ac/code) files
 
 ## Features
 
-Syntax highlighting.
+- Syntax highlighting.
+- Debugger support for Vitest tests written in Harmony Code.
 
-![syntax highlighting](images/screenshot.png)
+![syntax highlighting](https://github.com/harmony-ac/harmony-code/raw/HEAD/vscode-ext/docs/images/screenshot.png)
