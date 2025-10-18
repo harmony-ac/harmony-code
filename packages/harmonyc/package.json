@@ -13,9 +13,9 @@
     "publish": "(cd dist && npm version --allow-same-version $(node -p 'require(\"../package.json\").version')) && rm -rf dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish"
   },
   "exports": {
-    "./test": {
-      "types": "./dist/test.d.ts",
-      "default": "./dist/js_api/js_api.js"
+    "./vitest": {
+      "types": "./dist/vitest/index.d.ts",
+      "default": "./dist/vitest/index.js"
     }
   },
   "bin": {
