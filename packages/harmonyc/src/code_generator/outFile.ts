@@ -2,7 +2,6 @@ import { SourceNode } from 'source-map-js'
 import { Location } from '../model/model.ts'
 
 export class OutFile {
-  lines: string[] = []
   level = 0
   sm
   indentSpaces: number = 2
@@ -23,14 +22,8 @@ export class OutFile {
     this.sm = new SourceNode(0, 0, this.sourceFile)
   }
 
-  append(s: string) {
-    if (this.lines.length === 0) this.lines.push('')
-    this.lines[this.lines.length - 1] += s
-  }
-
   print(line: string, start?: Location, name?: string, end?: Location) {
     const chunk = ' '.repeat(this.level * this.indentSpaces) + line + '\n'
-    this.lines.push(chunk)
     if (start) {
       this.sm.add(
         new SourceNode(
@@ -72,18 +65,5 @@ export class OutFile {
       `\n//# sour` + // not for this file ;)
       `ceMappingURL=data:application/json,${encodeURIComponent(map.toString())}`
     return res
-  }
-
-  get currentLineEnd() {
-    return {
-      line: this.lines.length,
-      column: this.lines.at(-1)?.length ?? 0,
-    }
-  }
-  get currentLineStart() {
-    return {
-      line: this.lines.length + 1,
-      column: this.lines.at(-1)?.match(/^\s*/)?.[0].length ?? 0,
-    }
   }
 }
