@@ -1,6 +1,6 @@
 {
   "name": "harmonyc",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -12,6 +12,9 @@
     "release": "release publish",
     "publish": "(cd dist && npm version --allow-same-version $(node -p 'require(\"../package.json\").version')) && rm -rf dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish"
   },
+  "files": [
+    "dist"
+  ],
   "exports": {
     "./vitest": {
       "types": "./dist/vitest/index.d.ts",
