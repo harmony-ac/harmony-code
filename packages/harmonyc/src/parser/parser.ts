@@ -111,13 +111,11 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
     SET_VARIABLE,
     apply(PHRASE, (parts, range) => new Action(parts).at(range))
   ),
-  RESPONSE = apply(
-    seq(PHRASE, opt_sc(VARIABLE)),
-    ([parts, variable], range) =>
-      new Response(
-        parts,
-        variable !== undefined ? new SaveToVariable(variable) : undefined,
-      ).at(range)
+  RESPONSE = apply(seq(PHRASE, opt_sc(VARIABLE)), ([parts, variable], range) =>
+    new Response(
+      parts,
+      variable !== undefined ? new SaveToVariable(variable) : undefined
+    ).at(range)
   ),
   ERROR_RESPONSE = apply(
     seq(ERROR_MARK, opt_sc(alt_sc(DOUBLE_QUOTE_STRING, DOCSTRING))),
@@ -135,12 +133,11 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
   STEP = apply(seq(ACTION, rep_sc(RESPONSE_ITEM)), ([action, responses]) =>
     new Step(action, responses).setFork(true)
   ),
-  LABEL = apply(
-    kleft(list_sc(PART, nil()), tok(T.Colon)),
-    (words) => new Label(words.map((w) => w.toString()).join(' '))
+  LABEL = apply(kleft(list_sc(PART, nil()), tok(T.Colon)), (words, range) =>
+    new Label(words.map((w) => w.toString()).join(' ')).at(range)
   ),
   SECTION = apply(LABEL, (text) => new Section(text)),
-  BRANCH = alt_sc(SECTION, STEP), // section first, to make sure there is no colon after step
+  BRANCH = apply(alt_sc(SECTION, STEP), (branch, range) => branch.at(range)), // section first, to make sure there is no colon after step
   DENTS = apply(alt_sc(tok(T.Plus), tok(T.Minus)), (seqOrFork) => {
     return {
       dent: (seqOrFork.text.length - 2) / 2,

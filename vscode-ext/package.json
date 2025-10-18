@@ -23,6 +23,7 @@
     "directory": "/vscode-ext"
   },
   "contributes": {
+    "breakpoints": [{ "language": "harmony" }],
     "languages": [
       {
         "id": "harmony",

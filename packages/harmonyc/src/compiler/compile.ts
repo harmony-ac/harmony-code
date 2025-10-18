@@ -1,10 +1,10 @@
+import { basename } from 'node:path'
 import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
 import { OutFile } from '../code_generator/outFile.ts'
-import { parse } from '../parser/parser.ts'
 import { base, phrasesFileName, testFileName } from '../filenames/filenames.ts'
 import { Feature, Section } from '../model/model.ts'
-import { basename } from 'node:path'
 import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
+import { parse } from '../parser/parser.ts'
 
 export interface CompiledFeature {
   name: string
@@ -18,9 +18,9 @@ export function compileFeature(fileName: string, src: string) {
   } catch (e: any) {
     if (e.pos && e.errorMessage) {
       e.message =
-        e.stack = `Error in ${fileName}:${e.pos.rowBegin}:${e.pos.columnBegin}\n${e.errorMessage}`
+        e.stack = `Error in ${fileName}:${e.pos.rowBegin}:${e.pos.columnBegin}: ${e.errorMessage}`
     } else {
-      e.stack = `Error in ${fileName}\n${e.stack}`
+      e.stack = `Error in ${fileName}: ${e.stack}`
     }
     throw e
   }

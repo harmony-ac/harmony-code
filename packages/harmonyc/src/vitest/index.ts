@@ -1,12 +1,13 @@
 /// <reference types="vitest" />
+import type { File, Suite, Task } from '@vitest/runner'
+import c from 'tinyrainbow'
 import type { Plugin } from 'vite'
-import type { Vitest, UserWorkspaceConfig } from 'vitest/node'
-import type { Task, Suite, File } from '@vitest/runner'
+import { RunnerTaskResultPack } from 'vitest'
+import type { Vitest } from 'vitest/node'
 import { Reporter } from 'vitest/reporters'
 import { watchFiles } from '../cli/watch.ts'
-import { RunnerTaskResultPack } from 'vitest'
-import c from 'tinyrainbow'
-import { compileFiles } from '../compiler/compiler.ts'
+import { compileFeature } from '../compiler/compile.ts'
+import { compileFiles, preprocess } from '../compiler/compiler.ts'
 
 export interface HarmonyPluginOptions {
   watchDir: string
@@ -17,6 +18,20 @@ export default function harmonyPlugin({
 }: HarmonyPluginOptions): Plugin {
   return {
     name: 'harmony',
+    resolveId(id) {
+      if (id.endsWith('.harmony')) {
+        return id
+      }
+    },
+    transform(code, id, options) {
+      if (!id.endsWith('.harmony')) return null
+      code = preprocess(code)
+      const { outFile } = compileFeature(id, code)
+      return {
+        code: outFile.valueWithoutSourceMap,
+        map: outFile.sourceMap as any,
+      }
+    },
     config(config: any) {
       config.test ??= {}
       config.test.reporters ??= ['default']
@@ -25,15 +40,16 @@ export default function harmonyPlugin({
       }
       config.test.reporters.splice(0, 0, new HarmonyReporter())
     },
-    async configureServer(server) {
-      const isWatchMode = server.config.server.watch !== null
-      const patterns = [`${watchDir}/**/*.harmony`]
-      if (isWatchMode) {
-        await watchFiles(patterns)
-      } else {
-        await compileFiles(patterns)
-      }
-    },
+    // This has been removed in favor of using transform, so no need to generate an actual file
+    // async configureServer(server) {
+    //   const isWatchMode = server.config.server.watch !== null
+    //   const patterns = [`${watchDir}/**/*.harmony`]
+    //   if (isWatchMode) {
+    //     await watchFiles(patterns)
+    //   } else {
+    //     await compileFiles(patterns)
+    //   }
+    // },
   }
 }
 

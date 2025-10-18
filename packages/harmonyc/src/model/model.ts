@@ -35,8 +35,41 @@ export class Feature {
     cg.feature(this)
   }
 }
+export abstract class Node {
+  start?: { line: number; column: number }
+  end?: { line: number; column: number }
 
-export abstract class Branch {
+  at([startToken, endToken]: [Token<any> | undefined, Token<any> | undefined]) {
+    while (startToken && startToken.kind === 'newline') {
+      startToken = startToken.next
+    }
+    if (startToken) {
+      this.start = {
+        line: startToken.pos.rowBegin,
+        column: startToken.pos.columnBegin - 1,
+      }
+    }
+    if (startToken && endToken) {
+      let t = startToken
+      while (t.next && t.next !== endToken) {
+        t = t.next
+      }
+      this.end = {
+        line: t.pos.rowEnd,
+        column: t.pos.columnEnd - 1,
+      }
+    }
+    return this
+  }
+
+  atSameAs(other: Node) {
+    this.start = other.start
+    this.end = other.end
+    return this
+  }
+}
+
+export abstract class Branch extends Node {
   parent?: Branch
   children: Branch[]
   isFork = false
@@ -45,6 +78,7 @@ export abstract class Branch {
   abstract get isEmpty(): boolean
 
   constructor(children: Branch[] = []) {
+    super()
     this.children = children
     children.forEach((child) => (child.parent = this))
   }
@@ -159,9 +193,10 @@ export class State {
   }
 }
 
-export class Label {
+export class Label extends Node {
   text: string
   constructor(text = '') {
+    super()
     this.text = text
   }
   get isEmpty() {
@@ -303,36 +338,6 @@ export class CodeLiteral extends Arg {
   }
 }
 
-export abstract class Node {
-  start?: { line: number; column: number }
-  end?: { line: number; column: number }
-
-  abstract toCode(cg: CodeGenerator): void
-
-  at([startToken, endToken]: [Token<any> | undefined, Token<any> | undefined]) {
-    while (startToken && startToken.kind === 'newline') {
-      startToken = startToken.next
-    }
-    if (startToken) {
-      this.start = {
-        line: startToken.pos.rowBegin,
-        column: startToken.pos.columnBegin - 1,
-      }
-    }
-    if (startToken && endToken) {
-      let t = startToken
-      while (t.next && t.next !== endToken) {
-        t = t.next
-      }
-      this.end = {
-        line: t.pos.rowEnd,
-        column: t.pos.columnEnd - 1,
-      }
-    }
-    return this
-  }
-}
-
 export abstract class Phrase extends Node {
   feature!: Feature
   abstract get kind(): string
@@ -470,7 +475,7 @@ export function makeTests(root: Branch): Test[] {
   }
   walk(root)
   tests = tests.filter((t) => t.steps.length > 0)
-  tests.sort((a, b) => branchIndex.get(a.last)! - branchIndex.get(b.last)!)
+  tests.sort((a, b) => branchIndex.get(a.last!)! - branchIndex.get(b.last!)!)
   resolveSwitches(tests)
   tests.forEach((test, i) => (test.testNumber = `T${i + 1}`))
   return tests
@@ -506,19 +511,34 @@ export class Test {
     this.labels = this.branches
       .filter((b) => b instanceof Section)
       .filter((s) => !s.isEmpty)
-      .map((s) => s.label.text)
+      .map((s) => s.label)
   }
 
   get steps(): Step[] {
     return this.branches.filter((b) => b instanceof Step)
   }
 
-  get last(): Step {
-    return this.steps[this.steps.length - 1]
+  get last(): Step | undefined {
+    return this.steps.at(-1)
+  }
+
+  get lastStrain(): Branch | undefined {
+    // Find the last branch that has no forks after it
+    const lastForking =
+      this.branches.length -
+      1 -
+      this.branches
+        .slice()
+        .reverse()
+        .findIndex((b) => b.successors.length > 1)
+    if (lastForking === this.branches.length) return this.branches.at(0)
+    return this.branches.at(lastForking + 1)
   }
 
   get name() {
-    return `${[this.testNumber!, ...this.labels].join(' - ')}`
+    return `${[this.testNumber!, ...this.labels.map((x) => x.text)].join(
+      ' - '
+    )}`
   }
 
   toCode(cg: CodeGenerator) {
@@ -539,21 +559,25 @@ export function makeGroups(tests: Test[]): (Test | TestGroup)[] {
   if (tests.length === 0) return []
   if (tests[0].labels.length === 0)
     return [tests[0], ...makeGroups(tests.slice(1))]
-  const name = tests[0].labels[0]
-  let count = tests.findIndex((t) => t.labels[0] !== name)
+  const label = tests[0].labels[0]
+  let count = tests.findIndex(
+    (t) =>
+      // using identity instead of text equality, which means identically named labels will not be grouped together
+      t.labels[0] !== label
+  )
   if (count === -1) count = tests.length
   if (count === 1) return [tests[0], ...makeGroups(tests.slice(1))]
   tests.slice(0, count).forEach((test) => test.labels.shift())
   return [
-    new TestGroup(name, makeGroups(tests.slice(0, count))),
+    new TestGroup(label, makeGroups(tests.slice(0, count))),
     ...makeGroups(tests.slice(count)),
   ]
 }
 
 export class TestGroup {
-  constructor(public name: string, public items: (Test | TestGroup)[]) {}
+  constructor(public label: Label, public items: (Test | TestGroup)[]) {}
   toString() {
-    return `+ ${this.name}:` + indent(this.items.join('\n'))
+    return `+ ${this.label.text}:` + indent(this.items.join('\n'))
   }
   toCode(cg: CodeGenerator) {
     cg.testGroup(this)

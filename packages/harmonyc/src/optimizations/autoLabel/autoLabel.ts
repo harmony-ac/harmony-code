@@ -1,16 +1,20 @@
-import { Branch, Label, Phrase, Section, Step } from '../../model/model.ts'
+import { Branch, Label, Section, Step } from '../../model/model.ts'
 
-export function autoLabel(s: Branch) {
-  const forks = s.children.filter((c, i) => c.isFork || i === 0)
+export function autoLabel(b: Branch) {
+  const forks = b.children.filter((c, i) => c.isFork || i === 0)
   if (forks.length > 1) {
     forks
-      .filter((c) => c instanceof Step)
-      .forEach((c) => {
-        const label = c.action.toSingleLineString()
-        const autoSection = new Section(new Label(label), [], c.isFork)
-        c.replaceWith(autoSection)
-        autoSection.addChild(c)
+      .filter((child) => child instanceof Step)
+      .forEach((step) => {
+        const label = step.action.toSingleLineString()
+        const autoLabel = new Label(label)
+        autoLabel.atSameAs(step.action)
+        const autoSection = new Section(autoLabel, [], step.isFork)
+        // todo this is some redundancy with both section and label storing the position
+        autoSection.atSameAs(step)
+        step.replaceWith(autoSection)
+        autoSection.addChild(step)
       })
   }
-  s.children.forEach((c) => autoLabel(c))
+  b.children.forEach((c) => autoLabel(c))
 }

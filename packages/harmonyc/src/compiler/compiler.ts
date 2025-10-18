@@ -1,9 +1,9 @@
 import glob from 'fast-glob'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { basename, resolve } from 'path'
-import { compileFeature } from './compile.ts'
-import { testFileName } from '../filenames/filenames.ts'
+import { resolve } from 'path'
 import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
+import { testFileName } from '../filenames/filenames.ts'
+import { compileFeature } from './compile.ts'
 
 export async function compileFiles(pattern: string | string[]) {
   const fns = await glob(pattern)
@@ -36,10 +36,8 @@ export async function compileFiles(pattern: string | string[]) {
 
 export async function compileFile(fn: string) {
   fn = resolve(fn)
-  const src = readFileSync(fn, 'utf8')
-    .toString()
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n')
+  const src = preprocess(readFileSync(fn, 'utf8').toString())
+
   try {
     const { outFile, phrasesFile } = compileFeature(fn, src)
     writeFileSync(outFile.name, outFile.value)
@@ -51,7 +49,19 @@ export async function compileFile(fn: string) {
     return { phrasesFileAction, outFile, phrasesFile }
   } catch (e: any) {
     const outFileName = testFileName(fn)
-    writeFileSync(outFileName, VitestGenerator.error(e.message ?? `${e}`, e.stack))
+    writeFileSync(
+      outFileName,
+      VitestGenerator.error(e.message ?? `${e}`, e.stack)
+    )
     return undefined
   }
+}
+
+export function preprocess(src: string) {
+  // strip BOM
+  if (src.charCodeAt(0) === 0xfeff) {
+    src = src.slice(1)
+  }
+  src = src.replace(/\r\n?/g, '\n')
+  return src
 }

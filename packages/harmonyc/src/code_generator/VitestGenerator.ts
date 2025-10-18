@@ -34,10 +34,6 @@ export class VitestGenerator implements CodeGenerator {
     private _sourceFileName: string
   ) {}
 
-  add(node: Node) {
-    node.toCode(this)
-  }
-
   feature(feature: Feature) {
     const phrasesModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
     const fn = (this.currentFeatureName = pascalCase(feature.name))
@@ -76,7 +72,11 @@ export class VitestGenerator implements CodeGenerator {
   }
 
   testGroup(g: TestGroup) {
-    this.tf.print(`describe(${str(g.name)}, () => {`)
+    this.tf.print(
+      `describe(${str(g.label.text)}, () => {`,
+      g.label.start,
+      g.label.text
+    )
     this.tf.indent(() => {
       for (const item of g.items) {
         item.toCode(this)
@@ -92,7 +92,11 @@ export class VitestGenerator implements CodeGenerator {
     this.featureVars = new Map()
     // avoid shadowing this import name
     this.featureVars.set(new Object() as any, this.currentFeatureName)
-    this.tf.print(`test(${str(t.name)}, async (context) => {`)
+    this.tf.print(
+      `test(${str(t.name)}, async (context) => {`,
+      t.lastStrain?.start,
+      t.testNumber
+    )
     this.tf.indent(() => {
       this.tf.print(`context.task.meta.phrases ??= [];`)
       for (const step of t.steps) {
@@ -106,7 +110,7 @@ export class VitestGenerator implements CodeGenerator {
     this.declareFeatureVariables([action])
     this.tf.print(`await expect(async () => {`)
     this.tf.indent(() => {
-      this.add(action)
+      action.toCode(this)
       this.tf.print(
         `context.task.meta.phrases.push(${str(
           errorResponse.toSingleLineString()
@@ -126,23 +130,23 @@ export class VitestGenerator implements CodeGenerator {
   step(action: Action, responses: Response[]): void {
     this.declareFeatureVariables([action, ...responses])
     if (responses.length === 0) {
-      this.add(action)
+      action.toCode(this)
       return
     }
     if (action.isEmpty) {
       for (const response of responses) {
-        this.add(response)
+        response.toCode(this)
       }
       return
     }
     const res = `r${this.resultCount++ || ''}`
     this.tf.print(`const ${res} =`)
     this.tf.indent(() => {
-      this.add(action)
+      action.toCode(this)
       try {
         this.extraArgs = [res]
         for (const response of responses) {
-          this.add(response)
+          response.toCode(this)
         }
       } finally {
         this.extraArgs = []

@@ -55,16 +55,10 @@ export class OutFile {
   loc(location: Location | undefined, name?: string) {
     if (!location) return this
     return this
-    this.sm.addMapping({
-      source: this.sourceFile,
-      original: location,
-      generated: {
-        line: this.lines.length || 1,
-        column: this.lines.at(-1)?.length ?? 0,
-      },
-      name,
-    })
-    return this
+  }
+
+  get sourceMap() {
+    return this.sm.toStringWithSourceMap({ file: this.name }).map.toJSON()
   }
 
   get valueWithoutSourceMap() {
