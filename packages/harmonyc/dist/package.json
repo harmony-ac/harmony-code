@@ -7,9 +7,6 @@
   "bin": {
     "harmonyc": "./cli.js"
   },
-  "files": [
-    "."
-  ],
   "exports": {
     "./vitest": {
       "types": "./vitest/index.d.ts",
