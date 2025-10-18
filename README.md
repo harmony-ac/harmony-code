@@ -1,6 +1,6 @@
 # Harmony Code
 
-A test design & BDD tool that helps you separate the _what_ to test from the _how_ to automate it. You write test cases in a simple easy-to-read format, and then automate them with Vitest (and soon with other frameworks and languages).
+A test design & BDD tool that helps you separate _what_ you test and _how_ you automate it. You write test cases in a simple easy-to-read format, and then automate them with Vitest.
 
 ## Setup
 
@@ -20,13 +20,13 @@ export default {
 }
 ```
 
-You can run it manually for all `.harmony` files in your `src` folder:
+This will run .harmony files in vitest.
 
-```bash
-harmonyc src/**/*.harmony
-```
+## VSCode plugin
 
-This will generate `.test.mjs` files next to the `.harmony` files, and generate empty definition files for you.
+Harmony Code has a [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=harmony-ac.harmony-code) that supports syntax highlighting.
+
+Harmony Code is compatible with Vitest's VSCode plugin, so you can run and debug tests from the editor.
 
 ## Syntax
 
