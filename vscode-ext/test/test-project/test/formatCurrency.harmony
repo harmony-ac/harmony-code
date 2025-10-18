@@ -1,3 +1,7 @@
 + dollar:
-  + amount `123` => "$123.00" 
-  + amount `123.45` => "$123.45"
+  + without decimal:
+    + amount `123` 
+    => "$123.00" 
+
+  + with 2 digits:
+    + amount `123.45` => "$123.45"
