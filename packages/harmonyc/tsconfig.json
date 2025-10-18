@@ -10,7 +10,8 @@
     "declaration": true,
     "noEmit": false,
     "strict": true,
-    "rewriteRelativeImportExtensions": true
+    "rewriteRelativeImportExtensions": true,
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["**/*.test.*", "**/*.spec.*", "**/*.phrases.*"]
