@@ -1,5 +1,6 @@
 {
   "name": "harmonyc",
+  "version": "0.16.4",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -8,9 +9,8 @@
     "test": "npm run build && node ./dist/cli/cli 'src/**/*.harmony' && vitest --no-watch",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "vitest --watch",
-    "publish": "rm -rf dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish",
-    "publish:patch": "(cd dist && npm version patch) && npm run publish",
-    "publish:minor": "(cd dist && npm version minor) && npm run publish"
+    "release": "release publish",
+    "publish": "(cd dist && npm version $(node -p 'require(\"../package.json\".version')) && rm -rf dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish"
   },
   "exports": {
     "./test": {
@@ -28,6 +28,7 @@
     "watcher": "^2.3.1"
   },
   "devDependencies": {
+    "@ossjs/release": "^0.10.0",
     "@types/debug": "^4.1.12",
     "@types/node": "^22.10.6",
     "expect": "^29.7.0",
