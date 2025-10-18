@@ -10,13 +10,14 @@ You need to have Node.js installed. Then you can install Harmony Code in your pr
 npm install harmonyc
 ```
 
-Then add it to your `vitest.config.js` or `vite.config.js` file, and specify which folder to watch for `.harmony` files:
+Then add it as a plugin to your `vitest.config.js` or `vite.config.js` file, and make sure to include your `.harmony` files:
 
 ```js
 import harmony from 'harmonyc/vitest'
 
 export default {
-  plugins: [harmony({ watchDir: 'src' })],
+  plugins: [harmony()],
+  include: ['src/**/*.harmony'],
 }
 ```
 
@@ -77,12 +78,12 @@ becomes
 
 ```javascript
 test('T1 - strings', async () => {
-  const P = new Phrases();
-  await P.When_hello_("John");
+  const P = new Phrases()
+  await P.When_hello_('John')
 })
 test('T2 - code fragment', async () => {
-  const P = new Phrases();
-  await P.When_greet__times(3);
+  const P = new Phrases()
+  await P.When_greet__times(3)
 })
 ```
 
@@ -135,7 +136,6 @@ test('T2 - store result in variable', (context) => {
   await P.Then__is_(`${context.task.meta.variables?.['result']});
 })
 ```
-
 
 ## License
 

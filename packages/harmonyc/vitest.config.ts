@@ -2,9 +2,9 @@ import { defineConfig } from 'vite'
 import harmonyPlugin from './src/vitest/index.ts'
 
 export default defineConfig({
-  plugins: [harmonyPlugin({ watchDir: 'src' })],
+  plugins: [harmonyPlugin()],
   test: {
-    include: ['**/*.harmony'],
+    include: ['src/**/*.harmony'],
     forceRerunTriggers: ['vitest.config.ts', 'src/vitest/index.ts'],
   },
 })

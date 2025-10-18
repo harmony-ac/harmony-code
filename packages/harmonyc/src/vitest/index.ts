@@ -5,17 +5,12 @@ import type { Plugin } from 'vite'
 import { RunnerTaskResultPack } from 'vitest'
 import type { Vitest } from 'vitest/node'
 import { Reporter } from 'vitest/reporters'
-import { watchFiles } from '../cli/watch.ts'
 import { compileFeature } from '../compiler/compile.ts'
-import { compileFiles, preprocess } from '../compiler/compiler.ts'
+import { preprocess } from '../compiler/compiler.ts'
 
-export interface HarmonyPluginOptions {
-  watchDir: string
-}
+export interface HarmonyPluginOptions {}
 
-export default function harmonyPlugin({
-  watchDir,
-}: HarmonyPluginOptions): Plugin {
+export default function harmonyPlugin({}: HarmonyPluginOptions = {}): Plugin {
   return {
     name: 'harmony',
     resolveId(id) {
