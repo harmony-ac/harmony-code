@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import type { File, Suite, Task } from '@vitest/runner'
+import { readFile, writeFile } from 'fs/promises'
 import c from 'tinyrainbow'
 import type { Plugin } from 'vite'
 import { RunnerTaskResultPack } from 'vitest'
@@ -7,10 +8,19 @@ import type { Vitest } from 'vitest/node'
 import { Reporter } from 'vitest/reporters'
 import { compileFeature, CompilerOptions } from '../compiler/compile.ts'
 import { preprocess } from '../compiler/compiler.ts'
+import { PhraseMethod } from '../model/model.ts'
+import { PhrasesAssistant } from '../phrases_assistant/phrases_assistant.ts'
 
-export interface HarmonyPluginOptions extends Partial<CompilerOptions> {}
+export interface HarmonyPluginOptions extends Partial<CompilerOptions> {
+  autoEditPhrases?: boolean
+}
+
+const DEFAULT_OPTIONS: HarmonyPluginOptions = {
+  autoEditPhrases: true,
+}
 
 export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
+  const options = { ...DEFAULT_OPTIONS, ...opts }
   return {
     name: 'harmony',
     resolveId(id) {
@@ -18,10 +28,19 @@ export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
         return id
       }
     },
-    transform(code, id, options) {
+    transform(code, id) {
       if (!id.endsWith('.harmony')) return null
       code = preprocess(code)
-      const { outFile } = compileFeature(id, code, opts)
+      const { outFile, phraseMethods, featureClassName } = compileFeature(
+        id,
+        code,
+        opts
+      )
+
+      if (options.autoEditPhrases) {
+        void updatePhrasesFile(id, phraseMethods, featureClassName)
+      }
+
       return {
         code: outFile.valueWithoutSourceMap,
         map: outFile.sourceMap as any,
@@ -35,16 +54,6 @@ export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
       }
       config.test.reporters.splice(0, 0, new HarmonyReporter())
     },
-    // This has been removed in favor of using transform, so no need to generate an actual file
-    // async configureServer(server) {
-    //   const isWatchMode = server.config.server.watch !== null
-    //   const patterns = [`${watchDir}/**/*.harmony`]
-    //   if (isWatchMode) {
-    //     await watchFiles(patterns)
-    //   } else {
-    //     await compileFiles(patterns)
-    //   }
-    // },
   }
 }
 
@@ -92,5 +101,28 @@ function addPhrases(task: Task, depth = 2) {
         })
         .join('\n')
     delete task.meta.phrases // to make sure not to add them again
+  }
+}
+
+async function updatePhrasesFile(
+  id: string,
+  phraseMethods: PhraseMethod[],
+  featureClassName: string
+): Promise<void> {
+  try {
+    const phrasesFile = id.replace(/\.harmony$/, '.phrases.ts')
+    let phrasesFileContent = ''
+
+    try {
+      phrasesFileContent = await readFile(phrasesFile, 'utf-8')
+    } catch {
+      // File doesn't exist
+    }
+
+    const pa = new PhrasesAssistant(phrasesFileContent, featureClassName)
+    pa.ensureMethods(phraseMethods)
+    await writeFile(phrasesFile, pa.toCode())
+  } catch (e) {
+    console.error('Error updating phrases file:', e)
   }
 }

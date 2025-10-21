@@ -14,6 +14,12 @@ export interface CodeGenerator {
   codeLiteral(src: string): string
   stringParamDeclaration(index: number): string
   variantParamDeclaration(index: number): string
+  phraseMethods: PhraseMethod[]
+}
+
+export interface PhraseMethod {
+  name: string
+  parameters: { name: string; type: string }[]
 }
 
 export interface Location {

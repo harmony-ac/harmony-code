@@ -1,5 +1,5 @@
 import { basename } from 'path'
-import { CompilerOptions } from '../compiler/compile.ts'
+import { CompilerOptions, xyzab } from '../compiler/compile.ts'
 import {
   Action,
   Arg,
@@ -7,6 +7,7 @@ import {
   ErrorResponse,
   Feature,
   Phrase,
+  PhraseMethod,
   Response,
   SaveToVariable,
   SetVariable,
@@ -30,17 +31,22 @@ export class VitestGenerator implements CodeGenerator {
   framework = 'vitest'
   phraseFns = new Map<string, Phrase>()
   currentFeatureName = ''
+  featureClassName!: string
+  phraseMethods: PhraseMethod[] = []
 
   constructor(
     private tf: OutFile,
-    private sf: OutFile,
     private _sourceFileName: string,
     private opts: CompilerOptions
   ) {}
 
   feature(feature: Feature) {
-    const phrasesModule = './' + basename(this.sf.name.replace(/.(js|ts)$/, ''))
-    const fn = (this.currentFeatureName = pascalCase(feature.name))
+    const phrasesModule =
+      './' + basename(this.tf.name.replace(/\.harmony$/, '.phrases.js'))
+    const fn =
+      (this.featureClassName =
+      this.currentFeatureName =
+        pascalCase(feature.name) + 'Phrases')
     this.phraseFns = new Map<string, Phrase>()
 
     // test file
@@ -52,27 +58,34 @@ export class VitestGenerator implements CodeGenerator {
       this.tf.print(`describe.todo(${str(feature.name)});`)
       return
     }
-    this.tf.print(`import ${fn}Phrases from ${str(phrasesModule)};`)
+    this.tf.print(`import ${fn} from ${str(phrasesModule)};`)
     this.tf.print(``)
     for (const item of feature.testGroups) {
       item.toCode(this)
     }
     this.tf.print(``)
 
-    // phrases file
-    this.sf.print(`export default class ${pascalCase(feature.name)}Phrases {`)
-    this.sf.indent(() => {
-      for (const ph of this.phraseFns.keys()) {
-        const p = this.phraseFns.get(ph)!
-        const params = p.args.map((a, i) => a.toDeclaration(this, i)).join(', ')
-        this.sf.print(`async ${ph}(${params}) {`)
-        this.sf.indent(() => {
-          this.sf.print(`throw new Error(${str(`Pending: ${ph}`)});`)
+    for (const ph of this.phraseFns.keys()) {
+      const p = this.phraseFns.get(ph)!
+      const parameters = p.args.map((a, i) => {
+        const declaration = a.toDeclaration(this, i)
+        const parts = declaration.split(': ')
+        return {
+          name: parts[0],
+          type: parts[1] || 'any',
+        }
+      })
+      if (p instanceof Response) {
+        parameters.push({
+          name: 'res',
+          type: 'any',
         })
-        this.sf.print(`}`)
       }
-    })
-    this.sf.print(`};`)
+      this.phraseMethods.push({
+        name: ph,
+        parameters,
+      })
+    }
   }
 
   testGroup(g: TestGroup) {
@@ -228,7 +241,7 @@ export class VitestGenerator implements CodeGenerator {
   }
 
   private paramName(index: number) {
-    return 'xyz'.charAt(index) || `a${index + 1}`
+    return xyzab(index)
   }
 
   stringParamDeclaration(index: number): string {

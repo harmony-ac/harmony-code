@@ -1,7 +1,7 @@
 import { basename } from 'node:path'
 import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
 import { OutFile } from '../code_generator/outFile.ts'
-import { base, phrasesFileName, testFileName } from '../filenames/filenames.ts'
+import { base } from '../filenames/filenames.ts'
 import { Feature, Section } from '../model/model.ts'
 import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
 import { parse } from '../parser/parser.ts'
@@ -17,10 +17,19 @@ export interface CompiledFeature {
 
 const X = 'X'.codePointAt(0)!
 const A = 'A'.codePointAt(0)!
+const x = 'x'.codePointAt(0)!
+const a = 'a'.codePointAt(0)!
 
-export const DEFAIULT_COMPILER_OPTIONS: CompilerOptions = {
-  argumentPlaceholder: (index: number) =>
-    String.fromCodePoint(A + ((X - A + index) % 26)),
+export function XYZAB(index: number) {
+  return String.fromCodePoint(A + ((X - A + index) % 26))
+}
+
+export function xyzab(index: number) {
+  return String.fromCodePoint(a + ((x - a + index) % 26))
+}
+
+export const DEFAULT_COMPILER_OPTIONS: CompilerOptions = {
+  argumentPlaceholder: XYZAB,
 }
 
 export function compileFeature(
@@ -28,7 +37,6 @@ export function compileFeature(
   src: string,
   opts: Partial<CompilerOptions> = {}
 ) {
-  opts = { ...DEFAIULT_COMPILER_OPTIONS, ...opts }
   const feature = new Feature(basename(base(fileName)))
   try {
     feature.root = parse(src) as Section
@@ -43,11 +51,15 @@ export function compileFeature(
   }
   feature.root.setFeature(feature)
   autoLabel(feature.root)
-  const testFn = testFileName(fileName)
-  const testFile = new OutFile(testFn, fileName)
-  const phrasesFn = phrasesFileName(fileName)
-  const phrasesFile = new OutFile(phrasesFn, fileName)
-  const cg = new VitestGenerator(testFile, phrasesFile, fileName, opts)
+  const testFile = new OutFile(fileName, fileName)
+  const cg = new VitestGenerator(testFile, fileName, {
+    ...DEFAULT_COMPILER_OPTIONS,
+    ...opts,
+  })
   feature.toCode(cg)
-  return { outFile: testFile, phrasesFile }
+  return {
+    outFile: testFile,
+    phraseMethods: cg.phraseMethods,
+    featureClassName: cg.featureClassName,
+  }
 }

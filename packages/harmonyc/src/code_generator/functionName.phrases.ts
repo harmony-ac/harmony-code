@@ -7,7 +7,6 @@ export default class FunctionNamePhrases {
   expect: ExpectStatic
   cg = new VitestGenerator(
     new OutFile('tf', ''),
-    new OutFile('sf', ''),
     'test.harmony',
     { argumentPlaceholder: '' }
   )

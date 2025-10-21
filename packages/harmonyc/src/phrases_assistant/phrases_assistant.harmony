@@ -1,0 +1,79 @@
+# Phrases Assistant
+
+The phrases assistant parses a .phrases.ts typescript file, and adds missing action/expected outcome implementations.
++ modifications:
+  + adds class into empty phrases file:
+    - parse phrases file `""` => 
+      | export default class TestPhrases {
+      | }
+
+  + adds class to file with other classes:
+    - parse phrases file 
+      | class AnotherClass { }
+      | export class XClass {}
+      => 
+      | class AnotherClass { }
+      | export class XClass {}
+      |
+      | export default class TestPhrases {
+      | }
+
+  + adds missing default export:
+    - parse phrases file 
+      | class TestPhrases { }
+      => 
+      | export default class TestPhrases { }
+
+  + renames default export if needed:
+    - parse phrases file 
+      | export default class MyPhrases { }
+      => 
+      | export default class TestPhrases { }
+
+  + changes named export to default export:
+    - parse phrases file 
+      | export class TestPhrases { }
+      => 
+      | export default class TestPhrases { }
+
+  + parse phrases file with existing class:
+    - parse phrases file 
+      | export default class TestPhrases { }
+      => 
+      | export default class TestPhrases { }
+
+  + add missing When and Then method:
+    - parse phrases file 
+      | export default class TestPhrases { }
+    - harmony file
+      | + hello => `42`
+      => 
+      | export default class TestPhrases {
+      |   async When_hello() {
+      |     throw new Error("TODO When_hello");
+      |   }
+      |
+      |   async Then_X(x: any, res: any) {
+      |     throw new Error("TODO Then_X");
+      |   }
+      | }
+
+  + preserve existing methods:
+    - parse phrases file 
+      | export default class TestPhrases {
+      |   async When_hello() {
+      |     return 'Hello';
+      |   }
+      | }
+    - harmony file
+      | + goodbye
+      => 
+      | export default class TestPhrases {
+      |   async When_hello() {
+      |     return 'Hello';
+      |   }
+      | 
+      |   async When_goodbye() {
+      |     throw new Error("TODO When_goodbye");
+      |   }
+      | }

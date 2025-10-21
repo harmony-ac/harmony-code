@@ -1,10 +1,10 @@
-import { expect } from 'vitest'
-import { base, phrasesFileName, testFileName } from './filenames.ts'
-import { mkdirSync, mkdtempSync, rmSync, rmdirSync, writeFileSync } from 'fs'
+import { mkdirSync, mkdtempSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
-import { join, dirname } from 'path'
+import { dirname, join } from 'path'
+import { expect } from 'vitest'
+import { base, phrasesFileName } from './filenames'
 
-export default class Filenames {
+export default class FilenamesPhrases {
   inputFile: string
   tmp = mkdtempSync(join(tmpdir(), 'harmonyc-test-')).replace(/\\/g, '/')
 
@@ -17,9 +17,6 @@ export default class Filenames {
   }
   async Then_base_is_X(expected: string) {
     expect(base(this.inputFile)).toBe(`${this.tmp}/${expected}`)
-  }
-  async Then_test_file_is_X(expected: string) {
-    expect(testFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
   }
   async Then_phrases_file_is_X(expected: string) {
     expect(phrasesFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)

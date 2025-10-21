@@ -1,8 +1,6 @@
 import glob from 'fast-glob'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
-import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
-import { testFileName } from '../filenames/filenames.ts'
 import { compileFeature } from './compile.ts'
 
 export async function compileFiles(pattern: string | string[]) {
@@ -23,14 +21,6 @@ export async function compileFiles(pattern: string | string[]) {
     `Compiled ${compiled.length} file${compiled.length === 1 ? '' : 's'}.`
   )
   const features = compiled.filter((f) => f !== undefined)
-  const generated = features.filter((f) => f.phrasesFileAction === 'generated')
-  if (generated.length) {
-    console.log(
-      `Generated ${generated.length} phrases file${
-        generated.length === 1 ? '' : 's'
-      }.`
-    )
-  }
   return { fns, outFns: features.map((f) => f.outFile.name) }
 }
 
@@ -39,20 +29,10 @@ export async function compileFile(fn: string) {
   const src = preprocess(readFileSync(fn, 'utf8').toString())
 
   try {
-    const { outFile, phrasesFile } = compileFeature(fn, src)
+    const { outFile } = compileFeature(fn, src)
     writeFileSync(outFile.name, outFile.value)
-    let phrasesFileAction = 'ignored'
-    if (!existsSync(phrasesFile.name)) {
-      phrasesFileAction = 'generated'
-      writeFileSync(phrasesFile.name, phrasesFile.value)
-    }
-    return { phrasesFileAction, outFile, phrasesFile }
+    return { outFile }
   } catch (e: any) {
-    const outFileName = testFileName(fn)
-    writeFileSync(
-      outFileName,
-      VitestGenerator.error(e.message ?? `${e}`, e.stack)
-    )
     return undefined
   }
 }

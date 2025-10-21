@@ -1,7 +1,7 @@
 import { SourceMapConsumer } from 'source-map-js'
 import { expect } from 'vitest'
 import * as vlq from 'vlq'
-import { DEFAIULT_COMPILER_OPTIONS } from '../compiler/compile'
+import { DEFAULT_COMPILER_OPTIONS } from '../compiler/compile'
 import { CodeGenerator, Feature, Test } from '../model/model'
 import { parse, STEP, TEST_DESIGN } from '../parser/parser'
 import { OutFile } from './outFile'
@@ -10,7 +10,6 @@ import { VitestGenerator } from './VitestGenerator'
 
 export default class CodeGeneratorPhrases {
   tf = new OutFile('tf', 'test.harmony')
-  sf = new OutFile('sf', 'test.harmony')
   generator: CodeGenerator
   feature = new Feature('test')
   what_was_parsed: unknown
@@ -18,9 +17,8 @@ export default class CodeGeneratorPhrases {
   async When_Vitest() {
     this.generator = new VitestGenerator(
       this.tf,
-      this.sf,
       'test.harmony',
-      DEFAIULT_COMPILER_OPTIONS
+      DEFAULT_COMPILER_OPTIONS
     )
     this.generator.feature(this.feature)
     this.generator.test(new Test([]))
