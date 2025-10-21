@@ -34,6 +34,6 @@ export function calculateCartTotal(items: Item[], discount?: Discount): number {
   return discount ? applyDiscount(subtotal, discount, items) : subtotal
 }
 
-export function formatCurrency(amount: number, locale = "en-US"): string {
-  return new Intl.NumberFormat(locale, { style: "currency", currency: "USD" }).format(amount)
+export function formatCurrency(amount: number, currency = "USD"): string {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount)
 }

@@ -69,12 +69,12 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       | + goodbye
       => 
       | export default class TestPhrases {
-      |   async When_hello() {
-      |     return 'Hello';
-      |   }
-      | 
       |   async When_goodbye() {
       |     throw new Error("TODO When_goodbye");
+      |   }
+      |
+      |   async When_hello() {
+      |     return 'Hello';
       |   }
       | }
     - remove unneeded auto-generated methods, but not user-edited ones:
@@ -86,3 +86,107 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
         |     return 'Hello';
         |   }
         | }
+
+  + order methods alphabetically:
+    - parse phrases file 
+      | export default class TestPhrases {
+      |   async When_z() {}
+      |   async When_a() {}
+      | }
+    - harmony file
+      | + m
+      => 
+      | export default class TestPhrases {
+      |   async When_a() {}
+      |
+      |   async When_m() {
+      |     throw new Error("TODO When_m");
+      |   }
+      |
+      |   async When_z() {}
+      | }
+  + correctly inserts even if other members are present:
+    - parse phrases file 
+      | export default class TestPhrases {
+      |   private x: number = 42;
+      |
+      |   async When_z() {}
+      |
+      |   constructor() {}
+      | }
+    - harmony file
+      | + a
+      => 
+      | export default class TestPhrases {
+      |   private x: number = 42;
+      | 
+      |   constructor() {}
+      |
+      |   async When_a() {
+      |     throw new Error("TODO When_a");
+      |   }
+      |
+      |   async When_z() {}
+      | }
+  + correctly reorders methods wit complex structure and types:
+    - parse phrases file 
+      | export default class TestPhrases {
+      |   async Then_z(res: Map<string, number[]>): Promise<void> {}
+      |
+      |   async Then_a(a: { x: number; y: string }): Promise<void> {
+      |     expect(async () => {
+      |       // some code
+      |     }).not.toThrow();
+      |   }
+      | }
+    - harmony file
+      | + do something => result `{ x: 10; y: "test" }`
+      => 
+      | export default class TestPhrases {
+      |   async When_do_something() {
+      |     throw new Error("TODO When_do_something");
+      |   }
+      |
+      |   async Then_a(a: { x: number; y: string }): Promise<void> {
+      |     expect(async () => {
+      |       // some code
+      |     }).not.toThrow();
+      |   }
+      |
+      |   async Then_result_X(x: any, res: any) {
+      |     throw new Error("TODO Then_result_X");
+      |   }
+      |
+      |   async Then_z(res: Map<string, number[]>): Promise<void> {}
+      | }
+  + moves jsdoc comments together with methods when sorting:
+    - parse phrases file 
+      | export default class TestPhrases {
+      |   /**
+      |    * This is z method
+      |    */
+      |   async When_z() {}
+      |
+      |   /**
+      |    * This is a method
+      |    */
+      |   async When_a() {}
+      | }
+    - harmony file
+      | + m
+      => 
+      | export default class TestPhrases {
+      |   /**
+      |    * This is a method
+      |    */
+      |   async When_a() {}
+      |
+      |   async When_m() {
+      |     throw new Error("TODO When_m");
+      |   }
+      |
+      |   /**
+      |    * This is z method
+      |    */
+      |   async When_z() {}
+      | }

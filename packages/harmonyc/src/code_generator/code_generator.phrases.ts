@@ -49,12 +49,25 @@ export default class CodeGeneratorPhrases {
       // await import(`data:text/javascript,${encodeURIComponent(this.tf.value)}`)
     }
   }
-  async Then_greeting_is_X(x: string) {
-    expect(this.context.task.meta.greeting).toBe(x)
-  }
+
   async Then_X_is_Y(x: string, y: string) {
     expect(x).toBe(y)
   }
+
+  async Then_greeting_is_X(x: string) {
+    expect(this.context.task.meta.greeting).toBe(x)
+  }
+
+  async Then_mappings_X(m: number[][][]) {
+    expect(
+      this.tf.sm
+        .toStringWithSourceMap()
+        .map.toJSON()
+        .mappings.split(';')
+        .map((line: string) => line.split(',').map(vlq.decode))
+    ).toEqual(m)
+  }
+
   async Then_original_line_X_column_Y_generated_line_Z_column_A(
     originalLine: number,
     originalColumn: number,
@@ -72,14 +85,5 @@ export default class CodeGeneratorPhrases {
     expect(`${generated.line}:${generated.column}`).toBe(
       `${generatedLine}:${generatedColumn}`
     )
-  }
-  async Then_mappings_X(m: number[][][]) {
-    expect(
-      this.tf.sm
-        .toStringWithSourceMap()
-        .map.toJSON()
-        .mappings.split(';')
-        .map((line: string) => line.split(',').map(vlq.decode))
-    ).toEqual(m)
   }
 }

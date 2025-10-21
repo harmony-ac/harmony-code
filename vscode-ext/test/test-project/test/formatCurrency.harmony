@@ -5,3 +5,6 @@
 
   + with 2 digits:
     + amount `123.45` => "$123.45"
+
++ euro:
+  + amount `67.98` "EUR" => "€67.98"
