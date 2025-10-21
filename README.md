@@ -1,148 +1,271 @@
 # Harmony Code
 
-A test design & BDD tool that helps you separate _what_ you test and _how_ you automate it. You write test cases in a simple easy-to-read format, and then automate them with Vitest.
+**Write unit tests that speak human language**
 
-## Setup
+Harmony Code transforms how you write and maintain tests. Instead of wrestling with complex test code, you describe _what_ you want to test in plain English (or whichever language), and Harmony generates the Vitest test code for you.
 
-You need to have Node.js installed. Then you can install Harmony Code in your project folder by:
+## ✨ Why Harmony Code?
+
+**💭 Think in scenarios, not syntax**  
+Focus on business logic and user flows instead of test framework boilerplate.
+
+**📖 Tests as living documentation**  
+Your `.harmony` files become readable specifications that anyone can understand.
+
+**🖇️ Separation of concerns**  
+Test design (`.harmony`) stays separate from test implementation (`.phrases.ts`).
+
+**⚡ Vitest integration**  
+Get all the benefits of Vitest's speed and developer experience.
+
+## 🚀 Quick Start
+
+### 1. Install Harmony Code
 
 ```bash
 npm install harmonyc
 ```
 
-Then add it as a plugin to your `vitest.config.js` or `vite.config.js` file, and make sure to include your `.harmony` files:
+### 2. Configure Vitest
+
+Add Harmony plugin to your `vitest.config.js` or `vite.config.js` and include `.harmony` files in tests:
 
 ```js
 import harmony from 'harmonyc/vitest'
 
 export default {
   plugins: [harmony()],
-  include: ['src/**/*.harmony'],
+  test: {
+    include: ['**/*.{test,spec}.{js,ts}', '**/*.harmony'],
+  },
 }
 ```
 
-This will run .harmony files in vitest.
+### 3. Write your first test
 
-### Auto-generating phrases files and methods
-
-The Vitest plugin will auto-generate phrases files or edit them to add necessary phrase methods whenever you change your .harmony files. It will automatically sort phrase methods.
-
-## VSCode plugin
-
-Harmony Code has a [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=harmony-ac.harmony-code) that supports syntax highlighting.
-
-Harmony Code is compatible with Vitest's VSCode plugin, so you can run and debug tests from the editor.
-
-## Syntax
-
-A `.harmony` file is a text file with a syntax that looks like this:
-
-```
-+ Products API:
-  + Create:
-    + Anonymous:
-      - create product => !! "unauthorized"
-    + Admin:
-      - authenticate with "admin" => product count `0`
-      - create product
-        => product created
-        => product count `1`
-      - Delete:
-        - delete product => product deleted => product count `0`
-```
-
-### Indentation
-
-The lines of a file are nodes of a tree. The tree is specified with the indentation of the lines, which is n times 2 spaces and a `+` or `-` with one more space. The `+` or `-` sign is considered to be part of the indentation.
-
-### Sequences and forks
-
-`-` means a sequence: the node follows the previous sibling node and its descendants.
-
-`+` means a fork: the node directly follows its parent node. All siblings with `+` are separate branches, they will generate separate scenarios.
-
-### Phrases (actions and responses)
-
-After the mark, every node can contain an **action** and zero or more **responses**, together called **phrases**. The action is the text before the `=>`, and the responses are the text after the `=>`.
-
-Both actions and responses get compiled to simple function calls - in JavaScript, awaited function calls. Actions will become `When_*` functions, and responses will become `Then_*` functions. The return value of the action is passed to the responses of the same step as the last argument.
-
-### Arguments
-
-Phrases (actions and responses) can have arguments which are passed to the implementation function. There are two types of arguments: strings and code fragments:
+Create `formatCurrency.harmony`:
 
 ```harmony
-+ strings:
-  + hello "John"
-+ code fragment:
-  + greet `3` times
+# Currency Formatting
+
++ Dollar formatting:
+  - format amount `123.45` => "$123.45"
+  - format amount `100` => "$100.00"
+
++ Euro formatting:
+  - format amount `67.98` with "EUR" => "€67.98"
 ```
 
-becomes
+### 4. Implement test steps
 
-```javascript
-test('T1 - strings', async () => {
-  const P = new Phrases()
-  await P.When_hello_X('John')
-})
-test('T2 - code fragment', async () => {
-  const P = new Phrases()
-  await P.When_greet_X_times(3)
-})
+Harmony automatically generates `formatCurrency.phrases.ts` for you, adding new method stubs and keeping your existing implementations. It intelligently sorts methods alphabetically within `When_` and `Then_` categories. Fill them in like this:
+
+```typescript
+import { expect } from 'vitest'
+import { formatCurrency } from '../src/currency'
+
+export default class FormatCurrencyPhrases {
+  async When_format_amount_X(amount: number) {
+    return formatCurrency(amount)
+  }
+
+  async When_format_amount_X_with_Y(amount: number, currency: string) {
+    return formatCurrency(amount, currency)
+  }
+
+  async Then_X(expected: string, actual: string) {
+    expect(actual).toBe(expected)
+  }
+}
 ```
 
-Arguments are added to the function name as `X`, `Y`, `Z`, `A`, `B` etc.
+### 5. Run your tests
 
-### Labels
+```bash
+npx vitest
+```
 
-Labels are lines that start with `-` or `+` and end with `:`. You can use them to structure your test design.
-They are not included in the test case, but the test case name is generated from the labels.
+That's it! Your tests run just like regular Vitest tests, but with the clarity of human language.
 
-### Comments
+## 🛠 IDE Support
 
-Lines starting with `#` or `//` are comments and are ignored.
+**VS Code Extension**: Get syntax highlighting and IntelliSense for `.harmony` files.
 
-### Switches
+Install: [Harmony Code Extension](https://marketplace.visualstudio.com/items?itemName=harmony-ac.harmony-code)
 
-You can generate multiple test cases by adding a `{ A / B / C }` syntax into action(s) and possibly response(s).
+**Vitest Integration**: Run and debug tests directly from VS Code using the official Vitest extension.
+
+## 📚 Harmony Code Syntax Guide
+
+### Test Structure
+
+Harmony Code uses indentation and symbols to create test scenarios:
+
+- **`+ `** creates test **forks** - each becomes a separate test case
+- **`- `** creates **sequential steps** within the same test case
+- **Lines ending with `:`** are sections for organizing tests
+
+### Actions and Expectations
+
+Each step can have an action and expected outcomes:
 
 ```harmony
-+ password is { "A" / "asdf" / "password123" } => !! "password is too weak"
+- action => expected result
+- action => !! "expected error message"
 ```
 
-### Error matching
+**Actions** become `When_*` methods, **expectations** become `Then_*` methods.
 
-You can use `!!` to denote an error response. This will verify that the action throws an error. You can specify the error message after the `!!`.
+### Parameters
+
+Use quotes for strings and backticks for other values:
+
+```harmony
+- login with "john@example.com" remember `true` => user logged in
+```
+
+Becomes:
+
+```typescript
+async When_login_with_X_remember_Y(email: string, rememberMe: boolean) {
+  // your implementation
+}
+```
+
+Parameters are mapped to `X`, `Y`, `Z`, `A`, `B`, `C`... (alphabetically) in method names.
+
+### Example: User Authentication
+
+```harmony
+# User Authentication
+
++ successful login:
+  - enter email "user@test.com"
+  - enter password "password123"
+  - click login button => redirected to dashboard
+
++ failed login:
+  - enter email "wrong@test.com"
+  - enter password "wrongpass"
+  - click login button => !! "Invalid credentials"
+
++ password requirements:
+  + too short:
+    - set password "123" => !! "Password must be at least 8 characters"
+  + missing special character:
+    - set password "password123" => !! "Password must contain a special character"
+```
+
+## 🔄 How It Works
+
+1. **Write scenarios** in `.harmony` files using human-readable language
+2. **Harmony generates** the corresponding Vitest test structure
+3. **Harmony updates** your `.phrases.ts` files, adding new method stubs while preserving existing implementations
+4. **You implement** the step methods (only the new ones need your attention)
+5. **Run tests** with Vitest watch mode automatically, or with VSCode Vitest extension
+
+The beauty is in the separation: your test scenarios remain clean and business-focused, while implementation details live in separate files.
+
+### Smart Code Generation
+
+- **Preserves your work**: Existing method implementations are never overwritten
+- **Adds only what's needed**: New method stubs are generated for missing steps
+- **Removes unused methods**: Methods no longer referenced in `.harmony` files are cleaned up
+- **Keeps things organized**: Methods are sorted alphabetically within `When_` and `Then_` categories
+
+## 🎯 Advanced Features
 
 ### Variables
 
-You can set variables in the tests and use them in strings and code fragments:
+Store and reuse values across test steps:
 
-```
-+ set variable:
-  + ${name} "John"
-    + greet "${name}" => "hello John"
-+ store result into variable:
-  + run process => ${result}
-    + "${result}" is "success"
+```harmony
++ user workflow:
+  - create user => ${userId}
+  - login with user id "${userId}" => success
+  - delete user "${userId}" => user removed
 ```
 
-becomes
+### Test Switches
 
-```javascript
-test('T1 - set variable', (context) => {
-  const P = new Phrases();
-  (context.task.meta.variables ??= {})['name'] = "John";
-  await P.When_greet_X(context.task.meta.variables?.['name']);
-})
-test('T2 - store result in variable', (context) => {
-  const P = new Phrases();
-  const r = await P.When_run_process();
-  (context.task.meta.variables ??= {})['result'] = r;
-  await P.Then__is_(`${context.task.meta.variables?.['result']});
-})
+Generate multiple test cases with variations:
+
+```harmony
++ password validation:
+  - password { "123" / "abc" / "" } => !! "Invalid password"
 ```
 
-## License
+This creates three separate test cases, one for each password value.
 
-MIT
+### Error Testing
+
+Use `!!` to test error conditions. The error message is optional - if provided, it checks that the thrown error contains that substring:
+
+```harmony
++ division by zero:
+  - divide `10` by `0` => !! "Cannot divide by zero"
+  - divide `5` by `0` => !!  # just checks that an error is thrown
+```
+
+**No implementation needed**: Error steps don't require corresponding methods in your phrases file.
+
+### Complex Scenarios
+
+Build sophisticated test flows:
+
+```harmony
+# E-commerce Checkout
+
++ guest checkout:
+  - add product "T-shirt" to cart
+  - go to checkout
+  - enter shipping address:
+    - name "John Doe"
+    - address "123 Main St"
+  - select payment method "credit card"
+  - complete purchase => order confirmation
+
++ member checkout:
+  - login as "member@test.com"
+  - add product "Laptop" to cart
+  - use saved address => address populated
+  - complete purchase => order confirmation
+  - check order history => order appears
+```
+
+## 🧹 Best Practices
+
+**Use natural language**: Write steps as if explaining to a manual tester. Write in the language you use for discussing requirements.  
+**Keep scenarios focused**: Each test should verify one main behavior  
+**Use descriptive names**: Make test intentions clear from the scenario text  
+**Use parameter-only names** if there is an obivous single-parameter input or output (e.g., `` => `true` ``, which will be `Then_X(x)` )  
+**Group related tests**: Use sections (lines ending with `:`) to organize  
+**Test edge cases**: Include error conditions and boundary values  
+**Maintain phrase files**: Keep step implementations simple and focused, add JSDoc if step documentation is needed
+
+## ⌨️ CLI Usage
+
+Compile `.harmony` files manually:
+
+```bash
+npx harmonyc "src/**/*.harmony"
+```
+
+Watch for changes:
+
+```bash
+npx harmonyc "src/**/*.harmony" --watch
+```
+
+## 📦 Package Structure
+
+- **`harmonyc`** - Core compiler and Vitest plugin
+- **VS Code Extension** - Syntax highlighting and language support
+
+## 🤝 Contributing
+
+Harmony Code is open source and welcomes contributions. Check out our [GitHub repository](https://github.com/harmony-ac/code) for issues, feature requests, and development setup.
+
+## 📄 License
+
+MIT - see [LICENSE](LICENSE) for details.
