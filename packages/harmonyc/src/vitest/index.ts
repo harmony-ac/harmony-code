@@ -5,12 +5,12 @@ import type { Plugin } from 'vite'
 import { RunnerTaskResultPack } from 'vitest'
 import type { Vitest } from 'vitest/node'
 import { Reporter } from 'vitest/reporters'
-import { compileFeature } from '../compiler/compile.ts'
+import { compileFeature, CompilerOptions } from '../compiler/compile.ts'
 import { preprocess } from '../compiler/compiler.ts'
 
-export interface HarmonyPluginOptions {}
+export interface HarmonyPluginOptions extends Partial<CompilerOptions> {}
 
-export default function harmonyPlugin({}: HarmonyPluginOptions = {}): Plugin {
+export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
   return {
     name: 'harmony',
     resolveId(id) {
@@ -21,7 +21,7 @@ export default function harmonyPlugin({}: HarmonyPluginOptions = {}): Plugin {
     transform(code, id, options) {
       if (!id.endsWith('.harmony')) return null
       code = preprocess(code)
-      const { outFile } = compileFeature(id, code)
+      const { outFile } = compileFeature(id, code, opts)
       return {
         code: outFile.valueWithoutSourceMap,
         map: outFile.sourceMap as any,

@@ -1,17 +1,17 @@
 # Filenames
 
 + Input files:
-  # Input files are `.harmony.md` files. The base is the file path without the `.harmony.md` extension.
+  Input files are `.harmony.md` files. The base is the file path without the `.harmony.md` extension.
   - for filename "./src/hello.harmony.md" => base is "./src/hello"
 
 + Test files:
-  # Test files are generated from the input files. Its name is `<base>.test.mjs`.
+  Test files are generated from the input files. Its name is `<base>.test.mjs`.
   - for filename "./src/hello.harmony.md" => test file is "./src/hello.test.mjs"
 
 + Phrases files:
-  # Phrases files are generated from the input files if they do not exist.
-  # If a `<base>.phrases.*` file exists, it is the phrases file.
-  # If no step file exists, a `.phrases.ts` file will be generated.
+  Phrases files are generated from the input files if they do not exist.
+  If a `<base>.phrases.*` file exists, it is the phrases file.
+  If no step file exists, a `.phrases.ts` file will be generated.
   - extension:
     + .harmony.md:
       + for filename "./src/hello.harmony.md"

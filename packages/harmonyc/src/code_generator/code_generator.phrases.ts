@@ -1,6 +1,7 @@
 import { SourceMapConsumer } from 'source-map-js'
 import { expect } from 'vitest'
 import * as vlq from 'vlq'
+import { DEFAIULT_COMPILER_OPTIONS } from '../compiler/compile'
 import { CodeGenerator, Feature, Test } from '../model/model'
 import { parse, STEP, TEST_DESIGN } from '../parser/parser'
 import { OutFile } from './outFile'
@@ -15,7 +16,12 @@ export default class CodeGeneratorPhrases {
   what_was_parsed: unknown
   constructor(private context: any) {}
   async When_Vitest() {
-    this.generator = new VitestGenerator(this.tf, this.sf, 'test.harmony')
+    this.generator = new VitestGenerator(
+      this.tf,
+      this.sf,
+      'test.harmony',
+      DEFAIULT_COMPILER_OPTIONS
+    )
     this.generator.feature(this.feature)
     this.generator.test(new Test([]))
     this.tf.clear()
@@ -72,8 +78,8 @@ export default class CodeGeneratorPhrases {
   async Then_mappings_(m: number[][][]) {
     expect(
       this.tf.sm
-        .toStringWithSourceMap().map
-        .toJSON()
+        .toStringWithSourceMap()
+        .map.toJSON()
         .mappings.split(';')
         .map((line: string) => line.split(',').map(vlq.decode))
     ).toEqual(m)

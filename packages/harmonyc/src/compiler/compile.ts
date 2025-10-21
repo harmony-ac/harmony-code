@@ -6,12 +6,25 @@ import { Feature, Section } from '../model/model.ts'
 import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
 import { parse } from '../parser/parser.ts'
 
+export interface CompilerOptions {
+  argumentPlaceholder: string
+}
+
 export interface CompiledFeature {
   name: string
   code: Record<string, string>
 }
 
-export function compileFeature(fileName: string, src: string) {
+export const DEFAIULT_COMPILER_OPTIONS: CompilerOptions = {
+  argumentPlaceholder: '',
+}
+
+export function compileFeature(
+  fileName: string,
+  src: string,
+  opts: Partial<CompilerOptions> = {}
+) {
+  opts = { ...DEFAIULT_COMPILER_OPTIONS, ...opts }
   const feature = new Feature(basename(base(fileName)))
   try {
     feature.root = parse(src) as Section
@@ -30,7 +43,7 @@ export function compileFeature(fileName: string, src: string) {
   const testFile = new OutFile(testFn, fileName)
   const phrasesFn = phrasesFileName(fileName)
   const phrasesFile = new OutFile(phrasesFn, fileName)
-  const cg = new VitestGenerator(testFile, phrasesFile, fileName)
+  const cg = new VitestGenerator(testFile, phrasesFile, fileName, opts)
   feature.toCode(cg)
   return { outFile: testFile, phrasesFile }
 }

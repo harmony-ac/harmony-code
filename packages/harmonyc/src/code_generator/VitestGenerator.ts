@@ -1,4 +1,5 @@
 import { basename } from 'path'
+import { CompilerOptions } from '../compiler/compile.ts'
 import {
   Action,
   Arg,
@@ -30,7 +31,8 @@ export class VitestGenerator implements CodeGenerator {
   constructor(
     private tf: OutFile,
     private sf: OutFile,
-    private _sourceFileName: string
+    private _sourceFileName: string,
+    private opts: CompilerOptions
   ) {}
 
   feature(feature: Feature) {
@@ -167,7 +169,7 @@ export class VitestGenerator implements CodeGenerator {
   }
 
   phrase(p: Phrase) {
-    const phrasefn = functionName(p)
+    const phrasefn = this.functionName(p)
     if (!this.phraseFns.has(phrasefn)) this.phraseFns.set(phrasefn, p)
     const f = this.featureVars.get(p.feature.name)
     const args = p.args.map((a) => (a as Arg).toCode(this))
@@ -181,7 +183,7 @@ export class VitestGenerator implements CodeGenerator {
       this.saveToVariable(p.saveToVariable, '')
     }
     this.tf.printn(`await ${f}.`)
-    this.tf.write(`${functionName(p)}(${args.join(', ')})`, p.start, name)
+    this.tf.write(`${phrasefn}(${args.join(', ')})`, p.start, name)
     this.tf.write(`);`)
     this.tf.nl()
   }
@@ -233,6 +235,22 @@ export class VitestGenerator implements CodeGenerator {
   variantParamDeclaration(index: number): string {
     return `${this.paramName(index)}: any`
   }
+
+  functionName(phrase: Phrase) {
+    const { kind } = phrase
+    return (
+      (kind === 'response' ? 'Then_' : 'When_') +
+      (phrase.parts
+        .flatMap((c) =>
+          c instanceof Word
+            ? words(c.text).filter((x) => x)
+            : c instanceof Arg
+            ? [this.opts.argumentPlaceholder]
+            : []
+        )
+        .join('_') || '')
+    )
+  }
 }
 
 function str(s: string) {
@@ -282,20 +300,4 @@ function abbrev(s: string) {
   return words(s)
     .map((x) => x.charAt(0).toUpperCase())
     .join('')
-}
-
-export function functionName(phrase: Phrase) {
-  const { kind } = phrase
-  return (
-    (kind === 'response' ? 'Then_' : 'When_') +
-    (phrase.parts
-      .flatMap((c) =>
-        c instanceof Word
-          ? words(c.text).filter((x) => x)
-          : c instanceof Arg
-          ? ['']
-          : []
-      )
-      .join('_') || '')
-  )
 }
