@@ -3,7 +3,7 @@
   "profiles": [
     {
       "name": "latest",
-      "use": "npm run publish",
+      "use": "npm publish",
       "prerelease": true
     }
   ]

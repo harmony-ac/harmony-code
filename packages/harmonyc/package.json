@@ -1,7 +1,7 @@
 {
   "name": "harmonyc",
   "description": "Harmony Code - model-driven BDD for Vitest",
-  "version": "0.18.0",
+  "version": "0.21.0",
   "author": "Bernát Kalló",
   "homepage": "https://github.com/harmony-ac/code#readme",
   "repository": {
@@ -19,8 +19,7 @@
     "test": "vitest --run",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "vitest --watch",
-    "publish": "cp ../../README.md . && npm publish",
-    "release": "npm run test && npm run build && release publish"
+    "release": "npm run test && npm run build && cp ../../README.md . && release publish"
   },
   "files": [
     "dist",
