@@ -7,7 +7,7 @@ export default class FormatCurrencyPhrases {
   }
 
   async When_amount_X(x: any) {
-    throw new Error("TODO When_amount_X");
+    return formatCurrency(x)
   }
 
   async When_amount_X_Y(amount: any, currency: string) {

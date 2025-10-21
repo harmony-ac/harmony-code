@@ -1,7 +1,7 @@
 import { basename } from 'node:path'
 import { VitestGenerator } from '../code_generator/VitestGenerator.ts'
 import { OutFile } from '../code_generator/outFile.ts'
-import { base } from '../filenames/filenames.ts'
+import { base, testFileName } from '../filenames/filenames.ts'
 import { Feature, Section } from '../model/model.ts'
 import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
 import { parse } from '../parser/parser.ts'
@@ -51,7 +51,8 @@ export function compileFeature(
   }
   feature.root.setFeature(feature)
   autoLabel(feature.root)
-  const testFile = new OutFile(fileName, fileName)
+  const testFn = testFileName(fileName)
+  const testFile = new OutFile(testFn, fileName)
   const cg = new VitestGenerator(testFile, fileName, {
     ...DEFAULT_COMPILER_OPTIONS,
     ...opts,

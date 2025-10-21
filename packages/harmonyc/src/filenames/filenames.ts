@@ -5,6 +5,10 @@ export function base(fn: string) {
   return fn.replace(/\.harmony(\.\w+)?$/i, '')
 }
 
+export function testFileName(fn: string) {
+  return base(fn) + '.test.mjs'
+}
+
 export function phrasesFileName(fn: string) {
   const baseFn = base(fn)
   const pattern = convertPathToPattern(baseFn)

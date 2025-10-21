@@ -36,13 +36,13 @@ export class VitestGenerator implements CodeGenerator {
 
   constructor(
     private tf: OutFile,
-    private _sourceFileName: string,
+    private sourceFileName: string,
     private opts: CompilerOptions
   ) {}
 
   feature(feature: Feature) {
     const phrasesModule =
-      './' + basename(this.tf.name.replace(/\.harmony$/, '.phrases.js'))
+      './' + basename(this.sourceFileName.replace(/\.harmony$/, '.phrases.js'))
     const fn =
       (this.featureClassName =
       this.currentFeatureName =

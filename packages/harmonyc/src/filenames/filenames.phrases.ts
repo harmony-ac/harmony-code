@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { dirname, join } from 'path'
 import { expect } from 'vitest'
-import { base, phrasesFileName } from './filenames'
+import { base, phrasesFileName, testFileName } from './filenames'
 
 export default class FilenamesPhrases {
   inputFile: string
@@ -22,5 +22,9 @@ export default class FilenamesPhrases {
   }
   async Then_phrases_file_is_X(expected: string) {
     expect(phrasesFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
+  }
+
+  async Then_test_file_is_X(x: string) {
+    expect(testFileName(this.inputFile)).toBe(`${this.tmp}/${x}`)
   }
 }
