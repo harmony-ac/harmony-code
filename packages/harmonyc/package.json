@@ -1,6 +1,16 @@
 {
   "name": "harmonyc",
-  "version": "0.19.0",
+  "description": "Harmony Code - model-driven BDD for Vitest",
+  "version": "0.18.0",
+  "author": "Bernát Kalló",
+  "homepage": "https://github.com/harmony-ac/code#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harmony-ac/code.git"
+  },
+  "bugs": {
+    "url": "https://github.com/harmony-ac/code/issues"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -9,11 +19,13 @@
     "test": "vitest --run",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "vitest --watch",
-    "publish": "npm publish",
-    "release": "release publish"
+    "publish": "cp ../../README.md . && npm publish",
+    "release": "npm run test && npm run build && release publish"
   },
   "files": [
-    "dist"
+    "dist",
+    "AGENTS.md",
+    "README.md"
   ],
   "exports": {
     "./vitest": {
@@ -42,5 +54,22 @@
     "typescript": "^5.3.3",
     "vite": "^7.1.10",
     "vitest": "^3.2.4"
-  }
+  },
+  "license": "MIT",
+  "keywords": [
+    "unit test",
+    "unit testing",
+    "bdd",
+    "behavior-driven",
+    "test design",
+    "test design automation",
+    "harmony.ac",
+    "test framework",
+    "model-based test",
+    "model-based testing",
+    "test model",
+    "test modeling",
+    "test modelling",
+    "vitest"
+  ]
 }
