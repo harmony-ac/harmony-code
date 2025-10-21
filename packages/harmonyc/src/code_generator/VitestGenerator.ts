@@ -16,6 +16,9 @@ import {
 } from '../model/model.ts'
 import { OutFile } from './outFile.ts'
 
+const X = 'X'.codePointAt(0)!
+const A = 'A'.codePointAt(0)!
+
 export class VitestGenerator implements CodeGenerator {
   static error(message: string, stack: string) {
     return `const e = new SyntaxError(${str(message)});
@@ -238,6 +241,7 @@ export class VitestGenerator implements CodeGenerator {
 
   functionName(phrase: Phrase) {
     const { kind } = phrase
+    let argIndex = -1
     return (
       (kind === 'response' ? 'Then_' : 'When_') +
       (phrase.parts
@@ -245,11 +249,17 @@ export class VitestGenerator implements CodeGenerator {
           c instanceof Word
             ? words(c.text).filter((x) => x)
             : c instanceof Arg
-            ? [this.opts.argumentPlaceholder]
+            ? [this.argPlaceholder(++argIndex)]
             : []
         )
         .join('_') || '')
     )
+  }
+
+  argPlaceholder(i: number) {
+    return typeof this.opts.argumentPlaceholder === 'function'
+      ? this.opts.argumentPlaceholder(i)
+      : this.opts.argumentPlaceholder
   }
 }
 

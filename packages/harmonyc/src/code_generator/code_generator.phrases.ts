@@ -26,17 +26,17 @@ export default class CodeGeneratorPhrases {
     this.generator.test(new Test([]))
     this.tf.clear()
   }
-  async When_step_(x: string) {
+  async When_step_X(x: string) {
     parse(x, STEP).setFeature(this.feature).toCode(this.generator)
     this.what_was_parsed = STEP
   }
-  async When_tree_(x: string) {
+  async When_tree_X(x: string) {
     const feature = new Feature('myFeature')
     feature.root = parse(x, TEST_DESIGN).setFeature(this.feature)
     feature.toCode(this.generator)
     this.what_was_parsed = TEST_DESIGN
   }
-  async Then_(x: string) {
+  async Then_X(x: string) {
     expect(this.tf.valueWithoutSourceMap.replace(/\n$/, '')).toBe(x)
     const AsyncFunction: any = async function () {}.constructor
     if (this.what_was_parsed === STEP) {
@@ -51,13 +51,13 @@ export default class CodeGeneratorPhrases {
       // await import(`data:text/javascript,${encodeURIComponent(this.tf.value)}`)
     }
   }
-  async Then_greeting_is_(x: string) {
+  async Then_greeting_is_X(x: string) {
     expect(this.context.task.meta.greeting).toBe(x)
   }
-  async Then__is_(x: string, y: string) {
+  async Then_X_is_Y(x: string, y: string) {
     expect(x).toBe(y)
   }
-  async Then_original_line__column__generated_line__column_(
+  async Then_original_line_X_column_Y_generated_line_Z_column_A(
     originalLine: number,
     originalColumn: number,
     generatedLine: number,
@@ -75,7 +75,7 @@ export default class CodeGeneratorPhrases {
       `${generatedLine}:${generatedColumn}`
     )
   }
-  async Then_mappings_(m: number[][][]) {
+  async Then_mappings_X(m: number[][][]) {
     expect(
       this.tf.sm
         .toStringWithSourceMap()

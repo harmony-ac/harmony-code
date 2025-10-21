@@ -6,7 +6,7 @@ export default class FormatCurrencyPhrases {
     return formatCurrency(x)
   }
 
-  Then_(expected: string, result: string) {
+  Then_X(expected: string, result: string) {
     expect(result).toBe(expected)
   }
 }

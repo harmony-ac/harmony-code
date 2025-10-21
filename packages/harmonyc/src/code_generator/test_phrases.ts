@@ -8,10 +8,10 @@ export class TestPhrases {
   When_hello() {
     return (this.context.task.meta.greeting = 'Hello!')
   }
-  When_greet_(name: string) {
+  When_greet_X(name: string) {
     this.context.task.meta.greeting = `Hello, ${name}!`
   }
-  async Then__is_(x: string, y: string) {
+  async Then_X_is_Y(x: string, y: string) {
     expect(x).toBe(y)
   }
   Then_last_char(s: string) {
@@ -20,7 +20,7 @@ export class TestPhrases {
   Then_last_char_of_greeting() {
     return this.context.task.meta.greeting.slice(-1)
   }
-  Then_(s: string, r: string) {
+  Then_X(s: string, r: string) {
     expect(s).toBe(r)
   }
 }

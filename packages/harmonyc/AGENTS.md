@@ -67,7 +67,7 @@ This library provides basic calculator functions.
 Create a class that implements step methods corresponding to your test specifications. Use imports as needed, e.g. import the functions you are testing.
 
 `When_*` methods implement actions, and `Then_*` methods implement expected outcomes. `Then_*` methods receive
-an extra parameter, the return value of the preceding `When_*` method. Add the words and parameters from the action / expected outcome, separated by underscores, with parameters denoted by `$`.
+an extra parameter, the return value of the preceding `When_*` method. Add the words and parameters from the action / expected outcome, separated by underscores, with parameters denoted by `X`,`Y`,`Z`,`A`,`B`,...
 
 Use vitest.expect in assertions.
 
@@ -80,15 +80,15 @@ import { multiply, divide } from './calculator'
 export default class CalculatorPhrases {
   result: number | undefined
 
-  async When_multiply_$_and_$(a: number, b: number) {
+  async When_multiply_X_and_Y(a: number, b: number) {
     return multiply(a, b)
   }
 
-  async When_divide_$_by_$(a: number, b: number) {
+  async When_divide_X_by_Y(a: number, b: number) {
     return divide(a, b)
   }
 
-  async Then_$(expected: number, actual: number) {
+  async Then_X(expected: number, actual: number) {
     expect(actual).toBe(expected)
   }
 }

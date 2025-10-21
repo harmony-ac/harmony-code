@@ -1,13 +1,13 @@
+import { expect } from 'vitest'
 import { parse } from '../parser/parser'
 import { makeTests, Test } from './model'
-import { expect } from 'vitest'
 
 export default class MakeTestsPhrases {
-  async When_(s: string) {
+  async When_X(s: string) {
     const root = parse(s)
     return makeTests(root)
   }
-  async Then_(s: string, tests: Test[]) {
+  async Then_X(s: string, tests: Test[]) {
     expect(tests.join('\n')).toEqual(s)
   }
 }

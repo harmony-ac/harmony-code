@@ -1,10 +1,10 @@
 import { expect } from 'vitest'
 
 export default class VariablesPhrases {
-  async When_(x: any) {
+  async When_X(x: any) {
     return x
   }
-  async Then__is_(x: any, y: any) {
+  async Then_X_is_Y(x: any, y: any) {
     expect(x).toBe(y)
   }
 }

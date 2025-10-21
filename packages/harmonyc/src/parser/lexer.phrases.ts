@@ -1,9 +1,9 @@
+import { Token } from 'typescript-parsec'
 import { expect } from 'vitest'
 import { T, lexer } from './lexer'
-import { Token } from 'typescript-parsec'
 
 export default class LexerPhrases {
-  async When_(input: string) {
+  async When_X(input: string) {
     let list: Token<T> | undefined = lexer.parse(input)
     const arr: string[] = []
     while (list) {
@@ -12,7 +12,7 @@ export default class LexerPhrases {
     }
     return arr.join(' ')
   }
-  async Then_(expected: string, result: string) {
+  async Then_X(expected: string, result: string) {
     expect(result).toEqual(expected)
   }
 }

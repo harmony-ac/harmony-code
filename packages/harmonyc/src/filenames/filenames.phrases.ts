@@ -8,20 +8,20 @@ export default class Filenames {
   inputFile: string
   tmp = mkdtempSync(join(tmpdir(), 'harmonyc-test-')).replace(/\\/g, '/')
 
-  async When_for_filename_(string: string) {
+  async When_for_filename_X(string: string) {
     this.inputFile = `${this.tmp}/${string}`
   }
-  async When_a_file__exists(fn: string) {
+  async When_a_file_X_exists(fn: string) {
     mkdirSync(dirname(`${this.tmp}/${fn}`), { recursive: true })
     writeFileSync(`${this.tmp}/${fn}`, '')
   }
-  async Then_base_is_(expected: string) {
+  async Then_base_is_X(expected: string) {
     expect(base(this.inputFile)).toBe(`${this.tmp}/${expected}`)
   }
-  async Then_test_file_is_(expected: string) {
+  async Then_test_file_is_X(expected: string) {
     expect(testFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
   }
-  async Then_phrases_file_is_(expected: string) {
+  async Then_phrases_file_is_X(expected: string) {
     expect(phrasesFileName(this.inputFile)).toBe(`${this.tmp}/${expected}`)
   }
 }

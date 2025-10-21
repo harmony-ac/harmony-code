@@ -17,7 +17,7 @@
       |   (context.task.meta.phrases.push("hello"),
       |   await T.When_hello());
       |   (context.task.meta.phrases.push("=> \"Hello!\""),
-      |   await T.Then_("Hello!", r));
+      |   await T.Then_X("Hello!", r));
 
   + save to variable:
     + step | hello => ${greeting}
@@ -80,9 +80,9 @@
       | const r =
       |   (context.task.meta.variables ??= {})["name"] = "Jon";
       |   (context.task.meta.phrases.push("=> \"${name}\" is \"Jon\""),
-      |   await T.Then__is_(`${context.task.meta.variables?.["name"]}`, "Jon", r));
+      |   await T.Then_X_is_Y(`${context.task.meta.variables?.["name"]}`, "Jon", r));
       | (context.task.meta.phrases.push("greet \"${name}\""),
-      | await T.When_greet_(`${context.task.meta.variables?.["name"]}`));
+      | await T.When_greet_X(`${context.task.meta.variables?.["name"]}`));
       => greeting is "Hello, Jon!"
 
   + retrieve variable in code:
@@ -90,7 +90,7 @@
       =>
       | const T = new TestPhrases(context);
       | (context.task.meta.phrases.push("greet `${name}`"),
-      | await T.When_greet_(context.task.meta.variables?.["name"]));
+      | await T.When_greet_X(context.task.meta.variables?.["name"]));
 
   + empty tree is todo:
     + tree ""

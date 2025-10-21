@@ -14,10 +14,10 @@ export default class FunctionNamePhrases {
   constructor({ expect }: { expect: ExpectStatic }) {
     this.expect = expect
   }
-  async When_(x: string) {
+  async When_X(x: string) {
     return this.cg.functionName(parse(x, ACTION))
   }
-  async Then_(x: string, res: any) {
+  async Then_X(x: string, res: any) {
     this.expect(res).toBe(x)
   }
 }

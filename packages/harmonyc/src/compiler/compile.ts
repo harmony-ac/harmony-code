@@ -7,7 +7,7 @@ import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
 import { parse } from '../parser/parser.ts'
 
 export interface CompilerOptions {
-  argumentPlaceholder: string
+  argumentPlaceholder: string | ((index: number) => string)
 }
 
 export interface CompiledFeature {
@@ -15,8 +15,12 @@ export interface CompiledFeature {
   code: Record<string, string>
 }
 
+const X = 'X'.codePointAt(0)!
+const A = 'A'.codePointAt(0)!
+
 export const DEFAIULT_COMPILER_OPTIONS: CompilerOptions = {
-  argumentPlaceholder: '',
+  argumentPlaceholder: (index: number) =>
+    String.fromCodePoint(A + ((X - A + index) % 26)),
 }
 
 export function compileFeature(
