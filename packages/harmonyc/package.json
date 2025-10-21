@@ -9,8 +9,8 @@
     "test": "vitest --run",
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "vitest --watch",
-    "release": "release publish",
-    "publish": "npm publish"
+    "publish": "npm publish",
+    "release": "release publish"
   },
   "files": [
     "dist"
