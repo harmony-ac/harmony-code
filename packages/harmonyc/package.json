@@ -10,7 +10,7 @@
     "test:compile": "tsx ./src/cli/cli 'src/**/*.harmony'",
     "dev": "vitest --watch",
     "release": "release publish",
-    "publish": "(cd dist && npm version --allow-same-version $(node -p 'require(\"../package.json\").version')) && rm -rf dist/*/ dist/*.js && npm run build && npm run test && cp -f ../../README.md ../../LICENSE dist/ && cd dist && npm publish"
+    "publish": "npm publish"
   },
   "files": [
     "dist"
