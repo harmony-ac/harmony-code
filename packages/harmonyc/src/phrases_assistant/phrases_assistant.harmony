@@ -77,3 +77,12 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |     throw new Error("TODO When_goodbye");
       |   }
       | }
+    - remove unneeded auto-generated methods, but not user-edited ones:
+      - harmony file
+        | 
+        =>
+        | export default class TestPhrases {
+        |   async When_hello() {
+        |     return 'Hello';
+        |   }
+        | }

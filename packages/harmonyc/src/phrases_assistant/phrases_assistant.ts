@@ -38,6 +38,20 @@ export class PhrasesAssistant {
     for (const method of methods) {
       this.ensureMethod(method)
     }
+    this.clazz
+      .getMethods()
+      .filter((m) => !methods.find((md) => md.name === m.getName()))
+      .forEach((m) => {
+        if (
+          m.getStatements().length === 1 &&
+          m
+            .getStatements()[0]
+            .getText()
+            .match(/throw new Error\(["']TODO /)
+        ) {
+          m.remove()
+        }
+      })
   }
 
   ensureMethod(method: PhraseMethod) {
