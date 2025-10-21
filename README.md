@@ -23,6 +23,10 @@ export default {
 
 This will run .harmony files in vitest.
 
+### Auto-generating phrases files and methods
+
+The Vitest plugin will auto-generate phrases files or edit them to add necessary phrase methods whenever you change your .harmony files. It will automatically sort phrase methods.
+
 ## VSCode plugin
 
 Harmony Code has a [VSCode plugin](https://marketplace.visualstudio.com/items?itemName=harmony-ac.harmony-code) that supports syntax highlighting.
@@ -79,13 +83,15 @@ becomes
 ```javascript
 test('T1 - strings', async () => {
   const P = new Phrases()
-  await P.When_hello_('John')
+  await P.When_hello_X('John')
 })
 test('T2 - code fragment', async () => {
   const P = new Phrases()
-  await P.When_greet__times(3)
+  await P.When_greet_X_times(3)
 })
 ```
+
+Arguments are added to the function name as `X`, `Y`, `Z`, `A`, `B` etc.
 
 ### Labels
 
@@ -127,7 +133,7 @@ becomes
 test('T1 - set variable', (context) => {
   const P = new Phrases();
   (context.task.meta.variables ??= {})['name'] = "John";
-  await P.When_greet_(context.task.meta.variables?.['name']);
+  await P.When_greet_X(context.task.meta.variables?.['name']);
 })
 test('T2 - store result in variable', (context) => {
   const P = new Phrases();
