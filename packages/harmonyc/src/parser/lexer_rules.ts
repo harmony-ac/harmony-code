@@ -67,7 +67,7 @@ const rules: [boolean, RegExp, T][] = [
   [true, /\$\{[^}\n]*/y, T.UnclosedVariable],
   [true, /\|(?: .*|(?=\n|$))/y, T.MultilineString],
   [true, /\|[^ \n]/y, T.InvalidMultilineStringMark],
-  [true, /.+?(?=[\[\]"`|#{};]|\$\{|$|=>|!!|&&|:\s*$)/my, T.Words],
+  [true, /.+?(?=[\[\]"`|#{};]|\$\{|$|=>|!!|&&|\/\/|:\s*$)/my, T.Words],
 ]
 
 export default rules
