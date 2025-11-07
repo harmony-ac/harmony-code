@@ -1,5 +1,5 @@
 import { xmur3 } from '../util/xmur3.ts'
-import type { Branch, Router as RouterPart } from './model.ts'
+import type { Branch } from './model.ts'
 
 export class Router<N> {
   index = 0

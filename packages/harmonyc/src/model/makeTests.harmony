@@ -40,7 +40,7 @@
   + nested:
 
 + switch:
-  + | + i like { a / b / c } => good
+  + | + i like { a; b; c } => good
     =>
     | + T1:
     |   - i like a => good
@@ -48,7 +48,7 @@
     |   - i like b => good
     | + T3:
     |   - i like c => good
-  + | + greet { John / Jim } => { "Hello John!" / "Hello Jim!" }
+  + | + greet { John; Jim } => { "Hello John!"; "Hello Jim!" }
     =>
     | + T1:
     |   - greet John => "Hello John!"
@@ -56,6 +56,6 @@
     |   - greet Jim => "Hello Jim!"
 
   + different number of choices:
-    + | + i like { a / b } => i have { a / b / c }
+    + | + i like { a ; b } => i have { a ; b ; c }
       => !! | all switches in a test case must have the same number of choices
       

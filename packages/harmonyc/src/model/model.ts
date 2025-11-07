@@ -258,12 +258,12 @@ export class Repeater extends Part {
     super()
   }
   toString() {
-    return `{${this.choices.map((ps) => ps.join(' ')).join(' & ')}}`
+    return `{${this.choices.map((ps) => ps.join(' ')).join(' && ')}}`
   }
   toSingleLineString(): string {
     return `{${this.choices
       .map((ps) => ps.map((p) => p.toSingleLineString()).join(' '))
-      .join(' & ')}}`
+      .join(' && ')}}`
   }
 }
 
@@ -272,21 +272,10 @@ export class Switch extends Part {
     super()
   }
   toString() {
-    return `{ ${this.choices.join(' / ')} }`
+    return `{ ${this.choices.join('; ')} }`
   }
   toSingleLineString(): string {
-    return `{ ${this.choices.map((c) => c.toSingleLineString()).join(' / ')} }`
-  }
-}
-export class Router extends Part {
-  constructor(public choices: Repeater[]) {
-    super()
-  }
-  toString() {
-    return `{ ${this.choices.join(' ; ')} }`
-  }
-  toSingleLineString(): string {
-    return `{ ${this.choices.map((c) => c.toSingleLineString()).join(' ; ')} }`
+    return `{ ${this.choices.map((c) => c.toSingleLineString()).join('; ')} }`
   }
 }
 export abstract class Arg extends Part {

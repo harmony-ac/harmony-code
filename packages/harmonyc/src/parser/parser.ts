@@ -97,8 +97,10 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
   //list_sc(rep_sc(SIMPLE_PART), tok(T.And)),
   //(cs) => new Repeater(cs)
   //),
-  SWITCH = apply(list_sc(SIMPLE_PART, tok(T.Slash)), (cs) => new Switch(cs)),
-  //ROUTER = apply(list_sc(REPEATER, tok(T.Semicolon)), (cs) => new Router(cs)),
+  SWITCH = apply(
+    list_sc(SIMPLE_PART, tok(T.Semicolon)),
+    (cs) => new Switch(cs)
+  ),
   BRACES = kmid(tok(T.OpeningBrace), SWITCH, tok(T.ClosingBrace)),
   PART = alt_sc(SIMPLE_PART, BRACES),
   PHRASE = rep_sc(PART),

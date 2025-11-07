@@ -33,3 +33,15 @@
     => | When_hello_a
   + | hello_a
     => | When_hello_a
+
++ punctuation is treated as word separator:
+  + | hello,a
+    => | When_hello_a
+  + | hello-a
+    => | When_hello_a
+  + | hello:a
+    => | When_hello_a
+  + | hello/a
+    => | When_hello_a
+  + | hello&a
+    => | When_hello_a

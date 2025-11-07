@@ -7,13 +7,13 @@
   + "\n\n\n" => "newline newline newline"
 
 + colon:
-  + { ":" / " :" / ": " / " : " } => ":"
+  + { ":" ; " :" ; ": " ; " : " } => ":"
   + "\n:" => "newline :"
   + ":\n" => ": newline"
   + "\n:\n" => "newline : newline"
 
 + words:
-  + { "a" / "aa" / "a-" / "a- a" } => "words"
+  + { "a"; "aa"; "a-"; "a- a" } => "words"
 
 + comment:
   + hash:
@@ -34,18 +34,18 @@
     + "hello//`x`" => "words"
 
 + response mark:
-  + { "=>" / " =>" / "=> " / " => " } => "=>"
+  + { "=>"; " =>"; "=> "; " => " } => "=>"
   + with words:
-    + { "a =>" / "a=> " } => "words =>"
+    + { "a =>"; "a=> " } => "words =>"
     + "=>a" => "=> words"
     + "a=>b" => "words => words"
   + with newlines:
   + soft break before "=>":
 
 + error mark:
-  + { "!!" / " !!" / "!! " / " !! " } => "!!"
+  + {"!!"; " !!"; "!! "; " !! "} => "!!"
   + with words:
-    + { "a!!" / "a !!" } => "words !!"
+    + { "a!!"; "a !!" } => "words !!"
     + "!!a" => "!! words"
     + "a!!b" => "words !! words"
   + with response mark:
