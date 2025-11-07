@@ -13,7 +13,7 @@ export enum T {
   ClosingBracket = ']',
   OpeningBrace = '{',
   ClosingBrace = '}',
-  And = '&',
+  And = '&&',
   Semicolon = ';',
   DoubleQuoteString = 'double-quote string',
   UnclosedDoubleQuoteString = 'unclosed double-quote string',
