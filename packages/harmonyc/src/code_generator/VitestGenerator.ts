@@ -42,7 +42,7 @@ export class VitestGenerator implements CodeGenerator {
 
   feature(feature: Feature) {
     const phrasesModule =
-      './' + basename(this.sourceFileName.replace(/\.harmony$/, '.phrases'))
+      './' + basename(this.sourceFileName.replace(/\.harmony$/, '.phrases.js'))
     const fn =
       (this.featureClassName =
       this.currentFeatureName =
