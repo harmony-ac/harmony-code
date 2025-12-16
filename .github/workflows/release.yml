@@ -5,7 +5,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    working-directory: ./packages/harmonyc
     steps:
       - uses: actions/checkout@v3
         with:
@@ -31,10 +30,8 @@ jobs:
           git config --local user.name "Bernát Kalló"
           git config --local user.email "bernat@harmony.ac"
 
-      - run: npm ci
-      - run: npm test
-
       - run: npm run release
+        working-directory: ./packages/harmonyc
         env:
           # Set the "GITHUB_TOKEN" environmental variable
           # required by "@ossjs/release" to communicate with GitHub.
