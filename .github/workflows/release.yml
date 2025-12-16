@@ -30,6 +30,7 @@ jobs:
           git config --local user.name "Bernát Kalló"
           git config --local user.email "bernat@harmony.ac"
 
+      - run: npm ci
       - run: npm run release
         working-directory: ./packages/harmonyc
         env:
