@@ -121,7 +121,12 @@ async function updatePhrasesFile(
 
     const pa = new PhrasesAssistant(phrasesFileContent, featureClassName)
     pa.ensureMethods(phraseMethods)
-    await writeFile(phrasesFile, pa.toCode())
+    const newContent = pa.toCode()
+
+    if (newContent === phrasesFileContent) {
+      return // No changes needed
+    }
+    await writeFile(phrasesFile, newContent, 'utf-8')
   } catch (e) {
     console.error('Error updating phrases file:', e)
   }
