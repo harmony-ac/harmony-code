@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import * as t from 'ts-morph'
 import { expect } from 'vitest'
-import { compileFeature } from '../../dist/compiler/compile'
+import { compileFeature } from '../compiler/compile'
 import { TmpFilePhrases } from '../util/tmpfiles.phrases'
 import { PhrasesAssistant } from './phrases_assistant'
 
