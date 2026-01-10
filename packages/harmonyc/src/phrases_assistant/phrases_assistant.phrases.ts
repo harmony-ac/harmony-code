@@ -1,20 +1,26 @@
+import { readFileSync } from 'fs'
+import * as t from 'ts-morph'
 import { expect } from 'vitest'
-import { compileFeature } from '../compiler/compile'
+import { compileFeature } from '../../dist/compiler/compile'
+import { TmpFilePhrases } from '../util/tmpfiles.phrases'
 import { PhrasesAssistant } from './phrases_assistant'
 
-export default class PhrasesAssistantPhrases {
+export default class PhrasesAssistantPhrases extends TmpFilePhrases {
   private p!: PhrasesAssistant
-
-  async When_harmony_file_X(src: string) {
-    const { phraseMethods } = compileFeature('test.harmony', src)
-    this.p.ensureMethods(phraseMethods)
-  }
-
-  async When_parse_phrases_file_X(content: string) {
-    this.p = new PhrasesAssistant(content, 'TestPhrases')
-  }
+  private project = new t.Project()
 
   async Then_X(expected: string) {
-    expect(this.p.toCode().trim()).toBe(expected)
+    this.p = new PhrasesAssistant(
+      this.project,
+      'tmp/test.phrases.ts',
+      'TestPhrases'
+    )
+    const { phraseMethods } = compileFeature(
+      'tmp/hello.harmony',
+      readFileSync('tmp/test.harmony', 'utf-8')
+    )
+    this.p.ensureMethods(phraseMethods)
+    const code = this.p.toCode()
+    expect(code.trimEnd()).toBe(expected.trimEnd())
   }
 }

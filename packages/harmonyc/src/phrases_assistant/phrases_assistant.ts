@@ -2,16 +2,15 @@ import * as t from 'ts-morph'
 import { PhraseMethod } from '../model/model'
 
 export class PhrasesAssistant {
-  project = new t.Project({
-    useInMemoryFileSystem: true,
-  })
+  project: t.Project
   file: t.SourceFile
   clazz: t.ClassDeclaration
+  existingMethods: Set<string> = new Set()
 
-  constructor(content: string, className: string) {
-    this.file = this.project.createSourceFile('filename.ts', content, {
-      overwrite: true,
-    })
+  constructor(project: t.Project, path: string, className: string) {
+    this.project = project
+    this.file = this.project.addSourceFileAtPath(path)
+    this.file.refreshFromFileSystemSync()
     const clazz = this.file.getClass(className)
     if (!clazz) {
       const defaultExport = this.file.getDefaultExportSymbol()
@@ -32,6 +31,17 @@ export class PhrasesAssistant {
       name: className,
       isDefaultExport: true,
     })
+    this.discoverMethods(this.clazz)
+  }
+
+  discoverMethods(clazz: t.ClassDeclaration) {
+    for (const method of clazz.getMethods()) {
+      this.existingMethods.add(method.getName())
+    }
+    const baseClass = clazz.getBaseClass()
+    if (baseClass) {
+      this.discoverMethods(baseClass)
+    }
   }
 
   ensureMethods(methods: PhraseMethod[]) {
@@ -56,8 +66,7 @@ export class PhrasesAssistant {
   }
 
   ensureMethod(method: PhraseMethod) {
-    let existing = this.clazz.getMethod(method.name)
-    if (!existing) {
+    if (!this.existingMethods.has(method.name)) {
       this.addMethod(method)
     }
   }

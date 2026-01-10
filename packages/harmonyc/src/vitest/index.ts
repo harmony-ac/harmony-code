@@ -2,6 +2,7 @@
 import type { File, Suite, Task } from '@vitest/runner'
 import { readFile, writeFile } from 'fs/promises'
 import c from 'tinyrainbow'
+import { Project } from 'ts-morph'
 import type { Plugin } from 'vite'
 import { RunnerTaskResultPack } from 'vitest'
 import type { Vitest } from 'vitest/node'
@@ -21,6 +22,7 @@ const DEFAULT_OPTIONS: HarmonyPluginOptions = {
 
 export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
   const options = { ...DEFAULT_OPTIONS, ...opts }
+  const project = new Project()
   return {
     name: 'harmony',
     resolveId(id) {
@@ -38,7 +40,7 @@ export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
       )
 
       if (options.autoEditPhrases) {
-        void updatePhrasesFile(id, phraseMethods, featureClassName)
+        void updatePhrasesFile(project, id, phraseMethods, featureClassName)
       }
 
       return {
@@ -105,6 +107,7 @@ function addPhrases(task: Task, depth = 2) {
 }
 
 async function updatePhrasesFile(
+  project: Project,
   id: string,
   phraseMethods: PhraseMethod[],
   featureClassName: string
@@ -119,7 +122,7 @@ async function updatePhrasesFile(
       // File doesn't exist
     }
 
-    const pa = new PhrasesAssistant(phrasesFileContent, featureClassName)
+    const pa = new PhrasesAssistant(project, phrasesFile, featureClassName)
     pa.ensureMethods(phraseMethods)
     const newContent = pa.toCode()
 

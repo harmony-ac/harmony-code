@@ -3,12 +3,14 @@
 The phrases assistant parses a .phrases.ts typescript file, and adds missing action/expected outcome implementations.
 + modifications:
   + adds class into empty phrases file:
-    - parse phrases file `""` => 
+    - harmony file ""
+    - phrases file "" => 
       | export default class TestPhrases {
       | }
 
   + adds class to file with other classes:
-    - parse phrases file 
+    - harmony file ""
+    - phrases file 
       | class AnotherClass { }
       | export class XClass {}
       => 
@@ -19,31 +21,35 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       | }
 
   + adds missing default export:
-    - parse phrases file 
+    - harmony file ""
+    - phrases file 
       | class TestPhrases { }
       => 
       | export default class TestPhrases { }
 
   + renames default export if needed:
-    - parse phrases file 
+    - harmony file ""
+    - phrases file 
       | export default class MyPhrases { }
       => 
       | export default class TestPhrases { }
 
   + changes named export to default export:
-    - parse phrases file 
+    - harmony file ""
+    - phrases file 
       | export class TestPhrases { }
       => 
       | export default class TestPhrases { }
 
-  + parse phrases file with existing class:
-    - parse phrases file 
+  + phrases file with existing class:
+    - harmony file ""
+    - phrases file 
       | export default class TestPhrases { }
       => 
       | export default class TestPhrases { }
 
   + add missing When and Then method:
-    - parse phrases file 
+    - phrases file 
       | export default class TestPhrases { }
     - harmony file
       | + hello => `42`
@@ -59,7 +65,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       | }
 
   + preserve existing methods:
-    - parse phrases file 
+    - phrases file 
       | export default class TestPhrases {
       |   async When_hello() {
       |     return 'Hello';
@@ -88,7 +94,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
         | }
 
   + order methods alphabetically:
-    - parse phrases file 
+    - phrases file 
       | export default class TestPhrases {
       |   async When_z() {}
       |   async When_a() {}
@@ -106,7 +112,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   async When_z() {}
       | }
   + correctly inserts even if other members are present:
-    - parse phrases file 
+    - phrases file 
       | export default class TestPhrases {
       |   private x: number = 42;
       |
@@ -129,7 +135,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   async When_z() {}
       | }
   + correctly reorders methods wit complex structure and types:
-    - parse phrases file 
+    - phrases file 
       | export default class TestPhrases {
       |   async Then_z(res: Map<string, number[]>): Promise<void> {}
       |
@@ -160,7 +166,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   async Then_z(res: Map<string, number[]>): Promise<void> {}
       | }
   + moves jsdoc comments together with methods when sorting:
-    - parse phrases file 
+    - phrases file 
       | export default class TestPhrases {
       |   /**
       |    * This is z method
@@ -190,3 +196,56 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |    */
       |   async When_z() {}
       | }
+
+  + does not add methods that are defined in the superclass:
+    + in the same file:
+      - phrases file 
+        | class BasePhrases {
+        |   async When_hello() {
+        |     return 'Hello from base';
+        |   }
+        |   async Then_X(x: any, res: any) {
+        |   }
+        | }
+        |
+        | export default class TestPhrases extends BasePhrases {
+        | }
+      - harmony file
+        | + hello => `42`
+        | - bye => "0"
+        => 
+        | class BasePhrases {
+        |   async When_hello() {
+        |     return 'Hello from base';
+        |   }
+        |   async Then_X(x: any, res: any) {
+        |   }
+        | }
+        |
+        | export default class TestPhrases extends BasePhrases {
+        |   async When_bye() {
+        |     throw new Error("TODO When_bye");
+        |   }
+        | }
+    + in another file:
+      - common file
+        | export class BasePhrases {
+        |   async When_hello_X(x: string) {
+        |     return `Hello ${x}!`;
+        |   }
+        | }
+      - phrases file
+        | import { BasePhrases } from './common.phrases.ts';
+        |
+        | export default class TestPhrases extends BasePhrases {
+        | }
+      - harmony file
+        | + hello "World" => `42`
+        => 
+        | import { BasePhrases } from './common.phrases.ts';
+        |
+        | export default class TestPhrases extends BasePhrases {
+        |   async Then_X(x: any, res: any) {
+        |     throw new Error("TODO Then_X");
+        |   }
+        | } 
