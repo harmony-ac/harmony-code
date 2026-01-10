@@ -62,7 +62,7 @@ export class PhrasesAssistant {
           m.remove()
         }
       })
-    this.sortMethods()
+    this.sortMethods(methods.map((m) => m.name))
   }
 
   ensureMethod(method: PhraseMethod) {
@@ -81,7 +81,7 @@ export class PhrasesAssistant {
     m.formatText({ indentSize: 2 })
   }
 
-  sortMethods() {
+  sortMethods(desiredOrder: string[]) {
     const groups = ['When_', 'Then_']
     const members = this.clazz.getMembersWithComments()
     const sorted = members.slice().sort((a, b) => {
@@ -101,7 +101,9 @@ export class PhrasesAssistant {
         // never happens
         return 0
       }
-      return a.getName() < b.getName() ? -1 : 1
+      const indexA = desiredOrder.indexOf(a.getName())
+      const indexB = desiredOrder.indexOf(b.getName())
+      return indexA - indexB
     })
 
     const moves = calculateMoves(members, sorted)

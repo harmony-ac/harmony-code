@@ -70,17 +70,29 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   async When_hello() {
       |     return 'Hello';
       |   }
+      |   async When_beautiful() {
+      |     return 'Beautiful';
+      |   }
+      |   async When_world() {
+      |     return 'World';
+      |   }
       | }
     - harmony file
       | + goodbye
       => 
       | export default class TestPhrases {
-      |   async When_goodbye() {
-      |     throw new Error("TODO When_goodbye");
-      |   }
-      |
       |   async When_hello() {
       |     return 'Hello';
+      |   }
+      |   async When_beautiful() {
+      |     return 'Beautiful';
+      |   }
+      |   async When_world() {
+      |     return 'World';
+      |   }
+      | 
+      |   async When_goodbye() {
+      |     throw new Error("TODO When_goodbye");
       |   }
       | }
     - remove unneeded auto-generated methods, but not user-edited ones:
@@ -91,25 +103,37 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
         |   async When_hello() {
         |     return 'Hello';
         |   }
+        |   async When_beautiful() {
+        |     return 'Beautiful';
+        |   }
+        |   async When_world() {
+        |     return 'World';
+        |   }
         | }
 
-  + order methods alphabetically:
+  + order methods in order of appearance in harmony file:
     - phrases file 
       | export default class TestPhrases {
-      |   async When_z() {}
-      |   async When_a() {}
+      |   async When_o() {}
+      |   async When_l() {}
+      |   async When_h() {}
+      |   async When_e() {}
       | }
     - harmony file
-      | + m
+      | - h
+      | + e
+      | + l
+      | - l
+      | + o
       => 
       | export default class TestPhrases {
-      |   async When_a() {}
+      |   async When_h() {}
       |
-      |   async When_m() {
-      |     throw new Error("TODO When_m");
-      |   }
+      |   async When_e() {}
       |
-      |   async When_z() {}
+      |   async When_l() {}
+      |
+      |   async When_o() {}
       | }
   + correctly inserts even if other members are present:
     - phrases file 
@@ -122,6 +146,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       | }
     - harmony file
       | + a
+      | + z
       => 
       | export default class TestPhrases {
       |   private x: number = 42;
@@ -131,10 +156,10 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   async When_a() {
       |     throw new Error("TODO When_a");
       |   }
-      |
+      | 
       |   async When_z() {}
       | }
-  + correctly reorders methods wit complex structure and types:
+  + correctly reorders methods with complex structure and types:
     - phrases file 
       | export default class TestPhrases {
       |   async Then_z(res: Map<string, number[]>): Promise<void> {}
@@ -146,7 +171,7 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   }
       | }
     - harmony file
-      | + do something => result `{ x: 10; y: "test" }`
+      | + do something => a => result `{ x: 10; y: "test" }` => z
       => 
       | export default class TestPhrases {
       |   async When_do_something() {
@@ -179,7 +204,9 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
       |   async When_a() {}
       | }
     - harmony file
+      | + a
       | + m
+      | + z
       => 
       | export default class TestPhrases {
       |   /**
