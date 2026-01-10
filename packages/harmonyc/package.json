@@ -1,7 +1,7 @@
 {
   "name": "harmonyc",
   "description": "Harmony Code - model-driven BDD for Vitest",
-  "version": "0.23.3",
+  "version": "0.24.0",
   "author": "Bernát Kalló",
   "homepage": "https://github.com/harmony-ac/code#readme",
   "repository": {
