@@ -4,7 +4,7 @@
     {
       "label": "Build vscode-ext",
       "type": "shell",
-      "command": "tsx ./vscode-ext/tools/build_textmate.ts",
+      "command": "tsx ./vscode-ext/tools/build_textmate.ts && (cd vscode-ext && tsc -p ./src)",
       "problemMatcher": [],
       "group": {
         "kind": "build",

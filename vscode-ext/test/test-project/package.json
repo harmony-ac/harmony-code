@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "harmonyc": "^0.25.0",
     "vitest": "^3.2.4"
   }
 }

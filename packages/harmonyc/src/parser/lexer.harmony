@@ -106,6 +106,9 @@
   + "+a" => "words"
   + "a +" => "words"
 
+  + "+" => "+"
+  + "-" => "-"
+
 + indentation:
   + invalid indentation:
     + "  " => ""

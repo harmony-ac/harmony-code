@@ -50,14 +50,6 @@ export default class CodeGeneratorPhrases {
     }
   }
 
-  async Then_X_is_Y(x: string, y: string) {
-    expect(x).toBe(y)
-  }
-
-  async Then_greeting_is_X(x: string) {
-    expect(this.context.task.meta.greeting).toBe(x)
-  }
-
   async Then_mappings_X(m: number[][][]) {
     expect(
       this.tf.sm
@@ -85,5 +77,13 @@ export default class CodeGeneratorPhrases {
     expect(`${generated.line}:${generated.column}`).toBe(
       `${generatedLine}:${generatedColumn}`
     )
+  }
+
+  async Then_X_is_Y(x: string, y: string) {
+    expect(x).toBe(y)
+  }
+
+  async Then_greeting_is_X(x: string) {
+    expect(this.context.task.meta.greeting).toBe(x)
   }
 }

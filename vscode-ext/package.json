@@ -4,20 +4,27 @@
   "displayName": "Harmony Code",
   "description": "Language support for the Harmony Code language",
   "version": "0.18.0",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:harmony"
+  ],
   "scripts": {
-    "build": "tsx ./tools/build_textmate.ts",
+    "build": "tsx ./tools/build_textmate.ts && tsc -p ./src",
+    "watch": "tsc -p ./src --watch",
+    "compile": "tsc -p ./src",
     "publish:major": "npm version major && npm run publish",
     "publish:minor": "npm version minor && npm run publish",
     "publish:patch": "npm version patch && npm run publish",
     "publish": "npm run build && vsce pack"
   },
   "files": [
+    "out",
     "syntaxes",
     "language-configuration.json",
     "LICENSE.md"
   ],
   "engines": {
-    "vscode": "*"
+    "vscode": "^1.74.0"
   },
   "categories": [
     "Programming Languages"
@@ -52,9 +59,22 @@
         "scopeName": "source.harmony",
         "path": "./syntaxes/harmony.tmLanguage.json"
       }
+    ],
+    "commands": [
+      {
+        "command": "harmony.restartLanguageServer",
+        "title": "Restart Harmony Language Server",
+        "category": "Harmony"
+      }
     ]
   },
   "devDependencies": {
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "typescript": "^5.3.0",
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^20.0.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
   }
 }

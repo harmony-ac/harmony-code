@@ -30,6 +30,9 @@
     "./vitest": {
       "types": "./dist/vitest/index.d.ts",
       "default": "./dist/vitest/index.js"
+    },
+    "./lsp": {
+      "default": "./dist/lsp/server.js"
     }
   },
   "bin": {
@@ -39,7 +42,9 @@
     "fast-glob": "^3.3.2",
     "tinyrainbow": "1",
     "ts-morph": "^27.0.2",
-    "typescript-parsec": "0.3.4"
+    "typescript-parsec": "0.3.4",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12"
   },
   "optionalDependencies": {
     "watcher": "^2.3.1"
