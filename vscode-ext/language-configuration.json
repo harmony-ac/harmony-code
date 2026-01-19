@@ -18,5 +18,7 @@
     ["[", "]"],
     ["\"", "\""],
     ["`", "`"]
-  ]
+  ],
+  // Word pattern for Ctrl+click definition highlighting - supports multi-word phrases
+  "wordPattern": "[^\\s\\[\\]\\{\\};].+?(?= *([\\[\\]\\{\\};]|\n|$|=>|//|&&|!!|#))"
 }

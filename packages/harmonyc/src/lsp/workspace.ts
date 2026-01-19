@@ -1,6 +1,8 @@
 import * as fs from 'fs'
 import * as t from 'ts-morph'
-import { Location, Position } from 'vscode-languageserver'
+import { Location } from 'vscode-languageserver'
+import { DEFAULT_COMPILER_OPTIONS } from '../compiler/compile.js'
+import { Phrase } from '../model/model.js'
 import { connection } from './server.js'
 
 export class LspWorkspace {
@@ -106,7 +108,7 @@ export class LspWorkspace {
   /**
    * Find definition for a symbol at the given position in a harmony file
    */
-  findDefinition(harmonyFilePath: string, position: Position): Location | null {
+  findDefinition(harmonyFilePath: string, phrase: Phrase): Location | null {
     const phrasesPath = this.getPhrasesFilePath(harmonyFilePath)
     const sourceFile = this.phrasesFiles.get(phrasesPath)
 
@@ -136,17 +138,19 @@ export class LspWorkspace {
         return null
       }
 
+      const functionName = phrase.toFunctionName(DEFAULT_COMPILER_OPTIONS)
+
       // Find methods in the class
-      const methods = classDeclaration.getMethods()
-      if (methods.length === 0) {
+      const method = classDeclaration.getMethod(functionName)
+      if (!method) {
+        connection.console.log(
+          `No method named ${functionName} found in: ${phrasesPath}`,
+        )
         return null
       }
-
-      // For now, return the first method as a simple implementation
-      // TODO: Implement proper symbol resolution based on position and harmony AST
-      const firstMethod = methods[0]
-      const start = firstMethod.getStart()
-      const sourceFileForLocation = firstMethod.getSourceFile()
+      const nameNode = method.getNameNode()
+      const start = nameNode.getStart()
+      const sourceFileForLocation = method.getSourceFile()
       const lineAndColumn = sourceFileForLocation.getLineAndColumnAtPos(start)
 
       const location: Location = {
@@ -158,7 +162,7 @@ export class LspWorkspace {
           },
           end: {
             line: lineAndColumn.line - 1,
-            character: lineAndColumn.column - 1 + firstMethod.getName().length,
+            character: lineAndColumn.column - 1 + method.getName().length,
           },
         },
       }

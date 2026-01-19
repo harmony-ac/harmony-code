@@ -13,7 +13,6 @@ import {
   SetVariable,
   Test,
   TestGroup,
-  Word,
 } from '../model/model.ts'
 import { OutFile } from './outFile.ts'
 
@@ -37,7 +36,7 @@ export class VitestGenerator implements CodeGenerator {
   constructor(
     private tf: OutFile,
     private sourceFileName: string,
-    private opts: CompilerOptions
+    private opts: CompilerOptions,
   ) {}
 
   feature(feature: Feature) {
@@ -92,7 +91,7 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print(
       `describe(${str(g.label.text)}, () => {`,
       g.label.start,
-      g.label.text
+      g.label.text,
     )
     this.tf.indent(() => {
       for (const item of g.items) {
@@ -112,7 +111,7 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print(
       `test(${str(t.name)}, async (context) => {`,
       t.lastStrain?.start,
-      t.testNumber
+      t.testNumber,
     )
     this.tf.indent(() => {
       this.tf.print(`context.task.meta.phrases ??= [];`)
@@ -130,8 +129,8 @@ export class VitestGenerator implements CodeGenerator {
       action.toCode(this)
       this.tf.print(
         `context.task.meta.phrases.push(${str(
-          errorResponse.toSingleLineString()
-        )});`
+          errorResponse.toSingleLineString(),
+        )});`,
       )
     })
     this.tf.print(
@@ -139,7 +138,7 @@ export class VitestGenerator implements CodeGenerator {
         errorResponse?.message !== undefined
           ? str(errorResponse.message.text)
           : ''
-      });`
+      });`,
     )
   }
 
@@ -178,14 +177,14 @@ export class VitestGenerator implements CodeGenerator {
       if (!f) {
         f = toId(feature, abbrev, this.featureVars)
         this.tf.print(
-          `const ${f} = new ${pascalCase(feature)}Phrases(context);`
+          `const ${f} = new ${pascalCase(feature)}Phrases(context);`,
         )
       }
     }
   }
 
   phrase(p: Phrase) {
-    const phrasefn = this.functionName(p)
+    const phrasefn = p.toFunctionName(this.opts)
     if (!this.phraseFns.has(phrasefn)) this.phraseFns.set(phrasefn, p)
     const f = this.featureVars.get(p.feature.name)
     const args = p.args.map((a) => (a as Arg).toCode(this))
@@ -207,27 +206,27 @@ export class VitestGenerator implements CodeGenerator {
   setVariable(action: SetVariable): void {
     this.tf.print(
       `(context.task.meta.variables ??= {})[${str(
-        action.variableName
-      )}] = ${action.value.toCode(this)};`
+        action.variableName,
+      )}] = ${action.value.toCode(this)};`,
     )
   }
 
   saveToVariable(s: SaveToVariable, what = this.extraArgs[0] + ';') {
     this.tf.print(
       `(context.task.meta.variables ??= {})[${str(
-        s.variableName
-      )}] = ${what}`.trimEnd()
+        s.variableName,
+      )}] = ${what}`.trimEnd(),
     )
   }
 
   stringLiteral(
     text: string,
-    { withVariables }: { withVariables: boolean }
+    { withVariables }: { withVariables: boolean },
   ): string {
     if (withVariables && text.match(/\$\{/)) {
       return templateStr(text).replace(
         /\\\$\{([^\s}]+)\}/g,
-        (_, x) => `\${context.task.meta.variables?.[${str(x)}]}`
+        (_, x) => `\${context.task.meta.variables?.[${str(x)}]}`,
       )
     }
     return str(text)
@@ -236,7 +235,7 @@ export class VitestGenerator implements CodeGenerator {
   codeLiteral(src: string): string {
     return src.replace(
       /\$\{([^\s}]+)\}/g,
-      (_, x) => `context.task.meta.variables?.[${str(x)}]`
+      (_, x) => `context.task.meta.variables?.[${str(x)}]`,
     )
   }
 
@@ -252,27 +251,8 @@ export class VitestGenerator implements CodeGenerator {
     return `${this.paramName(index)}: any`
   }
 
-  functionName(phrase: Phrase) {
-    const { kind } = phrase
-    let argIndex = -1
-    return (
-      (kind === 'response' ? 'Then_' : 'When_') +
-      (phrase.parts
-        .flatMap((c) =>
-          c instanceof Word
-            ? words(c.text).filter((x) => x)
-            : c instanceof Arg
-            ? [this.argPlaceholder(++argIndex)]
-            : []
-        )
-        .join('_') || '')
-    )
-  }
-
-  argPlaceholder(i: number) {
-    return typeof this.opts.argumentPlaceholder === 'function'
-      ? this.opts.argumentPlaceholder(i)
-      : this.opts.argumentPlaceholder
+  functionName(p: Phrase): string {
+    return p.toFunctionName(this.opts)
   }
 }
 
@@ -293,7 +273,7 @@ function capitalize(s: string) {
 function toId(
   s: string,
   transform: (s: string) => string,
-  previous: Map<string, string>
+  previous: Map<string, string>,
 ) {
   if (previous.has(s)) return previous.get(s)!
   let base = transform(s)

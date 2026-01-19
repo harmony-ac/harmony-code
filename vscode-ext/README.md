@@ -9,6 +9,7 @@ Syntax highlighting and language support for [Harmony Code](https://github.com/h
 - Syntax highlighting
 - Debugger support for Vitest tests written in Harmony Code
 - Underline compile errors
+- Go to Definition (Ctrl+Click) to .phrases.ts file
 
 ## Installation
 

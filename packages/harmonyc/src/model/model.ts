@@ -1,4 +1,5 @@
 import { Token } from 'typescript-parsec'
+import { CompilerOptions } from '../compiler/compile.ts'
 import { Routers } from './Router.ts'
 
 export interface CodeGenerator {
@@ -73,6 +74,39 @@ export abstract class Node {
     this.end = other.end
     return this
   }
+
+  abstract get childNodes(): Node[]
+
+  /**
+   * Check if a position (line, character) falls within this node's range
+   */
+  containsPosition(line: number, character: number): boolean {
+    if (!this.start || !this.end) {
+      return false
+    }
+    return (
+      (this.start.line < line ||
+        (this.start.line === line && this.start.column <= character)) &&
+      ((line === this.end.line && character <= this.end.column) ||
+        line < this.end.line)
+    )
+  }
+
+  /**
+   * Find the deepest node (including phrases) that contains the given position
+   */
+  findNodeAtPosition(line: number, character: number): Node | null {
+    if (!this.containsPosition(line, character)) {
+      return null
+    }
+    for (const child of this.childNodes) {
+      const found = child.findNodeAtPosition(line, character)
+      if (found) {
+        return found
+      }
+    }
+    return this
+  }
 }
 
 export abstract class Branch extends Node {
@@ -88,6 +122,16 @@ export abstract class Branch extends Node {
     this.children = children
     children.forEach((child) => (child.parent = this))
   }
+  get childNodes(): Node[] {
+    return this.children
+  }
+  updateEnd() {
+    if (this.children.length === 0) return
+    const lastChild = this.children[this.children.length - 1]
+    this.end = lastChild.end
+    this.parent?.updateEnd()
+  }
+
   setFork(isFork: boolean) {
     this.isFork = isFork
     return this
@@ -99,6 +143,7 @@ export abstract class Branch extends Node {
   addChild<C extends Branch>(child: C, index = this.children.length) {
     this.children.splice(index, 0, child)
     child.parent = this
+    this.updateEnd()
     return child
   }
   get isLeaf() {
@@ -152,12 +197,15 @@ export class Step extends Branch {
     action: Action,
     responses: Response[] = [],
     children?: Branch[],
-    isFork = false
+    isFork = false,
   ) {
     super(children)
     this.action = action
     this.responses = responses
     this.isFork = isFork
+  }
+  get childNodes(): Node[] {
+    return [...this.phrases, ...super.childNodes]
   }
   get phrases(): Phrase[] {
     return [this.action, ...this.responses]
@@ -187,11 +235,11 @@ export class Step extends Branch {
   switch(i: number): this {
     return new Step(
       this.action.switch(i),
-      this.responses.map((r) => r.switch(i))
+      this.responses.map((r) => r.switch(i)),
     ) as this
   }
 }
-export class State {
+export class State /* TODO extends Node */ {
   text: string
 
   constructor(text = '') {
@@ -205,6 +253,9 @@ export class Label extends Node {
     super()
     this.text = text
   }
+  get childNodes(): Node[] {
+    return []
+  }
   get isEmpty() {
     return this.text === ''
   }
@@ -216,6 +267,9 @@ export class Section extends Branch {
     super(children)
     this.label = label ?? new Label()
     this.isFork = isFork
+  }
+  get childNodes(): Node[] {
+    return [this.label, ...super.childNodes]
   }
   toString() {
     if (this.label.text === '') return super.toString()
@@ -340,6 +394,9 @@ export abstract class Phrase extends Node {
   constructor(public parts: Part[]) {
     super()
   }
+  get childNodes(): Node[] {
+    return []
+  }
 
   setFeature(feature: Feature) {
     this.feature = feature
@@ -360,7 +417,7 @@ export abstract class Phrase extends Node {
     const isMultiline = parts.map((p) => p.includes('\n'))
     return parts
       .map((p, i) =>
-        i === 0 ? p : isMultiline[i - 1] || isMultiline[i] ? '\n' + p : ' ' + p
+        i === 0 ? p : isMultiline[i - 1] || isMultiline[i] ? '\n' + p : ' ' + p,
       )
       .join('')
   }
@@ -369,8 +426,29 @@ export abstract class Phrase extends Node {
   }
   switch(i: number): Phrase {
     return new (this.constructor as new (parts: Part[]) => Phrase)(
-      this.parts.map((p) => (p instanceof Switch ? p.choices[i] : p))
+      this.parts.map((p) => (p instanceof Switch ? p.choices[i] : p)),
     ).setFeature(this.feature)
+  }
+  toFunctionName(opts: CompilerOptions) {
+    const { keyword } = this
+    let argIndex = -1
+    const argPlaceholder =
+      typeof opts.argumentPlaceholder === 'function'
+        ? opts.argumentPlaceholder
+        : (_: number) => opts.argumentPlaceholder
+    return (
+      keyword +
+      '_' +
+      (this.parts
+        .flatMap((c) =>
+          c instanceof Word
+            ? words(c.text).filter((x) => x)
+            : c instanceof Arg
+              ? [argPlaceholder(++argIndex)]
+              : [],
+        )
+        .join('_') || '')
+    )
   }
 }
 
@@ -385,7 +463,10 @@ export class Action extends Phrase {
 
 export class Response extends Phrase {
   kind = 'response'
-  constructor(parts: Part[], public saveToVariable?: SaveToVariable) {
+  constructor(
+    parts: Part[],
+    public saveToVariable?: SaveToVariable,
+  ) {
     super([...parts, ...(saveToVariable ? [saveToVariable] : [])])
   }
   get isEmpty() {
@@ -407,7 +488,7 @@ export class Response extends Phrase {
 export class ErrorResponse extends Response {
   constructor(public message: StringLiteral | undefined) {
     super(
-      message ? [new DummyKeyword('!!'), message] : [new DummyKeyword('!!')]
+      message ? [new DummyKeyword('!!'), message] : [new DummyKeyword('!!')],
     )
   }
   toCode(cg: CodeGenerator) {
@@ -416,7 +497,10 @@ export class ErrorResponse extends Response {
 }
 
 export class SetVariable extends Action {
-  constructor(public variableName: string, public value: Arg) {
+  constructor(
+    public variableName: string,
+    public value: Arg,
+  ) {
     super([new DummyKeyword(`\${${variableName}}`), value])
   }
   toCode(cg: CodeGenerator): void {
@@ -444,6 +528,9 @@ export class Precondition extends Branch {
   constructor(state: string = '') {
     super()
     this.state.text = state
+  }
+  get childNodes(): Node[] {
+    return []
   }
   get isEmpty(): boolean {
     return this.state.text === ''
@@ -481,7 +568,7 @@ function resolveSwitches(tests: Test[]) {
     const test = tests[i]
     const phrases = test.steps.flatMap((s) => s.phrases)
     const switches = phrases.flatMap((p) =>
-      p.parts.filter((p) => p instanceof Switch)
+      p.parts.filter((p) => p instanceof Switch),
     )
     if (switches.length === 0) continue
     const count = switches[0].choices.length
@@ -489,7 +576,7 @@ function resolveSwitches(tests: Test[]) {
       throw new Error(
         `all switches in a test case must have the same number of choices: ${
           test.name
-        } has ${switches.map((s) => s.choices.length)} choices`
+        } has ${switches.map((s) => s.choices.length)} choices`,
       )
     }
     const newTests = switches[0].choices.map((_, j) => test.switch(j))
@@ -532,7 +619,7 @@ export class Test {
 
   get name() {
     return `${[this.testNumber!, ...this.labels.map((x) => x.text)].join(
-      ' - '
+      ' - ',
     )}`
   }
 
@@ -558,7 +645,7 @@ export function makeGroups(tests: Test[]): (Test | TestGroup)[] {
   let count = tests.findIndex(
     (t) =>
       // using identity instead of text equality, which means identically named labels will not be grouped together
-      t.labels[0] !== label
+      t.labels[0] !== label,
   )
   if (count === -1) count = tests.length
   if (count === 1) return [tests[0], ...makeGroups(tests.slice(1))]
@@ -570,7 +657,10 @@ export function makeGroups(tests: Test[]): (Test | TestGroup)[] {
 }
 
 export class TestGroup {
-  constructor(public label: Label, public items: (Test | TestGroup)[]) {}
+  constructor(
+    public label: Label,
+    public items: (Test | TestGroup)[],
+  ) {}
   toString() {
     return `+ ${this.label.text}:` + indent(this.items.join('\n'))
   }
@@ -588,4 +678,8 @@ function indent(s: string) {
       .map((l) => '  ' + l)
       .join('\n')
   )
+}
+
+function words(s: string) {
+  return s.split(/[^0-9\p{L}]+/gu)
 }

@@ -1,4 +1,5 @@
 import { Location, TextDocumentPositionParams } from 'vscode-languageserver'
+import { Phrase } from '../model/model.js'
 import { parse } from '../parser/parser.js'
 import { connection, documents } from './server.js'
 import { getWorkspace } from './workspace.js'
@@ -30,7 +31,7 @@ export function provideDefinition(
     // Convert URI to file path
     const filePath = uri.replace('file://', '')
 
-    // Parse the document to get the AST (for future symbol resolution)
+    // Parse the document to get the AST
     const text = document.getText()
     const ast = parse(text)
 
@@ -38,11 +39,35 @@ export function provideDefinition(
       `Definition request for ${uri} at ${textDocumentParams.position.line}:${textDocumentParams.position.character}`,
     )
 
-    // Use workspace to find definition in corresponding .phrases.ts file
-    const location = workspace.findDefinition(
-      filePath,
-      textDocumentParams.position,
+    // Use AST to find the node at the cursor position
+    const nodeAtPosition = ast.findNodeAtPosition(
+      textDocumentParams.position.line + 1,
+      textDocumentParams.position.character,
     )
+
+    let phrase: Phrase | null = null
+    if (nodeAtPosition) {
+      connection.console.log(
+        `Found node at position: ${nodeAtPosition.constructor.name}`,
+      )
+
+      // If we found a Phrase, use its information for definition lookup
+      if (nodeAtPosition instanceof Phrase) {
+        phrase = nodeAtPosition as Phrase
+        connection.console.log(
+          `Found phrase: ${phrase.kind} - ${phrase.toString()}`,
+        )
+        // TODO: Use phrase information to improve definition lookup precision
+      }
+    }
+
+    if (!phrase) {
+      connection.console.log('No phrase found at the given position')
+      return null
+    }
+
+    // Use workspace to find definition in corresponding .phrases.ts file
+    const location = workspace.findDefinition(filePath, phrase)
 
     if (location) {
       connection.console.log(`Found definition at ${location.uri}`)

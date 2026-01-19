@@ -168,7 +168,7 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
           NEWLINES,
         ),
       ),
-      (lines) => {
+      (lines, range) => {
         let dent: number | undefined
         const root = new Section(new Label(''))
         let parent: Branch = root
@@ -203,7 +203,7 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
           parent.addChild(branch)
         }
 
-        return root
+        return root.at(range)
       },
     ),
     rep_sc(NEWLINES),
