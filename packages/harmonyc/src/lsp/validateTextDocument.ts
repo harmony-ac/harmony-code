@@ -1,11 +1,17 @@
 import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver'
 import { TextDocument } from 'vscode-languageserver-textdocument'
-import { parse } from '../parser/parser'
-import { connection, hasDiagnosticRelatedInformationCapability } from './server'
+import { parse } from '../parser/parser.js'
+import {
+  connection,
+  hasDiagnosticRelatedInformationCapability,
+} from './server.js'
 
 export async function validateTextDocument(
   textDocument: TextDocument,
 ): Promise<void> {
+  if (!textDocument.uri.endsWith('.harmony')) {
+    return
+  }
   const text = textDocument.getText()
   const diagnostics: Diagnostic[] = []
 

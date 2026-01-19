@@ -114,7 +114,10 @@ async function startLanguageServer(
   }
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'harmony' }],
+    documentSelector: [
+      { scheme: 'file', language: 'harmony' },
+      { scheme: 'file', language: 'typescript', pattern: '**/*.phrases.ts' },
+    ],
     synchronize: {
       fileEvents: vscode.workspace.createFileSystemWatcher('**/*.harmony'),
     },

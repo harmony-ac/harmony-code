@@ -14,6 +14,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument'
 import { provideCompletion, resolveCompletion } from './provideCompletion.js'
 import { provideDefinition } from './provideDefinition.js'
 import { validateTextDocument } from './validateTextDocument.js'
+import { getWorkspace, initializeWorkspace } from './workspace.js'
 
 // Create a connection for the server, using Node's IPC as a transport.
 export const connection = createConnection(ProposedFeatures.all)
@@ -29,6 +30,17 @@ export let hasDiagnosticRelatedInformationCapability = false
 
 connection.onInitialize((params: InitializeParams) => {
   const capabilities = params.capabilities
+
+  // Initialize workspace if we have workspace folders
+  if (params.workspaceFolders && params.workspaceFolders.length > 0) {
+    const workspaceRoot = params.workspaceFolders[0].uri.replace('file://', '')
+    initializeWorkspace(workspaceRoot)
+    connection.console.log(`Initialized workspace at: ${workspaceRoot}`)
+  } else if (params.rootUri) {
+    const workspaceRoot = params.rootUri.replace('file://', '')
+    initializeWorkspace(workspaceRoot)
+    connection.console.log(`Initialized workspace at: ${workspaceRoot}`)
+  }
 
   // Does the client support the `workspace/configuration` request?
   hasConfigurationCapability = !!(
@@ -50,8 +62,7 @@ connection.onInitialize((params: InitializeParams) => {
       completionProvider: {
         // WIP resolveProvider: true,
       },
-      // Tell the client that this server supports go to definition
-      // WIP definitionProvider: true,
+      definitionProvider: true,
     },
   }
   if (hasWorkspaceFolderCapability) {
@@ -120,20 +131,56 @@ function getDocumentSettings(resource: string): Thenable<HarmonySettings> {
   return result
 }
 
-// Only keep settings for open documents
-documents.onDidClose((e) => {
-  documentSettings.delete(e.document.uri)
-})
-
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((change) => {
   validateTextDocument(change.document)
+
+  const uri = change.document.uri
+  const workspace = getWorkspace()
+
+  if (workspace) {
+    const filePath = uri.replace('file://', '')
+    if (uri.endsWith('.harmony')) {
+      workspace.addHarmonyFile(filePath, change.document.getText())
+    } else if (uri.endsWith('.phrases.ts')) {
+      workspace.addPhrasesFile(filePath, change.document.getText())
+    }
+  }
+})
+
+documents.onDidOpen((event) => {
+  const uri = event.document.uri
+  const workspace = getWorkspace()
+
+  if (workspace) {
+    const filePath = uri.replace('file://', '')
+    if (uri.endsWith('.harmony')) {
+      workspace.addHarmonyFile(filePath, event.document.getText())
+    } else if (uri.endsWith('.phrases.ts')) {
+      workspace.addPhrasesFile(filePath, event.document.getText())
+    }
+  }
+})
+
+documents.onDidClose((event) => {
+  const uri = event.document.uri
+  documentSettings.delete(uri)
+
+  // When a .harmony file is closed, optionally remove its .phrases.ts file
+  if (uri.endsWith('.harmony')) {
+    const workspace = getWorkspace()
+    if (workspace) {
+      const filePath = uri.replace('file://', '')
+      // Note: We might want to keep the phrases file loaded even when harmony file is closed
+      // workspace.removePhrasesFile(filePath)
+    }
+  }
 })
 
 connection.onDefinition(provideDefinition)
 
-connection.onDidChangeWatchedFiles((_change) => {
+connection.onDidChangeWatchedFiles((change) => {
   // Monitored files have change in VS Code
   connection.console.log('We received a file change event')
 })
