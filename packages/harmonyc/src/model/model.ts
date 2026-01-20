@@ -20,6 +20,7 @@ export interface CodeGenerator {
 
 export interface PhraseMethod {
   name: string
+  phrase: Phrase
   parameters: { name: string; type: string }[]
 }
 

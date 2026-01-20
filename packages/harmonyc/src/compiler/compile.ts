@@ -7,6 +7,7 @@ import { autoLabel } from '../optimizations/autoLabel/autoLabel.ts'
 import { parse } from '../parser/parser.ts'
 
 export interface CompilerOptions {
+  /** What to put in function names at the positions of arguments */
   argumentPlaceholder: string | ((index: number) => string)
 }
 
@@ -35,7 +36,7 @@ export const DEFAULT_COMPILER_OPTIONS: CompilerOptions = {
 export function compileFeature(
   fileName: string,
   src: string,
-  opts: Partial<CompilerOptions> = {}
+  opts: Partial<CompilerOptions> = {},
 ) {
   const feature = new Feature(basename(base(fileName)))
   try {

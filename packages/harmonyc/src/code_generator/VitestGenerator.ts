@@ -65,8 +65,8 @@ export class VitestGenerator implements CodeGenerator {
     this.tf.print(``)
 
     for (const ph of this.phraseFns.keys()) {
-      const p = this.phraseFns.get(ph)!
-      const parameters = p.args.map((a, i) => {
+      const phrase = this.phraseFns.get(ph)!
+      const parameters = phrase.args.map((a, i) => {
         const declaration = a.toDeclaration(this, i)
         const parts = declaration.split(': ')
         return {
@@ -74,7 +74,7 @@ export class VitestGenerator implements CodeGenerator {
           type: parts[1] || 'any',
         }
       })
-      if (p instanceof Response) {
+      if (phrase instanceof Response) {
         parameters.push({
           name: 'res',
           type: 'any',
@@ -82,6 +82,7 @@ export class VitestGenerator implements CodeGenerator {
       }
       this.phraseMethods.push({
         name: ph,
+        phrase,
         parameters,
       })
     }

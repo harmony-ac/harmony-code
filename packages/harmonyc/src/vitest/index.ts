@@ -14,6 +14,8 @@ import { PhrasesAssistant } from '../phrases_assistant/phrases_assistant.ts'
 
 export interface HarmonyPluginOptions extends Partial<CompilerOptions> {
   autoEditPhrases?: boolean
+  /** Argument placheholder to detect existing phrase methods with an older scheme, and migrate them */
+  legacyArgumentPlaceholder?: string | ((index: number) => string)
 }
 
 const DEFAULT_OPTIONS: HarmonyPluginOptions = {
@@ -36,11 +38,17 @@ export default function harmonyPlugin(opts: HarmonyPluginOptions = {}): Plugin {
       const { outFile, phraseMethods, featureClassName } = compileFeature(
         id,
         code,
-        opts
+        opts,
       )
 
       if (options.autoEditPhrases) {
-        void updatePhrasesFile(project, id, phraseMethods, featureClassName)
+        void updatePhrasesFile(
+          project,
+          id,
+          phraseMethods,
+          featureClassName,
+          options,
+        )
       }
 
       return {
@@ -110,7 +118,8 @@ async function updatePhrasesFile(
   project: Project,
   id: string,
   phraseMethods: PhraseMethod[],
-  featureClassName: string
+  featureClassName: string,
+  opts: HarmonyPluginOptions,
 ): Promise<void> {
   try {
     const phrasesFile = id.replace(/\.harmony$/, '.phrases.ts')
@@ -122,7 +131,12 @@ async function updatePhrasesFile(
       // File doesn't exist
     }
 
-    const pa = new PhrasesAssistant(project, phrasesFile, featureClassName)
+    const pa = new PhrasesAssistant(
+      project,
+      phrasesFile,
+      featureClassName,
+      opts,
+    )
     pa.ensureMethods(phraseMethods)
     const newContent = pa.toCode()
 

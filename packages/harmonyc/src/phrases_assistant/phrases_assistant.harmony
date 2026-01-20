@@ -275,4 +275,73 @@ The phrases assistant parses a .phrases.ts typescript file, and adds missing act
         |   async Then_X(x: any, res: any) {
         |     throw new Error("TODO Then_X");
         |   }
-        | } 
+        | }
+
+  + legacy method detection and renaming:
+    + renames legacy method with different argument placeholders:
+      - legacy placeholder ""
+      - phrases file 
+        | export default class TestPhrases {
+        |   async When_hello_() {
+        |     return 'Hello from legacy';
+        |   }
+        | }
+      - harmony file
+        | + hello "World" => `42`
+        => 
+        | export default class TestPhrases {
+        |   async When_hello_X() {
+        |     return 'Hello from legacy';
+        |   }
+        | 
+        |   async Then_X(x: any, res: any) {
+        |     throw new Error("TODO Then_X");
+        |   }
+        | }
+    
+    + renames legacy method with function-based placeholders:
+      - legacy placeholder `(i) => "$" + i`
+      - phrases file 
+        | export default class TestPhrases {
+        |   async When_greet_$0_$1(fn, ln: string) {
+        |     return `Hello ${fn} ${ln}!`;
+        |   }
+        | }
+      - harmony file
+        | + greet "John" "Doe"
+        => 
+        | export default class TestPhrases {
+        |   async When_greet_X_Y(fn, ln: string) {
+        |     return `Hello ${fn} ${ln}!`;
+        |   }
+        | }
+    
+    + renames legacy method in superclass:
+      - legacy placeholder ""
+      - common file
+        | export class BasePhrases {
+        |   async When_hello_() {
+        |     return 'Hello from base legacy';
+        |   }
+        | }
+      - phrases file
+        | import { BasePhrases } from './common.phrases.ts';
+        |
+        | export default class TestPhrases extends BasePhrases {
+        | }
+      - harmony file
+        | + hello "World" => `42`
+        => 
+        | import { BasePhrases } from './common.phrases.ts';
+        |
+        | export default class TestPhrases extends BasePhrases {
+        |   async Then_X(x: any, res: any) {
+        |     throw new Error("TODO Then_X");
+        |   }
+        | }
+        => common file
+        | export class BasePhrases {
+        |   async When_hello_X() {
+        |     return 'Hello from base legacy';
+        |   }
+        | }

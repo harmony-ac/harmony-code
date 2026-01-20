@@ -6,9 +6,18 @@ export class PhrasesAssistant {
   file: t.SourceFile
   clazz: t.ClassDeclaration
   existingMethods: Set<string> = new Set()
+  opts
 
-  constructor(project: t.Project, path: string, className: string) {
+  constructor(
+    project: t.Project,
+    path: string,
+    className: string,
+    opts: {
+      legacyArgumentPlaceholder?: string | ((index: number) => string)
+    } = {},
+  ) {
     this.project = project
+    this.opts = opts
     this.file = this.project.addSourceFileAtPath(path)
     this.file.refreshFromFileSystemSync()
     const clazz = this.file.getClass(className)
@@ -66,9 +75,33 @@ export class PhrasesAssistant {
   }
 
   ensureMethod(method: PhraseMethod) {
-    if (!this.existingMethods.has(method.name)) {
-      this.addMethod(method)
+    if (this.existingMethods.has(method.name)) return
+    // Check for legacy method name and rename if found
+    if (this.opts.legacyArgumentPlaceholder !== undefined) {
+      const legacyMethodName = method.phrase.toFunctionName({
+        argumentPlaceholder: this.opts.legacyArgumentPlaceholder,
+      })
+      if (this.existingMethods.has(legacyMethodName)) {
+        let clazz: t.ClassDeclaration | undefined = this.clazz
+        while (clazz) {
+          const legacyMethod = clazz.getMethod(legacyMethodName)
+          if (legacyMethod) {
+            legacyMethod.rename(method.name)
+            if (clazz !== this.clazz) {
+              // will write current file anyway but if a superclass, write it now
+              clazz.getSourceFile().saveSync()
+            }
+            this.existingMethods.delete(legacyMethodName)
+            this.existingMethods.add(method.name)
+            return
+          }
+          clazz = clazz.getBaseClass()!
+        }
+        // should never end up here, but if ever, just continue to add new method
+      }
     }
+    this.addMethod(method)
+    this.existingMethods.add(method.name)
   }
 
   addMethod(method: PhraseMethod) {
@@ -142,7 +175,7 @@ export class PhrasesAssistant {
  */
 function calculateMoves<T>(
   actual: T[],
-  desired: T[]
+  desired: T[],
 ): Array<{ fromIndex: number; toIndex: number }> {
   if (actual.length !== desired.length) {
     throw new Error('Arrays must have the same length')
