@@ -9,6 +9,9 @@ import {
 
 let client: LanguageClient | undefined
 
+// TransportKind is a declare enum, so won't be in the compiled JS
+export const IPC: TransportKind = 1
+
 export async function activate(
   context: vscode.ExtensionContext,
 ): Promise<void> {
@@ -105,10 +108,10 @@ async function startLanguageServer(
     : path.join(harmonycPath, 'dist', 'lsp', 'server.js')
 
   const serverOptions: ServerOptions = {
-    run: { module: serverPath, transport: TransportKind.ipc },
+    run: { module: serverPath, transport: IPC },
     debug: {
       module: serverPath,
-      transport: TransportKind.ipc,
+      transport: IPC,
       options: { execArgv: ['--nolazy', '--inspect=6009'] },
     },
   }
