@@ -60,9 +60,9 @@
   + | + log in with "admin" role
     | + log in with "user" role
     =>
-    | + log in with "admin" role:
+    | + log in with ”admin” role:
     |   + log in with "admin" role
-    | + log in with "user" role:
+    | + log in with ”user” role:
     |   + log in with "user" role
     
 + with response:
@@ -114,11 +114,22 @@
     |     =>
     |     | hello
     |   + | hello "John"
+    |     | second line
     |     =>
     |     | hello "John"
     =>
     | + production "ACTION"
-    |   + "hello":
+    |   + ”hello”:
     |     + | hello => | hello
-    |   + "hello \"John\"":
-    |     + | hello "John" => | hello "John"
+    |   + ”hello ”John”│second line”:
+    |     + | hello "John"
+    |     | second line => | hello "John"
+
++ strings with special characters:
+  + | + something
+    | + say "\"Hello\nWorld!\""
+    =>
+    | + something:
+    |   + something
+    | + say ””Hello│World!””:
+    |   + say "\"Hello\nWorld!\""
