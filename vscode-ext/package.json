@@ -3,7 +3,7 @@
   "publisher": "harmony-ac",
   "displayName": "Harmony Code",
   "description": "Language support for the Harmony Code language",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "main": "./out/extension.js",
   "activationEvents": [
     "onLanguage:harmony"
