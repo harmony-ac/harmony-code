@@ -41,7 +41,7 @@ export function provideDefinition(
 
     // Use AST to find the node at the cursor position
     const nodeAtPosition = ast.findNodeAtPosition(
-      textDocumentParams.position.line + 1,
+      textDocumentParams.position.line,
       textDocumentParams.position.character,
     )
 
