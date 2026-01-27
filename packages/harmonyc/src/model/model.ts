@@ -25,7 +25,9 @@ export interface PhraseMethod {
 }
 
 export interface Location {
+  /** Line number (0-based) */
   line: number
+  /** Column number (0-based) */
   column: number
 }
 
@@ -44,8 +46,8 @@ export class Feature {
   }
 }
 export abstract class Node {
-  start?: { line: number; column: number }
-  end?: { line: number; column: number }
+  start?: Location
+  end?: Location
 
   at([startToken, endToken]: [Token<any> | undefined, Token<any> | undefined]) {
     while (startToken && startToken.kind === 'newline') {
@@ -53,17 +55,15 @@ export abstract class Node {
     }
     if (startToken) {
       this.start = {
-        line: startToken.pos.rowBegin,
+        line: startToken.pos.rowBegin - 1,
         column: startToken.pos.columnBegin - 1,
       }
-    }
-    if (startToken && endToken) {
       let t = startToken
       while (t.next && t.next !== endToken) {
         t = t.next
       }
       this.end = {
-        line: t.pos.rowEnd,
+        line: t.pos.rowEnd - 1,
         column: t.pos.columnEnd - 1,
       }
     }
@@ -80,6 +80,8 @@ export abstract class Node {
 
   /**
    * Check if a position (line, character) falls within this node's range
+   * @param line Line number (0-based)
+   * @param character Character number (0-based)
    */
   containsPosition(line: number, character: number): boolean {
     if (!this.start || !this.end) {
@@ -95,6 +97,8 @@ export abstract class Node {
 
   /**
    * Find the deepest node (including phrases) that contains the given position
+   * @param line Line number (0-based)
+   * @param character Character number (0-based)
    */
   findNodeAtPosition(line: number, character: number): Node | null {
     if (!this.containsPosition(line, character)) {
@@ -260,6 +264,9 @@ export class Label extends Node {
   get isEmpty() {
     return this.text === ''
   }
+  toString() {
+    return this.text + ':'
+  }
 }
 
 export class Section extends Branch {
@@ -274,7 +281,7 @@ export class Section extends Branch {
   }
   toString() {
     if (this.label.text === '') return super.toString()
-    return this.label.text + ':' + indent(super.toString())
+    return this.label.toString() + indent(super.toString())
   }
   get isEmpty(): boolean {
     return this.label.isEmpty

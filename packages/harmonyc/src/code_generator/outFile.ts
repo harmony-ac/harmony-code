@@ -5,7 +5,10 @@ export class OutFile {
   level = 0
   sm
   indentSpaces: number = 2
-  constructor(public name: string, public sourceFile: string) {
+  constructor(
+    public name: string,
+    public sourceFile: string,
+  ) {
     this.sm = new SourceNode(0, 0, sourceFile)
   }
 
@@ -38,20 +41,22 @@ export class OutFile {
     if (start) {
       this.sm.add(
         new SourceNode(
-          start.line,
-          start.column,
+          start.line + 1, // SourceNode lines are 1-based
+          start.column, // SourceNode columns are 0-based
           this.sourceFile,
           chunk,
-          name
-        ) as any
+          name,
+        ) as any,
       )
     } else {
       this.sm.add(
-        new SourceNode(null as any, null as any, null as any, chunk) as any
+        new SourceNode(null as any, null as any, null as any, chunk) as any,
       )
     }
     if (end) {
-      this.sm.add(new SourceNode(end.line, end.column, this.sourceFile) as any)
+      this.sm.add(
+        new SourceNode(end.line + 1, end.column, this.sourceFile) as any,
+      )
     }
   }
 

@@ -1,0 +1,40 @@
++ none:
+  + | $
+  => `null`
+
++ simple:
+  + | + some$ phrase
+    => | some phrase
+
++ start:
+  + | + $one phrase
+    | + other phrase
+    => | one phrase
+  + | + one phrase
+    | + $other phrase
+    => | other phrase
++ end:
+  + | + one phrase$
+    | + other phrase
+    => | one phrase
+  + | + one phrase
+    | + other phrase$
+    => | other phrase
+
++ with args:
+  + | + one phrase
+    | + other phrase $with `2` "args"
+    => | other phrase with `2` "args"
+
+  + | + one phrase
+    | + other phrase with `2` "ar$gs"
+    => | other phrase with `2` "args"
+  + | - other phrase with `2` "args$"
+    => | other phrase with `2` "args"
+  + | - other phrase with `2` "args"$
+    => | other phrase with `2` "args"
+
+  + | + section$:
+    |   - phrase
+    => | section:
+
