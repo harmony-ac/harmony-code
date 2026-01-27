@@ -6,7 +6,12 @@ export function autoLabel(b: Branch) {
     forks
       .filter((child) => child instanceof Step)
       .forEach((step) => {
-        const label = step.action.toSingleLineString()
+        const label = step.action
+          .toSingleLineString()
+          // remove JSON special chars to work around VSCode Vitest extension bug
+          .replace(/\\*"/g, '”')
+          .replace(/\n|\\n/g, '│')
+          .replace(/\\+/g, '╲')
         const autoLabel = new Label(label)
         autoLabel.atSameAs(step.action)
         const autoSection = new Section(autoLabel, [], step.isFork)
