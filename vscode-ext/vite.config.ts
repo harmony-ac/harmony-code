@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  resolve: {
+    mainFields: ['main'],
+    conditions: ['node', 'require'],
+  },
   build: {
     // Build for Node.js environment
     target: 'node18',
@@ -18,7 +22,16 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       // External modules that shouldn't be bundled
-      external: ['vscode', 'fs', 'path', 'child_process'],
+      external: [
+        'vscode',
+        'fs',
+        'path',
+        'child_process',
+        'util',
+        'os',
+        'crypto',
+        'net',
+      ],
       output: {
         // CommonJS format for VS Code extensions
         format: 'cjs',
