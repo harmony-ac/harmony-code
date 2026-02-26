@@ -18,8 +18,13 @@ export class PhrasesAssistant {
   ) {
     this.project = project
     this.opts = opts
-    this.file = this.project.addSourceFileAtPath(path)
-    this.file.refreshFromFileSystemSync()
+    const existingFile = this.project.addSourceFileAtPathIfExists(path)
+    if (existingFile) {
+      this.file = existingFile
+      this.file.refreshFromFileSystemSync()
+    } else {
+      this.file = this.project.createSourceFile(path)
+    }
     const clazz = this.file.getClass(className)
     if (!clazz) {
       const defaultExport = this.file.getDefaultExportSymbol()

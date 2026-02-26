@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { expect } from 'vitest'
 
 export class TmpFilePhrases {
@@ -12,6 +12,12 @@ export class TmpFilePhrases {
 
   async When_phrases_file_X(x: any) {
     writeFileSync('tmp/test.phrases.ts', x, 'utf-8')
+  }
+
+  async When_no_phrases_file() {
+    if (existsSync('tmp/test.phrases.ts')) {
+      rmSync('tmp/test.phrases.ts')
+    }
   }
 
   async Then_common_file_X(x: string, res: any) {

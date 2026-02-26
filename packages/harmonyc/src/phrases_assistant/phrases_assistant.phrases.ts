@@ -10,6 +10,10 @@ export default class PhrasesAssistantPhrases extends TmpFilePhrases {
   private project = new t.Project()
   private legacyPlaceholder?: string | ((index: number) => string)
 
+  async When_no_phrases_file() {
+    await super.When_no_phrases_file()
+  }
+
   async When_legacy_placeholder_X(x: string) {
     this.legacyPlaceholder = x
   }

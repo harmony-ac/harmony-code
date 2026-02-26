@@ -1,6 +1,27 @@
 # Phrases Assistant
 
 The phrases assistant parses a .phrases.ts typescript file, and adds missing action/expected outcome implementations.
++ creates phrases file if it does not exist:
+  + creates file with class for empty harmony file:
+    - no phrases file
+    - harmony file "" =>
+      | export default class TestPhrases {
+      | }
+  + creates file with methods:
+    - no phrases file
+    - harmony file
+      | + hello => `42`
+      =>
+      | export default class TestPhrases {
+      |   async When_hello() {
+      |     throw new Error("TODO When_hello");
+      |   }
+      |
+      |   async Then_X(x: any, res: any) {
+      |     throw new Error("TODO Then_X");
+      |   }
+      | }
+
 + modifications:
   + adds class into empty phrases file:
     - harmony file ""
