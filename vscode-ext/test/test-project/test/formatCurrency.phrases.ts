@@ -18,8 +18,16 @@ export default class FormatCurrencyPhrases {
     return formatCurrency(amount, currency)
   }
 
-  Then_X(expected: string, result: string) {
-    expect(result).toBe(expected)
+  async Then_result_has_X(hint: string, res: any) {
+    expect(res).toMatchSnapshot(hint)
+  }
+
+  async Then_X(x: string, res: any) {
+    throw new Error("TODO Then_X");
+  }
+
+  async Then_result_has_dollar_sign_and_2_decimals(res: any) {
+    expect(res).toMatchInlineSnapshot(`"$123.40"`)
   }
 }
  

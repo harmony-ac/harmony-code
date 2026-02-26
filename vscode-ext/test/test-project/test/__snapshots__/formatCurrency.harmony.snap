@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`dollar > T2 - with 2 digits > dollar sign and 2 decimals 1`] = `"123,45 USD"`;
