@@ -28,6 +28,7 @@ export default class CodeGeneratorPhrases {
     parse(x, STEP).setFeature(this.feature).toCode(this.generator)
     this.what_was_parsed = STEP
   }
+
   async When_tree_X(x: string) {
     const feature = new Feature('myFeature')
     feature.root = parse(x, TEST_DESIGN).setFeature(this.feature)

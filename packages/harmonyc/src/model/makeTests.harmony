@@ -54,6 +54,30 @@
     |   - greet John => "Hello John!"
     | + T2:
     |   - greet Jim => "Hello Jim!"
+  + with error response:
+    + | + i like { `null`; `undefined` } => !! | invalid input
+      =>
+      | + T1:
+      |   - i like `null` => !! | invalid input
+      | + T2:
+      |   - i like `undefined` => !! | invalid input
+  + with save to variable:
+    + | + greet { John; Jim } => ${greeting}
+      =>
+      | + T1:
+      |   - greet John => ${greeting}
+      | + T2:
+      |   - greet Jim => ${greeting}
+  + with response and save to variable:
+    + | + greet { "${name}"; Jim } => verify ${result}
+      =>
+      | + T1:
+      |   - greet "${name}" => verify ${result}
+      | + T2:
+      |   - greet Jim => verify ${result}
+  + nested switch:
+    + | + greet { John; { Jim; Jack } } => { "Hello John!"; { "Hello Jim!"; "Hello Jack!" } }
+      => !! | Unable to consume token: {
 
   + different number of choices:
     + | + i like { a ; b } => i have { a ; b ; c }

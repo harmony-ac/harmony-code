@@ -121,7 +121,7 @@ export const NEWLINES = list_sc(tok(T.Newline), nil()),
   ),
   ERROR_RESPONSE = apply(
     seq(ERROR_MARK, opt_sc(alt_sc(DOUBLE_QUOTE_STRING, DOCSTRING))),
-    ([, parts]) => new ErrorResponse(parts),
+    ([, parts]) => new ErrorResponse(parts ? [parts] : []),
   ),
   SAVE_TO_VARIABLE = apply(
     VARIABLE,

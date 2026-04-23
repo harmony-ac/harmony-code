@@ -432,10 +432,13 @@ export abstract class Phrase extends Node {
   toSingleLineString() {
     return this.parts.map((p) => p.toSingleLineString()).join(' ')
   }
+  clone() {
+    return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+  }
   switch(i: number): Phrase {
-    return new (this.constructor as new (parts: Part[]) => Phrase)(
-      this.parts.map((p) => (p instanceof Switch ? p.choices[i] : p)),
-    ).setFeature(this.feature)
+    return Object.assign(this.clone(), {
+      parts: this.parts.map((p) => (p instanceof Switch ? p.choices[i] : p)),
+    })
   }
   toFunctionName(opts: CompilerOptions) {
     const { keyword } = this
@@ -494,13 +497,18 @@ export class Response extends Phrase {
 }
 
 export class ErrorResponse extends Response {
-  constructor(public message: StringLiteral | undefined) {
-    super(
-      message ? [new DummyKeyword('!!'), message] : [new DummyKeyword('!!')],
-    )
+  constructor(parts: Part[]) {
+    super([new DummyKeyword('!!'), ...parts])
   }
-  toCode(cg: CodeGenerator) {
-    cg.errorStep
+
+  /** not used, @see {CodeGenerator#errorStep} */
+  toCode(_cg: CodeGenerator) {}
+
+  get message() {
+    if (this.parts.length === 2 && this.parts[1] instanceof StringLiteral) {
+      return this.parts[1]
+    }
+    return undefined
   }
 }
 
